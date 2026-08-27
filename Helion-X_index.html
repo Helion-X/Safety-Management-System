@@ -566,17 +566,29 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
     s.style.color = color || 'var(--grey-400)';
   }
 
-  // -- MODE 100% LOCAL (pas de Supabase pour le moment) --
-  // Aucun appel réseau/auth : passage direct en admin local, sur cette
-  // page portail comme sur les 3 outils. Publie le rôle 'admin' dans
-  // localStorage pour que les autres pages le reprennent au chargement.
   (async function(){
-    overlay.style.display = 'none';
-    userInfo.textContent = 'Admin (local)';
-    logoutBtn.style.display = 'none';
-    loginTriggerBtn.style.display = 'none';
-    applyRole('admin', 'local');
-  })();
+  const { data, error } = await db.auth.getSession();
+
+  if (error) {
+    console.error("Supabase session error:", error);
+    applyGuestRole();
+    return;
+  }
+
+  if (data.session) {
+    onAuthenticated(data.session);
+  } else {
+    applyGuestRole();
+  }
+})();
+
+db.auth.onAuthStateChange(function(event, session){
+  if (session) {
+    onAuthenticated(session);
+  } else {
+    applyGuestRole();
+  }
+});
 })();
 </script>
 
