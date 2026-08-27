@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,maximum-scale=5" name="viewport"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="#0D1B2A" name="theme-color"/>
+<title>Helion — Safety Report</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&amp;family=IBM+Plex+Sans:wght@300;400;600&amp;family=Bebas+Neue&amp;display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#0D1B2A;--navy-mid:#1A2E42;--navy-light:#243B55;
+  --steel-bright:#4A9FE0;--gold:#C9A227;--gold-light:#F0C040;
+  --white:#F4F6F8;--grey-200:#C8D0D8;--grey-400:#8896A0;--grey-600:#4A5568;
+  --red:#CC2200;--orange:#E05000;--yellow:#FFD700;--green-bright:#3fb950;
+  --font-d:'Bebas Neue',sans-serif;--font-b:'IBM Plex Sans',sans-serif;--font-m:'IBM Plex Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-b);background:var(--navy);color:var(--white);min-height:100vh;padding-bottom:40px;}
+
+/* ── NAVIGATION BAR ── */
+#lang-bar{background:var(--navy-light);border-bottom:1px solid rgba(255,255,255,.08);display:flex;justify-content:center;}
+.lb{width:160px;padding:11px 12px;font-family:var(--font-m);font-size:12px;letter-spacing:1px;color:var(--grey-400);background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;text-transform:uppercase;transition:color .15s;text-align:center;}
+.lb.on{color:var(--gold-light);border-bottom-color:var(--gold);}
+.lb:hover:not(.on){color:var(--white);}
+
+/* ── HEADER ── */
+#hdr{background:var(--navy-mid);border-bottom:2px solid var(--gold);padding:16px 16px 12px;position:sticky;top:0;z-index:100;}
+#hdr-in{max-width:600px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;}
+#hdr-top{display:flex;align-items:center;justify-content:center;width:100%;position:relative;margin-bottom:4px;}
+#hdr-logo{height:80px;width:auto;object-fit:contain;display:block;}
+#hdr-title{font-family:var(--font-d);font-size:clamp(32px,8vw,48px);letter-spacing:.06em;color:var(--white);line-height:1;text-transform:uppercase;text-align:center;width:100%;}
+#hdr-sub{font-family:var(--font-m);font-size:9px;color:#9db8d6;letter-spacing:.04em;text-align:center;width:100%;}
+
+/* ── CONTAINER ── */
+#form-wrap,#ok-wrap{max-width:600px;margin:0 auto;padding:20px 16px 48px;}
+
+/* ── INTRO ── */
+.intro{background:var(--navy-mid);border:1px solid rgba(255,255,255,.08);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:16px 18px;margin-bottom:4px;}
+.intro p{font-size:12.5px;color:var(--grey-200);line-height:1.7;margin-bottom:8px;}
+.intro p:last-child{margin-bottom:0;}
+.ilinks{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.ilink{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(74,159,224,.1);border:1px solid rgba(74,159,224,.25);border-radius:6px;color:var(--steel-bright);font-family:var(--font-m);font-size:10px;text-decoration:none;}
+
+/* ── SECTION LABEL ── */
+.slabel{font-family:var(--font-m);font-size:9px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;padding:0 0 8px;border-bottom:1px solid rgba(201,162,39,.2);margin:28px 0 16px;}
+
+/* ── FIELD ── */
+.f{margin-bottom:14px;}
+.f>label{display:block;font-family:var(--font-m);font-size:10px;letter-spacing:1px;color:var(--grey-400);text-transform:uppercase;margin-bottom:6px;}
+.req{color:var(--gold-light);}
+.f input[type=text],.f input[type=email],.f input[type=date],.f input[type=time],.f select,.f textarea{
+  width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;
+  color:var(--white);font-family:var(--font-b);font-size:15px;padding:13px 14px;outline:none;
+  -webkit-appearance:none;appearance:none;color-scheme:dark;transition:border-color .15s;}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--steel-bright);}
+.f select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238896A0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px;cursor:pointer;}
+.f select option{background:var(--navy-mid);}
+.f textarea{resize:vertical;min-height:90px;line-height:1.55;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.frow .f{margin-bottom:0;}
+
+/* ── CHECK / RADIO ITEMS ── */
+.cg,.rg{display:flex;flex-direction:column;gap:8px;}
+.cg2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ci,.ri{
+  display:flex;align-items:flex-start;gap:12px;padding:11px 14px;
+  background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);
+  border-radius:8px;cursor:pointer;user-select:none;-webkit-user-select:none;
+  transition:border-color .15s,background .15s;
+}
+.ci:active,.ri:active{background:rgba(255,255,255,.1);}
+.cm,.rm{
+  width:20px;height:20px;min-width:20px;flex-shrink:0;margin-top:1px;
+  border:2px solid rgba(255,255,255,.25);border-radius:4px;background:transparent;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;color:transparent;transition:all .15s;
+}
+.rm{border-radius:50%;}
+.ci.on{border-color:var(--steel-bright);background:rgba(74,159,224,.1);}
+.ci.on .cm{border-color:var(--steel-bright);background:var(--steel-bright);color:var(--navy);}
+.ri.on{border-color:var(--steel-bright);background:rgba(74,159,224,.1);}
+.ri.on .rm{border-color:var(--steel-bright);background:var(--steel-bright);}
+.it{font-size:13px;color:var(--grey-200);line-height:1.4;flex:1;}
+
+/* ── CONSEQUENCE PILLS ── */
+.cpg{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+.cp{display:flex;flex-direction:column;align-items:center;padding:10px 4px;border:1.5px solid rgba(255,255,255,.1);border-radius:8px;cursor:pointer;user-select:none;background:rgba(255,255,255,.04);text-align:center;transition:all .15s;}
+.cp .dot{width:10px;height:10px;border-radius:50%;margin-bottom:5px;}
+.cp .lbl{font-family:var(--font-m);font-size:9px;color:var(--grey-200);}
+.cp[data-v="none"]  .dot{background:var(--green-bright);}
+.cp[data-v="minor"] .dot{background:var(--yellow);}
+.cp[data-v="med"]   .dot{background:var(--orange);}
+.cp[data-v="major"] .dot{background:var(--red);}
+.cp[data-v="other"] .dot{background:var(--grey-400);}
+.cp[data-v="none"].on  {border-color:var(--green-bright);background:rgba(63,185,80,.1);}
+.cp[data-v="minor"].on {border-color:var(--yellow);background:rgba(255,215,0,.08);}
+.cp[data-v="med"].on   {border-color:var(--orange);background:rgba(224,80,0,.1);}
+.cp[data-v="major"].on {border-color:var(--red);background:rgba(204,34,0,.1);}
+.cp[data-v="other"].on {border-color:var(--grey-400);background:rgba(255,255,255,.06);}
+
+/* ── ANON TOGGLE ── */
+#anon-btn{display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:8px;cursor:pointer;margin-bottom:14px;user-select:none;-webkit-user-select:none;transition:background .15s;}
+#anon-btn:active{background:rgba(255,255,255,.08);}
+#anon-track{width:44px;height:24px;background:rgba(255,255,255,.1);border-radius:12px;position:relative;flex-shrink:0;transition:background .2s;}
+#anon-track::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;background:var(--grey-400);border-radius:50%;transition:transform .2s,background .2s;}
+#anon-btn.on #anon-track{background:rgba(63,185,80,.3);}
+#anon-btn.on #anon-track::after{transform:translateX(20px);background:var(--green-bright);}
+#anon-lbl{font-size:13px;color:var(--white);font-weight:600;}
+#anon-sub{font-size:11px;color:var(--grey-400);margin-top:2px;}
+#rep-fields{overflow:hidden;transition:max-height .3s ease,opacity .3s ease;max-height:300px;opacity:1;}
+#rep-fields.h{max-height:0!important;opacity:0;pointer-events:none;}
+
+/* ── COND SECTION ── */
+.cond{overflow:hidden;transition:max-height .3s ease,opacity .3s ease;opacity:1;}
+.cond.h{max-height:0!important;opacity:0;pointer-events:none;}
+
+/* ── FILE UPLOAD ── */
+.fu{border:1.5px dashed rgba(255,255,255,.15);border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);}
+.fu-icon{font-size:28px;margin-bottom:8px;}
+.fu-txt{font-family:var(--font-m);font-size:11px;color:var(--grey-400);}
+.fu-txt strong{color:var(--steel-bright);}
+.fl{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+.fi{display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(74,159,224,.08);border:1px solid rgba(74,159,224,.2);border-radius:6px;}
+.fn{flex:1;font-size:12px;color:var(--grey-200);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.fr-btn{background:none;border:none;color:var(--grey-400);cursor:pointer;font-size:16px;padding:0 4px;}
+
+/* ── SUBMIT ── */
+#btn-submit{width:100%;padding:16px;background:var(--gold);border:none;border-radius:10px;color:var(--navy);font-family:var(--font-d);font-size:22px;letter-spacing:.06em;cursor:pointer;margin-top:8px;transition:background .15s;}
+#btn-submit:active{opacity:.85;}
+#btn-submit:disabled{background:var(--grey-600);color:var(--grey-400);cursor:not-allowed;}
+
+/* ── STATUS ── */
+#status{display:none;padding:14px 16px;border-radius:8px;font-family:var(--font-m);font-size:12px;margin-top:14px;align-items:center;gap:10px;}
+#status.show{display:flex;}
+#status.saving{background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.3);color:var(--gold-light);}
+#status.success{background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.3);color:var(--green-bright);}
+#status.error{background:rgba(204,34,0,.1);border:1px solid rgba(204,34,0,.3);color:#f85149;}
+.spin{width:18px;height:18px;border:2px solid rgba(240,192,64,.3);border-top-color:var(--gold-light);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── SUCCESS ── */
+#ok-wrap{display:none;text-align:center;padding:60px 20px;}
+#ok-wrap.show{display:block;}
+#ok-icon{font-size:56px;margin-bottom:20px;}
+#ok-title{font-family:var(--font-d);font-size:32px;letter-spacing:.06em;color:var(--green-bright);margin-bottom:12px;}
+#ok-ref{font-family:var(--font-m);font-size:13px;color:var(--gold-light);background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.3);display:inline-block;padding:6px 16px;border-radius:20px;margin-bottom:20px;}
+#ok-msg{font-size:13px;color:var(--grey-400);line-height:1.7;max-width:360px;margin:0 auto 32px;}
+#btn-new{padding:13px 28px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:var(--grey-200);font-family:var(--font-m);font-size:12px;cursor:pointer;}
+
+/* ── IMPROVE ── */
+.improve{margin-top:28px;padding:16px 18px;background:rgba(201,162,39,.06);border:1px solid rgba(201,162,39,.2);border-radius:8px;text-align:center;}
+.improve p{font-size:12px;color:var(--grey-400);margin-bottom:8px;line-height:1.5;}
+.improve a{color:var(--gold-light);font-family:var(--font-m);font-size:11px;text-decoration:none;border-bottom:1px solid rgba(240,192,64,.3);}
+
+/* ── FOOTER ── */
+#footer{text-align:center;padding:24px 20px;font-family:var(--font-m);font-size:9px;color:var(--grey-600);border-top:1px solid rgba(255,255,255,.06);line-height:1.8;}
+
+@media(max-width:400px){.cg2{grid-template-columns:1fr;}.frow{grid-template-columns:1fr;}.cpg{grid-template-columns:repeat(3,1fr);}}
+</style>
+</head>
+<body>
+<!-- NAVIGATION BAR -->
+<div id="lang-bar" style="position:relative;min-height:40px;"><a href="Helion-X_index.html" onmouseout="this.style.color='var(--grey-400)'" onmouseover="this.style.color='var(--gold-light)'" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--grey-400);font-family:var(--font-m);font-size:11px;letter-spacing:.5px;text-decoration:none;display:flex;align-items:center;gap:4px;transition:color .15s;">← Home</a></div>
+<!-- HEADER -->
+<div id="hdr">
+<div id="hdr-in">
+<div id="hdr-top">
+<img alt="Helion Helicopters" id="hdr-logo" src="data:image/png;base64,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"/>
+</div>
+<div id="hdr-title">Safety Report</div>
+<div id="hdr-sub">  ·    ·  AS 332 C1</div>
+</div>
+</div>
+<!-- FORM -->
+<div id="form-wrap">
+<!-- INTRO -->
+<div class="intro" style="margin-top:4px;">
+
+The regulations require reporting certain events to the supervisory authority. As part of continuous flight safety improvement, we need your feedback on any undesirable event or risk situation.
+<div class="ilinks">
+<a class="ilink" href="https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32015R1018" target="_blank">📋 Regulation (EU) 2015/1018</a>
+</div>
+</div>
+<!-- S1 REPORTER -->
+<div class="slabel">01 — Editor</div>
+<div id="anon-btn" onclick="toggleAnon()">
+<div id="anon-track"></div>
+<div>
+<div id="anon-lbl">Anonymous</div>
+<div id="anon-sub">No identity information sent</div>
+</div>
+</div>
+<div id="rep-fields">
+<div class="frow">
+<div class="f"><label>First name</label><input id="f-fn" placeholder="First name" type="text"/></div>
+<div class="f"><label>Last name</label><input id="f-ln" placeholder="LAST NAME" type="text"/></div>
+</div>
+<div class="f"><label>Email</label><input id="f-em" placeholder="first.last@helion-helicopters.com" type="email"/></div>
+</div>
+<!-- S2 ENTITY -->
+<div class="slabel">02 — Entity concerned</div>
+<div class="f">
+<div class="rg" id="g-entity">
+<div class="ri" onclick="pickRadio(this,'entity','Helion Helicopters')"><span class="rm"></span><span class="it">Helion Helicopters</span></div>
+<div class="ri" onclick="pickRadio(this,'entity','Aero Support Force')"><span class="rm"></span><span class="it">Aero Support Force</span></div>
+</div>
+</div>
+<!-- S3 EVENT TYPE -->
+<div class="slabel">03 — Type of event <span class="req">*</span></div>
+<div class="f">
+<label>Aviation</label>
+<div class="cg cg2" id="g-avi">
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Incident</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Major incident</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Accident</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Airprox</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Situation at risk</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Dangerous goods incident</span></div>
+<div class="ci" onclick="tickBox(this)" style="grid-column:span 2"><span class="cm">✓</span><span class="it">Other</span></div>
+</div>
+</div>
+<div class="f">
+<label>Cybersecurity</label>
+<div class="cg cg2" id="g-cyber">
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Email / Phishing</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Strange PC behavior</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Lost / stolen device</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Wrong recipient</span></div>
+<div class="ci" onclick="tickBox(this)" style="grid-column:span 2"><span class="cm">✓</span><span class="it">Other</span></div>
+</div>
+</div>
+<!-- S4 AIRCRAFT -->
+<div class="slabel">04 — Aircraft &amp; Personnel</div>
+<div class="frow">
+<div class="f">
+<label>Aircraft type</label>
+<select id="f-ac"><option value=""></option><option>AS332 C1</option><option>N/A</option></select>
+</div>
+<div class="f">
+<label>Registration</label>
+<select id="f-reg"><option value=""></option><option>HB-ZKN</option><option>HB-ZIP</option><option>F-HRTS</option><option>N/A</option></select>
+</div>
+</div>
+<div class="f"><label>Pilot in command</label><input id="f-pic" placeholder="First name LAST NAME" type="text"/></div>
+<div class="f"><label>TSOP</label><input id="f-tsop" placeholder="TSOP name(s)" type="text"/></div>
+<div class="f"><label>Other people</label><input id="f-oth" placeholder="Passengers, witnesses…" type="text"/></div>
+<!-- S5 DATE AND LOCATION -->
+<div class="slabel">05 — Date, Location &amp; Base</div>
+<div class="frow">
+<div class="f"><label>Date <span class="req">*</span></label><input id="f-date" type="date"/></div>
+<div class="f"><label>Local time</label><input id="f-time" type="time"/></div>
+</div>
+<div class="f"><label>File number</label><input id="f-dos" placeholder="Internal reference or flight number" type="text"/></div>
+<div class="f"><label>Location of event <span class="req">*</span></label><input id="f-loc" placeholder="Example: Sion, worksite…" type="text"/></div>
+<div class="f">
+<label>Home base</label>
+<select id="f-base"><option value=""></option><option>Albertville</option><option>Sion</option></select>
+</div>
+<div class="f">
+<label>Flight phase</label>
+<div class="cg cg2" id="g-phase">
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Ground</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Hover</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Take-off</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Climb</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Cruise</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Descent</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Landing</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Other</span></div>
+</div>
+</div>
+<!-- S6 MAINTENANCE -->
+<div class="slabel">06 — Maintenance &amp; CAMO</div>
+<div class="f">
+<label>Does the event concern Part 145 or CAMO?</label>
+<div class="rg" id="g-maint" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+<div class="ri" onclick="pickRadio(this,'maint','Yes');showMaint(true)"><span class="rm"></span><span class="it">Yes</span></div>
+<div class="ri" onclick="pickRadio(this,'maint','No');showMaint(false)"><span class="rm"></span><span class="it">No</span></div>
+</div>
+</div>
+<div class="cond h" id="maint-det" style="max-height:500px;">
+<div class="f">
+<label>Maintenance error type</label>
+<div class="cg cg2" id="g-maint-type">
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Maintenance error</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Inadequate procedure</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Inadequate infrastructure</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Unsuitable tools</span></div>
+<div class="ci" onclick="tickBox(this)" style="grid-column:span 2"><span class="cm">✓</span><span class="it">Other</span></div>
+</div>
+</div>
+<div class="f"><label>ATA / PN / SN / CT / BLT</label><textarea id="f-mref" placeholder="Ex : ATA 63 — MGB · PN 332A310002 · SN 1234" style="min-height:70px;"></textarea></div>
+</div>
+<!-- S7 CONSEQUENCES -->
+<div class="slabel">07 — Consequences &amp; Pressure</div>
+<div class="f">
+<label>Consequences of the event</label>
+<div class="cpg">
+<div class="cp" data-v="none" onclick="pickCons(this)"><span class="dot"></span><span class="lbl">None</span></div>
+<div class="cp" data-v="minor" onclick="pickCons(this)"><span class="dot"></span><span class="lbl">Minor</span></div>
+<div class="cp" data-v="med" onclick="pickCons(this)"><span class="dot"></span><span class="lbl">Medium</span></div>
+<div class="cp" data-v="major" onclick="pickCons(this)"><span class="dot"></span><span class="lbl">Major</span></div>
+<div class="cp" data-v="other" onclick="pickCons(this)"><span class="dot"></span><span class="lbl">Other</span></div>
+</div>
+</div>
+<div class="f">
+<label>Did you feel pressured?</label>
+<div class="cg cg2" id="g-pressure">
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Commercial pressure</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Hierarchical pressure</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Customer pressure</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">No pressure</span></div>
+</div>
+</div>
+<!-- S8 DESCRIPTION -->
+<div class="slabel">08 — Description</div>
+<div class="f"><label>Event description <span class="req">*</span></label><textarea id="f-desc" placeholder="Describe the facts objectively…" style="min-height:140px;"></textarea></div>
+<div class="f"><label>Cybersecurity description <span style="font-size:9px;font-style:italic;color:var(--grey-600);text-transform:none;font-family:var(--font-b);letter-spacing:0;">if applicable</span></label><textarea id="f-cyber" placeholder="Link clicked, attachment opened…" style="min-height:70px;"></textarea></div>
+<div class="f"><label>Actions taken immediately after</label><textarea id="f-act" placeholder="AOG, M.A.308 notification…" style="min-height:80px;"></textarea></div>
+<div class="f"><label>Comments / Suggestions</label><textarea id="f-com" style="min-height:70px;"></textarea></div>
+<!-- S9 PHOTOS AND FILES -->
+<div class="slabel">09 — Photos &amp; Files</div>
+<div class="f">
+<label>Photos</label>
+<div class="fu" onclick="document.getElementById('f-ph').click()">
+<input accept="image/*" capture="environment" id="f-ph" multiple="" onchange="addFiles(this,'fl-ph')" style="display:none" type="file"/>
+<div class="fu-icon">📷</div>
+<div class="fu-txt"><strong>Take photo</strong><br/>or choose from gallery</div>
+</div>
+<div class="fl" id="fl-ph"></div>
+</div>
+<div class="f">
+<label>Files</label>
+<div class="fu" onclick="document.getElementById('f-fi').click()">
+<input accept=".pdf,.doc,.docx,.xls,.xlsx,.txt" id="f-fi" multiple="" onchange="addFiles(this,'fl-fi')" style="display:none" type="file"/>
+<div class="fu-icon">📎</div>
+<div class="fu-txt"><strong>PDF, Word, Excel</strong></div>
+</div>
+<div class="fl" id="fl-fi"></div>
+</div>
+<!-- SUBMIT -->
+<div style="margin-top:28px;">
+<button id="btn-submit" onclick="submit()">SUBMIT REPORT</button>
+<div id="status">
+<span class="spin" id="spin"></span>
+<span id="si" style="display:none;font-size:18px;flex-shrink:0;"></span>
+<span id="st"></span>
+</div>
+</div>
+</div><!-- /form-wrap -->
+<!-- SUCCESS -->
+<div id="ok-wrap">
+<div id="ok-icon">✅</div>
+<div id="ok-title">Report submitted</div>
+<div id="ok-ref"></div>
+<div id="ok-msg">Your report has been sent to the Helion Helicopters Safety Manager.</div>
+<button id="btn-new" onclick="resetForm()">New report</button>
+</div>
+<div id="footer">
+  Helion Helicopters<br/>
+  Reg. (EU) 376/2014 · ORO.GEN.160 · CAMO.A.202<br/>
+Confidential form — Safety Manager only
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+'use strict';
+/* ── CONFIG ── */
+const SURL='https://qaqehmxoehcvzcojcqkm.supabase.co';
+const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhcWVobXhvZWhjdnpjb2pjcWttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMDE3NDMsImV4cCI6MjA5NjU3Nzc0M30.NQ8KjmF2E_cygwO5F7bNya7sy7_TkuVIBwYxQR6GR7Q';
+const SDB=window.supabase.createClient(SURL,SKEY,{auth:{persistSession:false}});
+
+/* ── STATE ── */
+let ANON=false, FILES=[], DATA={entity:'',maint:'',cons:'',checks:{}};
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
+});
+
+/* ── ANON TOGGLE ── */
+function toggleAnon(){
+  ANON=!ANON;
+  document.getElementById('anon-btn').classList.toggle('on',ANON);
+  const rf=document.getElementById('rep-fields');
+  rf.classList.toggle('h',ANON);
+}
+
+/* ── RADIO (pure div, no input) ── */
+function pickRadio(el,key,val){
+  el.closest('.rg').querySelectorAll('.ri').forEach(r=>r.classList.remove('on'));
+  el.classList.add('on');
+  DATA[key]=val;
+}
+
+/* ── CHECKBOX (pure div, no input) ── */
+function tickBox(el){
+  el.classList.toggle('on');
+  const txt=el.querySelector('.it').textContent.trim().split('\n')[0].trim();
+  if(!DATA.checks[txt]) DATA.checks[txt]=false;
+  DATA.checks[txt]=!DATA.checks[txt];
+  // keep a data-val for reading
+  el.dataset.checked=el.classList.contains('on')?'1':'0';
+}
+
+/* ── CONSEQUENCE ── */
+function pickCons(el){
+  document.querySelectorAll('.cp').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  DATA.cons=el.dataset.v;
+}
+
+/* ── MAINT SECTION ── */
+function showMaint(show){
+  const s=document.getElementById('maint-det');
+  s.classList.toggle('h',!show);
+}
+
+/* ── FILES ── */
+function addFiles(input,listId){
+  const list=document.getElementById(listId);
+  Array.from(input.files).forEach(f=>{
+    FILES.push(f);
+    const d=document.createElement('div');
+    d.className='fi';
+    d.innerHTML=`<span class="fn">&#128196; ${f.name} (${(f.size/1024).toFixed(0)} KB)</span><button class="fr-btn" onclick="rmFile(this,'${f.name}','${listId}')">&#10005;</button>`;
+    list.appendChild(d);
+  });
+  input.value='';
+}
+function rmFile(btn,name,listId){
+  FILES=FILES.filter(f=>f.name!==name);
+  btn.closest('.fi').remove();
+}
+
+/* ── HELPERS ── */
+function g(id){const e=document.getElementById(id);return e?e.value.trim():'';}
+function getChecked(groupSel){
+  return[...document.querySelectorAll(groupSel+' .ci.on')].map(el=>el.querySelector('.it').textContent.trim().split('\n')[0].trim());
+}
+function genRef(){
+  const d=new Date();
+  return'RPT-'+d.getFullYear().toString().slice(-2)+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+}
+
+/* ── STATUS ── */
+function setStatus(type,txt){
+  const bar=document.getElementById('status');
+  bar.className='show '+type;
+  document.getElementById('spin').style.display=type==='saving'?'':'none';
+  const si=document.getElementById('si');
+  si.style.display=type!=='saving'?'':'none';
+  si.textContent=type==='success'?'\u2713':'\u2717';
+  document.getElementById('st').textContent=txt;
+}
+
+/* ── VALIDATE ── */
+function validate(){
+  if(!g('f-date')){setStatus('error','Date is required');return false;}
+  if(!DATA.entity){setStatus('error','Entity is required');return false;}
+  if(!g('f-loc')){setStatus('error','Location is required');return false;}
+  if(!g('f-desc')){setStatus('error','Description is required');return false;}
+  return true;
+}
+
+/* ── SUPABASE ── */
+/* ── SUBMIT ── */
+async function submit(){
+  if(!validate()) return;
+  const btn=document.getElementById('btn-submit');
+  btn.disabled=true;
+  setStatus('saving','Sending…');
+  const ref=genRef(), now=new Date().toISOString();
+  const reporter=ANON?'Anonymous':[g('f-fn'),g('f-ln')].filter(Boolean).join(' ')||'Not specified';
+
+  const allChecked=(sel)=>[...document.querySelectorAll(sel+' .ci.on')].map(e=>e.querySelector('.it').textContent.trim().split('\n')[0].trim());
+
+  const occ={
+    id:ref, date:g('f-date'), time_local:g('f-time'),
+    entity:DATA.entity,
+    event_types_avi:allChecked('#g-avi'),
+    event_types_cyber:allChecked('#g-cyber'),
+    severity:allChecked('#g-avi')[0]||allChecked('#g-cyber')[0]||'hazard',
+    aircraft_type:g('f-ac'), aircraft_reg:g('f-reg'),
+    pic:g('f-pic'), tsop:g('f-tsop'), other_persons:g('f-oth'),
+    dossier_ref:g('f-dos'), location:g('f-loc'), base:g('f-base'),
+    phase:allChecked('#g-phase').join(', '),
+    maintenance_concern:DATA.maint,
+    maintenance_types:allChecked('#g-maint-type'),
+    maintenance_ref:g('f-mref'),
+    consequence:DATA.cons,
+    pressure:allChecked('#g-pressure'),
+    description:g('f-desc'), cyber_description:g('f-cyber'),
+    actions:g('f-act')?[{text:g('f-act'),status:'open',owner:'',owner_custom:'',actionDate:''}]:[],
+    comments:g('f-com'),
+    attachments_count:FILES.length,
+    reporter:reporter, reporter_email:ANON?'':g('f-em'),
+    source:'mobile_report_form', status:'pending_review',
+    classification:'', five_whys:null, contributing_factors:[],
+    created_at:now, updated_at:now,
+  };
+
+  try{
+    /* Write to saf_reports — anonymous access allowed by RLS */
+    const {error}=await SDB.from('saf_reports').insert({
+      report_id:   ref,
+      submitted_at: now,
+      report_data:  occ,
+      status:       'pending_review'
+    });
+    if(error) throw error;
+
+    setStatus('success','Report submitted — '+ref);
+    setTimeout(()=>{
+      document.getElementById('form-wrap').style.display='none';
+      document.getElementById('footer').style.display='none';
+      document.getElementById('ok-ref').textContent=ref;
+      document.getElementById('ok-wrap').classList.add('show');
+      window.scrollTo({top:0,behavior:'smooth'});
+    },900);
+
+  }catch(err){
+    console.error('Helion Report error:', err);
+    /* Local fallback save when offline or the network is unavailable */
+    try{
+      const q=JSON.parse(localStorage.getItem('safPendingReports')||'[]');
+      q.push(occ);
+      localStorage.setItem('safPendingReports',JSON.stringify(q));
+    }catch(e2){}
+    const msg=(err&&err.message)||'network error';
+    setStatus('error','Submission failed ('+msg+'). Reference retained: '+ref);
+    btn.disabled=false;
+  }
+}
+
+/* ── RESET ── */
+function resetForm(){
+  document.getElementById('ok-wrap').classList.remove('show');
+  document.getElementById('form-wrap').style.display='';
+  document.getElementById('footer').style.display='';
+  document.querySelectorAll('input[type=text],input[type=email],input[type=time],textarea,select').forEach(e=>e.value='');
+  document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
+  document.querySelectorAll('.ci,.ri').forEach(e=>e.classList.remove('on'));
+  document.querySelectorAll('.cp').forEach(e=>e.classList.remove('on'));
+  document.getElementById('fl-ph').innerHTML='';
+  document.getElementById('fl-fi').innerHTML='';
+  FILES=[];DATA={entity:'',maint:'',cons:'',checks:{}};
+  if(ANON)toggleAnon();
+  document.getElementById('status').className='';
+  document.getElementById('btn-submit').disabled=false;
+  document.getElementById('maint-det').classList.add('h');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
