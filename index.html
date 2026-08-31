@@ -231,8 +231,8 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
 
 <script>
 (function(){
-  var SB_URL = "https://uihoemaastmyhgxxwxdb.supabase.co";
-  var SB_KEY = "sb_publishable_KjmLj0oxxazk5ULIFhsWpg_qDAtrjWO";
+  var SB_URL = "https://qaqehmxoehcvzcojcqkm.supabase.co";
+  var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhcWVobXhvZWhjdnpjb2pjcWttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMDE3NDMsImV4cCI6MjA5NjU3Nzc0M30.NQ8KjmF2E_cygwO5F7bNya7sy7_TkuVIBwYxQR6GR7Q";
   // -- MODE 100% LOCAL (pas de Supabase pour le moment) --
   // Si le CDN Supabase n'est pas chargé (ou s'il n'y a pas de backend
   // configuré), on utilise un client factice qui ne fait rien et ne
@@ -267,10 +267,7 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
     SAF_ROLE = role;
     var badge = document.getElementById('saf-role-badge');
     if(badge){
-      badge.textContent =
-  role === 'admin' ? 'ADMIN' :
-  role === 'editor' ? 'EDITOR' :
-  'READ ONLY';;
+      badge.textContent  = role === 'admin' ? 'ADMIN' : 'READ ONLY';
       badge.style.color  = role === 'admin' ? '#C9A227' : '#6a82a5';
       badge.style.borderColor = role === 'admin' ? 'rgba(201,162,39,.4)' : 'rgba(106,130,165,.3)';
       badge.style.display = 'inline-block';
@@ -368,7 +365,7 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
       var mod = MODULES[i];
       status.textContent = 'Loading ' + mod.label + ' (' + (i+1) + '/' + MODULES.length + ')…';
       try {
-        var res = await db.from('helion_data').select('data, updated_at').eq('module', mod.key).single();
+        var res = await db.from('saf_data').select('data, updated_at').eq('module', mod.key).single();
         if(res.error){ errors.push(mod.label + ': ' + res.error.message); bundle[mod.key] = null; }
         else { bundle[mod.key] = { data: res.data.data, updated_at: res.data.updated_at }; }
       } catch(e) {
@@ -542,7 +539,7 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
       status.textContent = 'Restoring ' + (LABEL[key]||key) + ' (' + (i+1) + '/' + modules.length + ')…';
       status.style.color = 'var(--grey-400)';
       try {
-        var res = await db.from('helion_data').upsert(
+        var res = await db.from('saf_data').upsert(
           { module: key, data: bundle[key].data },
           { onConflict: 'module' }
         );
@@ -569,29 +566,17 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
     s.style.color = color || 'var(--grey-400)';
   }
 
+  // -- MODE 100% LOCAL (pas de Supabase pour le moment) --
+  // Aucun appel réseau/auth : passage direct en admin local, sur cette
+  // page portail comme sur les 3 outils. Publie le rôle 'admin' dans
+  // localStorage pour que les autres pages le reprennent au chargement.
   (async function(){
-  const { data, error } = await db.auth.getSession();
-
-  if (error) {
-    console.error("Supabase session error:", error);
-    applyGuestRole();
-    return;
-  }
-
-  if (data.session) {
-    onAuthenticated(data.session);
-  } else {
-    applyGuestRole();
-  }
-})();
-
-db.auth.onAuthStateChange(function(event, session){
-  if (session) {
-    onAuthenticated(session);
-  } else {
-    applyGuestRole();
-  }
-});
+    overlay.style.display = 'none';
+    userInfo.textContent = 'Admin (local)';
+    logoutBtn.style.display = 'none';
+    loginTriggerBtn.style.display = 'none';
+    applyRole('admin', 'local');
+  })();
 })();
 </script>
 
