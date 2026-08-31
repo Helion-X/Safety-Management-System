@@ -368,9 +368,30 @@ Confidential form — Safety Manager only
 <script>
 'use strict';
 /* ── CONFIG ── */
-const SURL='https://qaqehmxoehcvzcojcqkm.supabase.co';
-const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhcWVobXhvZWhjdnpjb2pjcWttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMDE3NDMsImV4cCI6MjA5NjU3Nzc0M30.NQ8KjmF2E_cygwO5F7bNya7sy7_TkuVIBwYxQR6GR7Q';
+/* ============================================================
+   HELION BACKEND — MUST point to the Helion Supabase project.
+   Never reuse the SAF International project (qaqehmxoehcvz...).
+   ============================================================ */
+const HELION_REF='uihoemaastmyhgxxwxdb';
+const SURL='https://'+HELION_REF+'.supabase.co';
+const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpaG9lbWFhc3RteWhneHh3eGRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4MDU5ODYsImV4cCI6MjEwMzM4MTk4Nn0.L1EP-UNF7qjQ_S_Kx_0H263c82FrYR-1Y80HQIwpt4w';
+const STABLE='helion_reports';
+const SPENDING='helionPendingReports';
+const SOPERATOR='HELION';
 const SDB=window.supabase.createClient(SURL,SKEY,{auth:{persistSession:false}});
+
+/* Guard: the anon key must belong to the Helion project, not another one.
+   Decodes the JWT payload and compares its project ref with HELION_REF.
+   Any key from a different Supabase project blocks submission. */
+function _keyRef(k){
+  try{
+    let b=k.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+    b+='='.repeat((4-b.length%4)%4);
+    return JSON.parse(atob(b)).ref||null;
+  }catch(e){return null;}
+}
+const CFG_OK = _keyRef(SKEY)===HELION_REF;
+if(!CFG_OK) console.error('Helion Report: backend key does not belong to the Helion project — submission disabled.');
 
 /* ── STATE ── */
 let ANON=false, FILES=[], DATA={entity:'',maint:'',cons:'',checks:{}};
@@ -442,7 +463,7 @@ function getChecked(groupSel){
 }
 function genRef(){
   const d=new Date();
-  return'RPT-'+d.getFullYear().toString().slice(-2)+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+  return'HLX-'+d.getFullYear().toString().slice(-2)+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
 }
 
 /* ── STATUS ── */
@@ -470,6 +491,7 @@ function validate(){
 async function submit(){
   if(!validate()) return;
   const btn=document.getElementById('btn-submit');
+  if(!CFG_OK){setStatus('error','Backend not configured for Helion — submission blocked');return;}
   btn.disabled=true;
   setStatus('saving','Sending…');
   const ref=genRef(), now=new Date().toISOString();
@@ -497,18 +519,19 @@ async function submit(){
     comments:g('f-com'),
     attachments_count:FILES.length,
     reporter:reporter, reporter_email:ANON?'':g('f-em'),
-    source:'mobile_report_form', status:'pending_review',
+    source:'helion_report_form', operator:SOPERATOR, status:'pending_review',
     classification:'', five_whys:null, contributing_factors:[],
     created_at:now, updated_at:now,
   };
 
   try{
-    /* Write to saf_reports — anonymous access allowed by RLS */
-    const {error}=await SDB.from('saf_reports').insert({
+    /* Write to helion_reports on the Helion project — anon access allowed by RLS */
+    const {error}=await SDB.from(STABLE).insert({
       report_id:   ref,
       submitted_at: now,
       report_data:  occ,
-      status:       'pending_review'
+      status:       'pending_review',
+      operator:     SOPERATOR
     });
     if(error) throw error;
 
@@ -525,9 +548,9 @@ async function submit(){
     console.error('Helion Report error:', err);
     /* Local fallback save when offline or the network is unavailable */
     try{
-      const q=JSON.parse(localStorage.getItem('safPendingReports')||'[]');
+      const q=JSON.parse(localStorage.getItem(SPENDING)||'[]');
       q.push(occ);
-      localStorage.setItem('safPendingReports',JSON.stringify(q));
+      localStorage.setItem(SPENDING,JSON.stringify(q));
     }catch(e2){}
     const msg=(err&&err.message)||'network error';
     setStatus('error','Submission failed ('+msg+'). Reference retained: '+ref);
