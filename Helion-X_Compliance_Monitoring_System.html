@@ -20148,9 +20148,9 @@ window.safSmsConfirmImport=safSmsConfirmImport;
 <script>
 (function(){
   "use strict";
-  var SUPABASE_URL = "https://qaqehmxoehcvzcojcqkm.supabase.co";
-  var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhcWVobXhvZWhjdnpjb2pjcWttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMDE3NDMsImV4cCI6MjA5NjU3Nzc0M30.NQ8KjmF2E_cygwO5F7bNya7sy7_TkuVIBwYxQR6GR7Q";
-  var MODULE = "cms_data";                 // clé de stockage de CET outil dans saf_data
+  var SUPABASE_URL = "https://uihoemaastmyhgxxwxdb.supabase.co";
+  var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpaG9lbWFhc3RteWhneHh3eGRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4MDU5ODYsImV4cCI6MjEwMzM4MTk4Nn0.L1EP-UNF7qjQ_S_Kx_0H263c82FrYR-1Y80HQIwpt4w";
+  var MODULE = "cms_data";                 // clé de stockage de CET outil dans helion_data
 
   // -- MODE 100% LOCAL (pas de Supabase pour le moment) --
   // Si le CDN Supabase n'est pas chargé (ou s'il n'y a pas de backend
@@ -20207,7 +20207,7 @@ window.safSmsConfirmImport=safSmsConfirmImport;
   // --- Chargement depuis la base ---
   async function cloudLoad(){
     try{
-      var res = await db.from('saf_data').select('data').eq('module', MODULE).single();
+      var res = await db.from('helion_data').select('data').eq('module', MODULE).single();
       if(res.error){
         if(res.error.code === 'PGRST116'){ setBar('ok','Empty database — backup on first change'); return; }
         setBar('ok','Loading error: '+res.error.message); return;
@@ -20252,7 +20252,7 @@ window.safSmsConfirmImport=safSmsConfirmImport;
     saving = true; setBar('saving','Saving…');
     try{
       var payload = buildPayload();
-      var res = await db.from('saf_data').upsert(
+      var res = await db.from('helion_data').upsert(
         { module: MODULE, data: payload, updated_at: new Date() },
         { onConflict: 'module' }
       );
@@ -20274,7 +20274,7 @@ window.safSmsConfirmImport=safSmsConfirmImport;
   // Helper exposé : lit un autre module dans la base (utilisé par le pont SMS→CMS)
   window.safCloudReadModule = async function(moduleName){
     try{
-      var res = await db.from('saf_data').select('data').eq('module', moduleName).single();
+      var res = await db.from('helion_data').select('data').eq('module', moduleName).single();
       if(res.error) return null;
       return res.data ? res.data.data : null;
     }catch(e){ return null; }

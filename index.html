@@ -231,8 +231,8 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
 
 <script>
 (function(){
-  var SB_URL = "https://qaqehmxoehcvzcojcqkm.supabase.co";
-  var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhcWVobXhvZWhjdnpjb2pjcWttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMDE3NDMsImV4cCI6MjA5NjU3Nzc0M30.NQ8KjmF2E_cygwO5F7bNya7sy7_TkuVIBwYxQR6GR7Q";
+  var SB_URL = "https://uihoemaastmyhgxxwxdb.supabase.co";
+  var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpaG9lbWFhc3RteWhneHh3eGRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4MDU5ODYsImV4cCI6MjEwMzM4MTk4Nn0.L1EP-UNF7qjQ_S_Kx_0H263c82FrYR-1Y80HQIwpt4w";
   // -- MODE 100% LOCAL (pas de Supabase pour le moment) --
   // Si le CDN Supabase n'est pas chargé (ou s'il n'y a pas de backend
   // configuré), on utilise un client factice qui ne fait rien et ne
@@ -281,7 +281,7 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
 
   async function loadAndApplyRole(email){
     try {
-      var res = await db.from('user_roles').select('role').eq('user_email', email).single();
+      var res = await db.from('helion_user_roles').select('role').eq('user_email', email).single();
       SAF_ROLE = (res.data && res.data.role) ? res.data.role : 'reader';
     } catch(e) { SAF_ROLE = 'reader'; }
     applyRole(SAF_ROLE, email);
@@ -365,7 +365,7 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
       var mod = MODULES[i];
       status.textContent = 'Loading ' + mod.label + ' (' + (i+1) + '/' + MODULES.length + ')…';
       try {
-        var res = await db.from('saf_data').select('data, updated_at').eq('module', mod.key).single();
+        var res = await db.from('helion_data').select('data, updated_at').eq('module', mod.key).single();
         if(res.error){ errors.push(mod.label + ': ' + res.error.message); bundle[mod.key] = null; }
         else { bundle[mod.key] = { data: res.data.data, updated_at: res.data.updated_at }; }
       } catch(e) {
@@ -539,7 +539,7 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
       status.textContent = 'Restoring ' + (LABEL[key]||key) + ' (' + (i+1) + '/' + modules.length + ')…';
       status.style.color = 'var(--grey-400)';
       try {
-        var res = await db.from('saf_data').upsert(
+        var res = await db.from('helion_data').upsert(
           { module: key, data: bundle[key].data },
           { onConflict: 'module' }
         );
