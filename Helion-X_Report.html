@@ -51,7 +51,7 @@ body{font-family:var(--font-b);background:var(--navy);color:var(--white);min-hei
 .f{margin-bottom:14px;}
 .f>label{display:block;font-family:var(--font-m);font-size:10px;letter-spacing:1px;color:var(--grey-400);text-transform:uppercase;margin-bottom:6px;}
 .req{color:var(--gold-light);}
-.f input[type=text],.f input[type=email],.f input[type=date],.f input[type=time],.f select,.f textarea{
+.f input[type=text],.f input[type=email],.f input[type=tel],.f input[type=date],.f input[type=time],.f select,.f textarea{
   width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;
   color:var(--white);font-family:var(--font-b);font-size:15px;padding:13px 14px;outline:none;
   -webkit-appearance:none;appearance:none;color-scheme:dark;transition:border-color .15s;}
@@ -85,22 +85,6 @@ body{font-family:var(--font-b);background:var(--navy);color:var(--white);min-hei
 .ri.on .rm{border-color:var(--steel-bright);background:var(--steel-bright);}
 .it{font-size:13px;color:var(--grey-200);line-height:1.4;flex:1;}
 
-/* ── CONSEQUENCE PILLS ── */
-.cpg{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
-.cp{display:flex;flex-direction:column;align-items:center;padding:10px 4px;border:1.5px solid rgba(255,255,255,.1);border-radius:8px;cursor:pointer;user-select:none;background:rgba(255,255,255,.04);text-align:center;transition:all .15s;}
-.cp .dot{width:10px;height:10px;border-radius:50%;margin-bottom:5px;}
-.cp .lbl{font-family:var(--font-m);font-size:9px;color:var(--grey-200);}
-.cp[data-v="none"]  .dot{background:var(--green-bright);}
-.cp[data-v="minor"] .dot{background:var(--yellow);}
-.cp[data-v="med"]   .dot{background:var(--orange);}
-.cp[data-v="major"] .dot{background:var(--red);}
-.cp[data-v="other"] .dot{background:var(--grey-400);}
-.cp[data-v="none"].on  {border-color:var(--green-bright);background:rgba(63,185,80,.1);}
-.cp[data-v="minor"].on {border-color:var(--yellow);background:rgba(255,215,0,.08);}
-.cp[data-v="med"].on   {border-color:var(--orange);background:rgba(224,80,0,.1);}
-.cp[data-v="major"].on {border-color:var(--red);background:rgba(204,34,0,.1);}
-.cp[data-v="other"].on {border-color:var(--grey-400);background:rgba(255,255,255,.06);}
-
 /* ── ANON TOGGLE ── */
 #anon-btn{display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:8px;cursor:pointer;margin-bottom:14px;user-select:none;-webkit-user-select:none;transition:background .15s;}
 #anon-btn:active{background:rgba(255,255,255,.08);}
@@ -110,12 +94,19 @@ body{font-family:var(--font-b);background:var(--navy);color:var(--white);min-hei
 #anon-btn.on #anon-track::after{transform:translateX(20px);background:var(--green-bright);}
 #anon-lbl{font-size:13px;color:var(--white);font-weight:600;}
 #anon-sub{font-size:11px;color:var(--grey-400);margin-top:2px;}
-#rep-fields{overflow:hidden;transition:max-height .3s ease,opacity .3s ease;max-height:300px;opacity:1;}
+#rep-fields{overflow:hidden;transition:max-height .3s ease,opacity .3s ease;max-height:420px;opacity:1;}
 #rep-fields.h{max-height:0!important;opacity:0;pointer-events:none;}
 
 /* ── COND SECTION ── */
 .cond{overflow:hidden;transition:max-height .3s ease,opacity .3s ease;opacity:1;}
 .cond.h{max-height:0!important;opacity:0;pointer-events:none;}
+
+/* ── "OTHER" SPECIFY FIELD ── */
+.oth{margin-top:8px;}
+.oth input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;
+  color:var(--white);font-family:var(--font-b);font-size:15px;padding:13px 14px;outline:none;
+  -webkit-appearance:none;appearance:none;color-scheme:dark;transition:border-color .15s;}
+.oth input:focus{border-color:var(--steel-bright);}
 
 /* ── FILE UPLOAD ── */
 .fu{border:1.5px dashed rgba(255,255,255,.15);border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);}
@@ -158,7 +149,7 @@ body{font-family:var(--font-b);background:var(--navy);color:var(--white);min-hei
 /* ── FOOTER ── */
 #footer{text-align:center;padding:24px 20px;font-family:var(--font-m);font-size:9px;color:var(--grey-600);border-top:1px solid rgba(255,255,255,.06);line-height:1.8;}
 
-@media(max-width:400px){.cg2{grid-template-columns:1fr;}.frow{grid-template-columns:1fr;}.cpg{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:400px){.cg2{grid-template-columns:1fr;}.frow{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -179,10 +170,7 @@ body{font-family:var(--font-b);background:var(--navy);color:var(--white);min-hei
 <!-- INTRO -->
 <div class="intro" style="margin-top:4px;">
 
-The regulations require reporting certain events to the supervisory authority. As part of continuous flight safety improvement, we need your feedback on any undesirable event or risk situation.
-<div class="ilinks">
-<a class="ilink" href="https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32015R1018" target="_blank">📋 Regulation (EU) 2015/1018</a>
-</div>
+Reporting is the foundation of aviation safety. Every event you report — even one that seems minor or that ended without consequence — lets us see a risk before it turns into an accident. What you write here is treated in confidence and used to improve our operation, never to assign blame. The few minutes you spend on this report may one day save the life of a colleague.
 </div>
 <!-- S1 REPORTER -->
 <div class="slabel">01 — Editor</div>
@@ -199,14 +187,18 @@ The regulations require reporting certain events to the supervisory authority. A
 <div class="f"><label>Last name</label><input id="f-ln" placeholder="LAST NAME" type="text"/></div>
 </div>
 <div class="f"><label>Email</label><input id="f-em" placeholder="first.last@helion-helicopters.com" type="email"/></div>
+<div class="f"><label>Phone</label><input id="f-tel" placeholder="+30 690 000 0000" type="tel"/></div>
 </div>
 <!-- S2 ENTITY -->
 <div class="slabel">02 — Entity concerned</div>
 <div class="f">
 <div class="rg" id="g-entity">
-<div class="ri" onclick="pickRadio(this,'entity','Helion Helicopters')"><span class="rm"></span><span class="it">Helion Helicopters</span></div>
-<div class="ri" onclick="pickRadio(this,'entity','Aero Support Force')"><span class="rm"></span><span class="it">Aero Support Force</span></div>
+<div class="ri" onclick="pickRadio(this,'entity','Operations')"><span class="rm"></span><span class="it">Operations</span></div>
+<div class="ri" onclick="pickRadio(this,'entity','CAMO')"><span class="rm"></span><span class="it">CAMO</span></div>
+<div class="ri" onclick="pickRadio(this,'entity','Part 145')"><span class="rm"></span><span class="it">Part 145</span></div>
+<div class="ri" onclick="pickRadio(this,'entity','Other')"><span class="rm"></span><span class="it">Other</span></div>
 </div>
+<div class="oth"><input id="f-entity-oth" placeholder="Other — please specify…" type="text"/></div>
 </div>
 <!-- S3 EVENT TYPE -->
 <div class="slabel">03 — Type of event <span class="req">*</span></div>
@@ -221,6 +213,7 @@ The regulations require reporting certain events to the supervisory authority. A
 <div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Dangerous goods incident</span></div>
 <div class="ci" onclick="tickBox(this)" style="grid-column:span 2"><span class="cm">✓</span><span class="it">Other</span></div>
 </div>
+<div class="oth"><input id="f-avi-oth" placeholder="Other — please specify…" type="text"/></div>
 </div>
 <div class="f">
 <label>Cybersecurity</label>
@@ -231,6 +224,7 @@ The regulations require reporting certain events to the supervisory authority. A
 <div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Wrong recipient</span></div>
 <div class="ci" onclick="tickBox(this)" style="grid-column:span 2"><span class="cm">✓</span><span class="it">Other</span></div>
 </div>
+<div class="oth"><input id="f-cyber-oth" placeholder="Other — please specify…" type="text"/></div>
 </div>
 <!-- S4 AIRCRAFT -->
 <div class="slabel">04 — Aircraft &amp; Personnel</div>
@@ -245,7 +239,7 @@ The regulations require reporting certain events to the supervisory authority. A
 </div>
 </div>
 <div class="f"><label>Pilot in command</label><input id="f-pic" placeholder="First name LAST NAME" type="text"/></div>
-<div class="f"><label>TSOP</label><input id="f-tsop" placeholder="TSOP name(s)" type="text"/></div>
+<div class="f"><label>Copilot</label><input id="f-copilot" placeholder="First name LAST NAME" type="text"/></div>
 <div class="f"><label>Other people</label><input id="f-oth" placeholder="Passengers, witnesses…" type="text"/></div>
 <!-- S5 DATE AND LOCATION -->
 <div class="slabel">05 — Date, Location &amp; Base</div>
@@ -253,12 +247,8 @@ The regulations require reporting certain events to the supervisory authority. A
 <div class="f"><label>Date <span class="req">*</span></label><input id="f-date" type="date"/></div>
 <div class="f"><label>Local time</label><input id="f-time" type="time"/></div>
 </div>
-<div class="f"><label>File number</label><input id="f-dos" placeholder="Internal reference or flight number" type="text"/></div>
-<div class="f"><label>Location of event <span class="req">*</span></label><input id="f-loc" placeholder="Example: Sion, worksite…" type="text"/></div>
-<div class="f">
-<label>Home base</label>
-<select id="f-base"><option value=""></option><option>Albertville</option><option>Sion</option></select>
-</div>
+<div class="f"><label>Location of event <span class="req">*</span></label><input id="f-loc" placeholder="Example: Athens, worksite…" type="text"/></div>
+<div class="f"><label>Home base</label><input id="f-base" placeholder="Home base" type="text"/></div>
 <div class="f">
 <label>Flight phase</label>
 <div class="cg cg2" id="g-phase">
@@ -271,41 +261,10 @@ The regulations require reporting certain events to the supervisory authority. A
 <div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Landing</span></div>
 <div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Other</span></div>
 </div>
+<div class="oth"><input id="f-phase-oth" placeholder="Other — please specify…" type="text"/></div>
 </div>
-<!-- S6 MAINTENANCE -->
-<div class="slabel">06 — Maintenance &amp; CAMO</div>
-<div class="f">
-<label>Does the event concern Part 145 or CAMO?</label>
-<div class="rg" id="g-maint" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-<div class="ri" onclick="pickRadio(this,'maint','Yes');showMaint(true)"><span class="rm"></span><span class="it">Yes</span></div>
-<div class="ri" onclick="pickRadio(this,'maint','No');showMaint(false)"><span class="rm"></span><span class="it">No</span></div>
-</div>
-</div>
-<div class="cond h" id="maint-det" style="max-height:500px;">
-<div class="f">
-<label>Maintenance error type</label>
-<div class="cg cg2" id="g-maint-type">
-<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Maintenance error</span></div>
-<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Inadequate procedure</span></div>
-<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Inadequate infrastructure</span></div>
-<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Unsuitable tools</span></div>
-<div class="ci" onclick="tickBox(this)" style="grid-column:span 2"><span class="cm">✓</span><span class="it">Other</span></div>
-</div>
-</div>
-<div class="f"><label>ATA / PN / SN / CT / BLT</label><textarea id="f-mref" placeholder="Ex : ATA 63 — MGB · PN 332A310002 · SN 1234" style="min-height:70px;"></textarea></div>
-</div>
-<!-- S7 CONSEQUENCES -->
-<div class="slabel">07 — Consequences &amp; Pressure</div>
-<div class="f">
-<label>Consequences of the event</label>
-<div class="cpg">
-<div class="cp" data-v="none" onclick="pickCons(this)"><span class="dot"></span><span class="lbl">None</span></div>
-<div class="cp" data-v="minor" onclick="pickCons(this)"><span class="dot"></span><span class="lbl">Minor</span></div>
-<div class="cp" data-v="med" onclick="pickCons(this)"><span class="dot"></span><span class="lbl">Medium</span></div>
-<div class="cp" data-v="major" onclick="pickCons(this)"><span class="dot"></span><span class="lbl">Major</span></div>
-<div class="cp" data-v="other" onclick="pickCons(this)"><span class="dot"></span><span class="lbl">Other</span></div>
-</div>
-</div>
+<!-- S6 PRESSURE -->
+<div class="slabel">06 — Pressure</div>
 <div class="f">
 <label>Did you feel pressured?</label>
 <div class="cg cg2" id="g-pressure">
@@ -313,16 +272,17 @@ The regulations require reporting certain events to the supervisory authority. A
 <div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Hierarchical pressure</span></div>
 <div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Customer pressure</span></div>
 <div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">No pressure</span></div>
+<div class="ci" onclick="tickBox(this)" style="grid-column:span 2"><span class="cm">✓</span><span class="it">Other</span></div>
 </div>
+<div class="oth"><input id="f-pressure-oth" placeholder="Other — please specify…" type="text"/></div>
 </div>
-<!-- S8 DESCRIPTION -->
-<div class="slabel">08 — Description</div>
+<!-- S7 DESCRIPTION -->
+<div class="slabel">07 — Description</div>
 <div class="f"><label>Event description <span class="req">*</span></label><textarea id="f-desc" placeholder="Describe the facts objectively…" style="min-height:140px;"></textarea></div>
-<div class="f"><label>Cybersecurity description <span style="font-size:9px;font-style:italic;color:var(--grey-600);text-transform:none;font-family:var(--font-b);letter-spacing:0;">if applicable</span></label><textarea id="f-cyber" placeholder="Link clicked, attachment opened…" style="min-height:70px;"></textarea></div>
 <div class="f"><label>Actions taken immediately after</label><textarea id="f-act" placeholder="AOG, M.A.308 notification…" style="min-height:80px;"></textarea></div>
 <div class="f"><label>Comments / Suggestions</label><textarea id="f-com" style="min-height:70px;"></textarea></div>
-<!-- S9 PHOTOS AND FILES -->
-<div class="slabel">09 — Photos &amp; Files</div>
+<!-- S8 PHOTOS AND FILES -->
+<div class="slabel">08 — Photos &amp; Files</div>
 <div class="f">
 <label>Photos</label>
 <div class="fu" onclick="document.getElementById('f-ph').click()">
@@ -394,7 +354,7 @@ const CFG_OK = _keyRef(SKEY)===HELION_REF;
 if(!CFG_OK) console.error('Helion Report: backend key does not belong to the Helion project — submission disabled.');
 
 /* ── STATE ── */
-let ANON=false, FILES=[], DATA={entity:'',maint:'',cons:'',checks:{}};
+let ANON=false, FILES=[], DATA={entity:'',checks:{}};
 
 /* ── INIT ── */
 document.addEventListener('DOMContentLoaded',()=>{
@@ -424,19 +384,6 @@ function tickBox(el){
   DATA.checks[txt]=!DATA.checks[txt];
   // keep a data-val for reading
   el.dataset.checked=el.classList.contains('on')?'1':'0';
-}
-
-/* ── CONSEQUENCE ── */
-function pickCons(el){
-  document.querySelectorAll('.cp').forEach(c=>c.classList.remove('on'));
-  el.classList.add('on');
-  DATA.cons=el.dataset.v;
-}
-
-/* ── MAINT SECTION ── */
-function showMaint(show){
-  const s=document.getElementById('maint-det');
-  s.classList.toggle('h',!show);
 }
 
 /* ── FILES ── */
@@ -501,24 +448,24 @@ async function submit(){
 
   const occ={
     id:ref, date:g('f-date'), time_local:g('f-time'),
-    entity:DATA.entity,
+    entity:DATA.entity, entity_other:g('f-entity-oth'),
     event_types_avi:allChecked('#g-avi'),
     event_types_cyber:allChecked('#g-cyber'),
     severity:allChecked('#g-avi')[0]||allChecked('#g-cyber')[0]||'hazard',
+    event_type_avi_other:g('f-avi-oth'),
+    event_type_cyber_other:g('f-cyber-oth'),
     aircraft_type:g('f-ac'), aircraft_reg:g('f-reg'),
-    pic:g('f-pic'), tsop:g('f-tsop'), other_persons:g('f-oth'),
-    dossier_ref:g('f-dos'), location:g('f-loc'), base:g('f-base'),
+    pic:g('f-pic'), copilot:g('f-copilot'), other_persons:g('f-oth'),
+    location:g('f-loc'), base:g('f-base'),
     phase:allChecked('#g-phase').join(', '),
-    maintenance_concern:DATA.maint,
-    maintenance_types:allChecked('#g-maint-type'),
-    maintenance_ref:g('f-mref'),
-    consequence:DATA.cons,
+    phase_other:g('f-phase-oth'),
     pressure:allChecked('#g-pressure'),
-    description:g('f-desc'), cyber_description:g('f-cyber'),
+    pressure_other:g('f-pressure-oth'),
+    description:g('f-desc'),
     actions:g('f-act')?[{text:g('f-act'),status:'open',owner:'',owner_custom:'',actionDate:''}]:[],
     comments:g('f-com'),
     attachments_count:FILES.length,
-    reporter:reporter, reporter_email:ANON?'':g('f-em'),
+    reporter:reporter, reporter_email:ANON?'':g('f-em'), reporter_phone:ANON?'':g('f-tel'),
     source:'helion_report_form', operator:SOPERATOR, status:'pending_review',
     classification:'', five_whys:null, contributing_factors:[],
     created_at:now, updated_at:now,
@@ -563,17 +510,15 @@ function resetForm(){
   document.getElementById('ok-wrap').classList.remove('show');
   document.getElementById('form-wrap').style.display='';
   document.getElementById('footer').style.display='';
-  document.querySelectorAll('input[type=text],input[type=email],input[type=time],textarea,select').forEach(e=>e.value='');
+  document.querySelectorAll('input[type=text],input[type=email],input[type=tel],input[type=time],textarea,select').forEach(e=>e.value='');
   document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
   document.querySelectorAll('.ci,.ri').forEach(e=>e.classList.remove('on'));
-  document.querySelectorAll('.cp').forEach(e=>e.classList.remove('on'));
   document.getElementById('fl-ph').innerHTML='';
   document.getElementById('fl-fi').innerHTML='';
-  FILES=[];DATA={entity:'',maint:'',cons:'',checks:{}};
+  FILES=[];DATA={entity:'',checks:{}};
   if(ANON)toggleAnon();
   document.getElementById('status').className='';
   document.getElementById('btn-submit').disabled=false;
-  document.getElementById('maint-det').classList.add('h');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
