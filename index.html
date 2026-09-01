@@ -160,7 +160,7 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
   <div class="header-right">
     <span id="saf-user-info"></span>
     <span id="saf-role-badge" style="display:none;font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;padding:2px 7px;border-radius:3px;border:1px solid;"></span>
-    <button id="saf-login-trigger-btn" style="font-family:var(--font-mono);font-size:10px;color:var(--grey-400);background:none;border:1px solid rgba(255,255,255,.1);padding:4px 10px;border-radius:4px;cursor:pointer;letter-spacing:.04em;">Administrator login</button>
+    <button id="saf-login-trigger-btn" style="font-family:var(--font-mono);font-size:10px;color:var(--grey-400);background:none;border:1px solid rgba(255,255,255,.1);padding:4px 10px;border-radius:4px;cursor:pointer;letter-spacing:.04em;">Sign in</button>
     <button id="saf-logout-btn" style="display:none">Sign out</button>
     <div class="header-badge">EASA</div>
   </div>
@@ -233,10 +233,9 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
 (function(){
   var SB_URL = "https://uihoemaastmyhgxxwxdb.supabase.co";
   var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpaG9lbWFhc3RteWhneHh3eGRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4MDU5ODYsImV4cCI6MjEwMzM4MTk4Nn0.L1EP-UNF7qjQ_S_Kx_0H263c82FrYR-1Y80HQIwpt4w";
-  // -- MODE 100% LOCAL (pas de Supabase pour le moment) --
-  // Si le CDN Supabase n'est pas chargé (ou s'il n'y a pas de backend
-  // configuré), on utilise un client factice qui ne fait rien et ne
-  // plante jamais.
+  // -- REPLI HORS-LIGNE --
+  // Si le CDN Supabase n'est pas chargé, on utilise un client factice qui
+  // ne fait rien et ne plante jamais (l'outil reste utilisable en local).
   function _stubDb(){
     return {
       auth: {
@@ -263,27 +262,52 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
 
   var SAF_ROLE = 'reader';
 
-  function applyRole(role, label){
-    SAF_ROLE = role;
+  // ── RÔLES AUTORISÉS EN ÉCRITURE ─────────────────────────────────────────
+  // 'admin' et 'editor' peuvent écrire. Tout autre rôle — ou aucune ligne
+  // correspondante dans helion_user_roles — donne un accès en lecture seule.
+  var WRITE_ROLES = ['admin','editor'];
+  function safCanWrite(r){ return WRITE_ROLES.indexOf(String(r||'').toLowerCase()) !== -1; }
+
+  function safRenderRoleBadge(role){
     var badge = document.getElementById('saf-role-badge');
-    if(badge){
-      badge.textContent  = role === 'admin' ? 'ADMIN' : 'READ ONLY';
-      badge.style.color  = role === 'admin' ? '#C9A227' : '#6a82a5';
-      badge.style.borderColor = role === 'admin' ? 'rgba(201,162,39,.4)' : 'rgba(106,130,165,.3)';
-      badge.style.display = 'inline-block';
-    }
-    // Export/import: administrators only
+    if(!badge) return;
+    var look = role === 'admin'
+      ? { txt:'ADMIN',  col:'#C9A227', bd:'rgba(201,162,39,.4)' }
+      : (role === 'editor'
+          ? { txt:'EDITOR', col:'#5FBF8F', bd:'rgba(95,191,143,.45)' }
+          : { txt:'READ ONLY', col:'#9fc4e8', bd:'rgba(106,130,165,.3)' });
+    badge.textContent = look.txt;
+    badge.style.color = look.col;
+    badge.style.borderColor = look.bd;
+    badge.style.display = 'inline-block';
+  }
+
+  // Lecture du rôle dans helion_user_roles (comparaison insensible à la casse)
+  async function safFetchRole(email){
+    try {
+      var res = await db.from('helion_user_roles').select('role')
+                        .ilike('user_email', String(email||'').trim()).limit(1);
+      var row = res && res.data && res.data[0];
+      if(row && row.role) return String(row.role).toLowerCase();
+    } catch(e) {}
+    return 'reader';
+  }
+
+  function applyRole(role, label){
+    role = String(role||'reader').toLowerCase();
+    SAF_ROLE = role;
+    safRenderRoleBadge(role);
+    // Export global : admin + editor — Restauration : admin uniquement
     var bar = document.getElementById('export-bar');
-    if(bar) bar.style.display = role === 'admin' ? 'flex' : 'none';
-    // Publishes the role to the tools through localStorage
+    if(bar) bar.style.display = safCanWrite(role) ? 'flex' : 'none';
+    var btnImp = document.getElementById('btn-import-global');
+    if(btnImp) btnImp.style.display = (role === 'admin') ? '' : 'none';
+    // Publie le rôle vers les autres outils via localStorage
     try { localStorage.setItem('saf_role', role + '|' + (label || 'guest')); } catch(e){}
   }
 
   async function loadAndApplyRole(email){
-    try {
-      var res = await db.from('helion_user_roles').select('role').eq('user_email', email).single();
-      SAF_ROLE = (res.data && res.data.role) ? res.data.role : 'reader';
-    } catch(e) { SAF_ROLE = 'reader'; }
+    SAF_ROLE = await safFetchRole(email);
     applyRole(SAF_ROLE, email);
   }
 
@@ -566,16 +590,22 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
     s.style.color = color || 'var(--grey-400)';
   }
 
-  // -- MODE 100% LOCAL (pas de Supabase pour le moment) --
-  // Aucun appel réseau/auth : passage direct en admin local, sur cette
-  // page portail comme sur les 3 outils. Publie le rôle 'admin' dans
-  // localStorage pour que les autres pages le reprennent au chargement.
+  // -- SESSION SUPABASE --
+  // Si une session est déjà ouverte (connexion effectuée sur n'importe quelle
+  // page du même domaine), on récupère le rôle réel dans helion_user_roles.
+  // Sinon : accès invité en lecture seule + bouton de connexion.
   (async function(){
-    overlay.style.display = 'none';
-    userInfo.textContent = 'Admin (local)';
-    logoutBtn.style.display = 'none';
-    loginTriggerBtn.style.display = 'none';
-    applyRole('admin', 'local');
+    var session = null;
+    try{
+      var r = await Promise.race([
+        db.auth.getSession(),
+        new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('timeout')); }, 5000); })
+      ]);
+      if(r && r.data && r.data.session) session = r.data.session;
+    }catch(e){ console.warn('getSession:', e.message); }
+
+    if(session) onAuthenticated(session);
+    else applyGuestRole();
   })();
 })();
 </script>

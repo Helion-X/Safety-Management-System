@@ -15893,7 +15893,7 @@ function deleteALoS(id){
 <div id="saf-login-overlay">
   <div id="saf-login-box">
     <h2>Helion Helicopters — SMS</h2>
-    <p>Administrator Login</p>
+    <p>Sign in — administrator or editor</p>
     <label for="saf-email">Email</label>
     <input type="email" id="saf-email" autocomplete="username" placeholder="prenom.nom@helion-helicopters.com">
     <label for="saf-pwd">Password</label>
@@ -16148,20 +16148,45 @@ setTimeout(function(){
 
   // ── RÔLE UTILISATEUR ────────────────────────────────────────────────────
   var SAF_ROLE = 'reader';
+  // ── RÔLES AUTORISÉS EN ÉCRITURE ─────────────────────────────────────────
+  // 'admin' et 'editor' peuvent écrire. Tout autre rôle — ou aucune ligne
+  // correspondante dans helion_user_roles — donne un accès en lecture seule.
+  var WRITE_ROLES = ['admin','editor'];
+  function safCanWrite(r){ return WRITE_ROLES.indexOf(String(r||'').toLowerCase()) !== -1; }
+
+  function safRenderRoleBadge(role){
+    var badge = document.getElementById('saf-role-badge');
+    if(!badge) return;
+    var look = role === 'admin'
+      ? { txt:'ADMIN',  col:'#C9A227', bd:'rgba(201,162,39,.4)' }
+      : (role === 'editor'
+          ? { txt:'EDITOR', col:'#5FBF8F', bd:'rgba(95,191,143,.45)' }
+          : { txt:'READ ONLY', col:'#9fc4e8', bd:'rgba(106,130,165,.3)' });
+    badge.textContent = look.txt;
+    badge.style.color = look.col;
+    badge.style.borderColor = look.bd;
+    badge.style.display = 'inline-block';
+  }
+
+  // Lecture du rôle dans helion_user_roles (comparaison insensible à la casse)
+  async function safFetchRole(email){
+    try {
+      var res = await db.from('helion_user_roles').select('role')
+                        .ilike('user_email', String(email||'').trim()).limit(1);
+      var row = res && res.data && res.data[0];
+      if(row && row.role) return String(row.role).toLowerCase();
+    } catch(e) {}
+    return 'reader';
+  }
 
   async function loadAndApplyRole(email){
-    try {
-      var res = await db.from('helion_user_roles').select('role').eq('user_email', email).single();
-      SAF_ROLE = (res.data && res.data.role) ? res.data.role : 'reader';
-    } catch(e) { SAF_ROLE = 'reader'; }
-    var badge = document.getElementById('saf-role-badge');
-    if(badge){
-      badge.textContent  = SAF_ROLE === 'admin' ? 'ADMIN' : 'READ ONLY';
-      badge.style.color  = SAF_ROLE === 'admin' ? '#C9A227' : '#9fc4e8';
-      badge.style.borderColor = SAF_ROLE === 'admin' ? 'rgba(201,162,39,.4)' : 'rgba(106,130,165,.3)';
-      badge.style.display = 'inline-block';
+    SAF_ROLE = await safFetchRole(email);
+    safRenderRoleBadge(SAF_ROLE);
+    if(!safCanWrite(SAF_ROLE)){
+      isGuest = true;            // bloque cloudSave
+      guardWriteFunctions();     // neutralise les fonctions d'écriture
+      applyReadOnly();
     }
-    if(SAF_ROLE !== 'admin') applyReadOnly();
     try { localStorage.setItem('saf_role', SAF_ROLE + '|' + email); } catch(e){}
   }
 

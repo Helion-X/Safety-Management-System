@@ -20142,7 +20142,7 @@ window.safSmsConfirmImport=safSmsConfirmImport;
 <div id="saf-cloud-bar">
 <span class="dot"></span><span id="saf-cloud-txt">Synchronized</span>
 <span id="saf-role-badge" style="display:none;font-size:9px;letter-spacing:.1em;padding:2px 7px;border-radius:3px;border:1px solid;"></span>
-<button id="saf-login-trigger-btn">Admin login</button>
+<button id="saf-login-trigger-btn">Sign in</button>
 <button id="saf-logout-btn" style="display:none">Log out</button>
 </div>
 <script>
@@ -20152,7 +20152,7 @@ window.safSmsConfirmImport=safSmsConfirmImport;
   var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpaG9lbWFhc3RteWhneHh3eGRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4MDU5ODYsImV4cCI6MjEwMzM4MTk4Nn0.L1EP-UNF7qjQ_S_Kx_0H263c82FrYR-1Y80HQIwpt4w";
   var MODULE = "cms_data";                 // clé de stockage de CET outil dans helion_data
 
-  // -- MODE 100% LOCAL (pas de Supabase pour le moment) --
+  // -- REPLI HORS-LIGNE (client factice si le CDN Supabase est absent) --
   // Si le CDN Supabase n'est pas chargé (ou s'il n'y a pas de backend
   // configuré), on utilise un client factice qui ne fait rien et ne
   // plante jamais, pour que l'outil reste pleinement utilisable en local.
@@ -20248,6 +20248,7 @@ window.safSmsConfirmImport=safSmsConfirmImport;
     return p;
   }
   async function cloudSave(){
+    if(!safCanWrite(SAF_ROLE)){ setBar('ok','Read-only mode — no save'); return; }
     if(saving){ dirty = true; return; }
     saving = true; setBar('saving','Saving…');
     try{
@@ -20293,18 +20294,41 @@ window.safSmsConfirmImport=safSmsConfirmImport;
   // ── RÔLE UTILISATEUR ────────────────────────────────────────────────────
   var SAF_ROLE = 'reader';
 
-  async function loadAndApplyRole(email){
-    // -- ADMIN OVERRIDE (copie de travail locale) --
-    // Le rôle est forcé à 'admin' pour cette copie : plus de verrouillage
-    // lecture seule côté client, quel que soit le rôle stocké côté serveur.
-    SAF_ROLE = 'admin';
+  // ── RÔLES AUTORISÉS EN ÉCRITURE ─────────────────────────────────────────
+  // 'admin' et 'editor' peuvent écrire. Tout autre rôle — ou aucune ligne
+  // correspondante dans helion_user_roles — donne un accès en lecture seule.
+  var WRITE_ROLES = ['admin','editor'];
+  function safCanWrite(r){ return WRITE_ROLES.indexOf(String(r||'').toLowerCase()) !== -1; }
+
+  function safRenderRoleBadge(role){
     var badge = document.getElementById('saf-role-badge');
-    if(badge){
-      badge.textContent  = 'ADMIN';
-      badge.style.color  = '#C9A227';
-      badge.style.borderColor = 'rgba(201,162,39,.4)';
-      badge.style.display = 'inline-block';
-    }
+    if(!badge) return;
+    var look = role === 'admin'
+      ? { txt:'ADMIN',  col:'#C9A227', bd:'rgba(201,162,39,.4)' }
+      : (role === 'editor'
+          ? { txt:'EDITOR', col:'#5FBF8F', bd:'rgba(95,191,143,.45)' }
+          : { txt:'READ ONLY', col:'#9fc4e8', bd:'rgba(106,130,165,.3)' });
+    badge.textContent = look.txt;
+    badge.style.color = look.col;
+    badge.style.borderColor = look.bd;
+    badge.style.display = 'inline-block';
+  }
+
+  // Lecture du rôle dans helion_user_roles (comparaison insensible à la casse)
+  async function safFetchRole(email){
+    try {
+      var res = await db.from('helion_user_roles').select('role')
+                        .ilike('user_email', String(email||'').trim()).limit(1);
+      var row = res && res.data && res.data[0];
+      if(row && row.role) return String(row.role).toLowerCase();
+    } catch(e) {}
+    return 'reader';
+  }
+
+  async function loadAndApplyRole(email){
+    SAF_ROLE = await safFetchRole(email);
+    safRenderRoleBadge(SAF_ROLE);
+    if(!safCanWrite(SAF_ROLE)) applyReadOnly();
     try { localStorage.setItem('saf_role', SAF_ROLE + '|' + email); } catch(e){}
   }
 
@@ -20365,30 +20389,21 @@ window.safSmsConfirmImport=safSmsConfirmImport;
     await loadAndApplyRole(session.user.email);
     await cloudLoad();
     ready = true;
-    attachAutoSave();
+    if(safCanWrite(SAF_ROLE)) attachAutoSave();
   }
 
   // ── ACCÈS INVITÉ PAR DÉFAUT ──────────────────────────────────────────────
   async function applyGuestRole(){
-    // -- ADMIN OVERRIDE (copie de travail locale) --
-    // Cette copie locale reste en écriture complète, même sans session
-    // authentifiée : aucun verrouillage lecture seule n'est appliqué.
     overlay.style.display = 'none';
     logoutBtn.style.display = 'none';
     loginTriggerBtn.style.display = 'inline-block';
-    SAF_ROLE = 'admin';
-    var badge = document.getElementById('saf-role-badge');
-    if(badge){
-      badge.textContent = 'ADMIN';
-      badge.style.color = '#C9A227';
-      badge.style.borderColor = 'rgba(201,162,39,.4)';
-      badge.style.display = 'inline-block';
-    }
-    try { localStorage.setItem('saf_role', 'admin|local'); } catch(e){}
+    SAF_ROLE = 'reader';
+    safRenderRoleBadge(SAF_ROLE);
+    try { localStorage.setItem('saf_role', 'reader|guest'); } catch(e){}
     await cloudLoad();
     ready = true;
-    attachAutoSave();
-    setBar('ok','Mode admin (local) — écriture activée');
+    applyReadOnly();
+    setBar('ok','Guest mode — read only');
   }
   // ────────────────────────────────────────────────────────────────────────
 
@@ -20413,27 +20428,21 @@ window.safSmsConfirmImport=safSmsConfirmImport;
     await db.auth.signOut(); location.reload();
   });
 
-  // -- ADMIN LOCAL (pas de connexion requise) --
-  // Aucune authentification n'est requise : accès admin immédiat, sans
-  // écran de connexion. Les données du projet Supabase existant sont
-  // tout de même chargées en arrière-plan (lecture) pour retrouver les
-  // audits/findings déjà enregistrés ; si indisponible, l'outil continue
-  // de fonctionner en local (localStorage) sans planter.
+  // -- SESSION SUPABASE --
+  // Session existante => rôle réel (admin / editor / reader).
+  // Aucune session => accès invité en lecture seule.
   (async function(){
-    overlay.style.display = 'none';
-    logoutBtn.style.display = 'none';
-    loginTriggerBtn.style.display = 'none';
-    SAF_ROLE = 'admin';
-    var badge = document.getElementById('saf-role-badge');
-    if(badge){
-      badge.textContent = 'ADMIN'; badge.style.color = '#C9A227';
-      badge.style.borderColor = 'rgba(201,162,39,.4)'; badge.style.display = 'inline-block';
-    }
-    try { localStorage.setItem('saf_role', 'admin|local'); } catch(e){}
-    await cloudLoad();
-    ready = true;
-    attachAutoSave();
-    setBar('ok','Admin (local) — données synchronisées');
+    var session = null;
+    try{
+      var r = await Promise.race([
+        db.auth.getSession(),
+        new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('timeout')); }, 5000); })
+      ]);
+      if(r && r.data && r.data.session) session = r.data.session;
+    }catch(e){ console.warn('getSession:', e.message); }
+
+    if(session) await onAuthenticated(session);
+    else await applyGuestRole();
   })();
 })();
 </script>
