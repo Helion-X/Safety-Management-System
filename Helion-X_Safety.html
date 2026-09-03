@@ -5,6 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>HELION-X — SAFETY MANAGEMENT SYSTEM</title>
+<!-- HELION-X BARRIER ORIGIN V4: HELION-ONLY PROVENANCE; PER-MEASURE ORIGIN VISIBLE IN RISK REGISTER | 2026-09-03 -->
 <!-- HELION-X ECCAIRS OCCLOG PATCH V2 TESTED 2026-06-18 | BOWTIE SMS DROPDOWN FIX -->
 <!-- HELION-X THREE-LEVEL EVENT TAXONOMY | 34 STABLE FAMILIES | 73 ATOMIC RISK SCENARIOS | 164 EXCEL EVENTS | 2026-07-29 -->
 <!-- LEVEL 1: OCCURRENCE CATEGORY | LEVEL 2: SMS FAMILY | LEVEL 3: RISK SCENARIO -->
@@ -340,6 +341,11 @@ main { flex: 1; overflow-y: auto; background: #0A1520; }
   position: relative;
   cursor: default;
 }
+/* HELION-X V6: SAF-style provenance chip appended at the end of each barrier measure. */
+.hel-barrier-measure { transition: background .12s, outline-color .12s, transform .12s; }
+.hel-barrier-measure:hover { filter: brightness(1.12); }
+.hel-barrier-measure:focus { outline:1px solid var(--steel-bright); outline-offset:1px; }
+
 .barrier-cell .barrier-tooltip {
   display: none;
   position: absolute;
@@ -1435,6 +1441,7 @@ nav { top: 118px !important; }
 @media(max-width:1000px){.ea-hierarchy{grid-template-columns:1fr}.ea-review-grid{grid-template-columns:1fr}.ea-review-full{grid-column:auto}}
 
 </style>
+<!-- HELION-X V7: SAF-identical folded/unfolded barrier presentation -->
 </head>
 <body>
 <div id="app">
@@ -1680,6 +1687,7 @@ nav { top: 118px !important; }
 <div class="nav-label">SMS Modules</div>
 <div class="nav-item" onclick="showView('safetypolicy')"><span class="icon">🔒</span> Safety Policy &amp; Objectives</div>
 <div class="nav-item" onclick="showView('controls')"><span class="icon">⏱</span> Controls Review</div>
+<div class="nav-item" onclick="showView('barrierreg')"><span class="icon">📑</span> Barrier Register</div>
 <div class="nav-item" onclick="showView('bowtie')"><span class="icon">🎯</span> Bow-Tie Analysis</div>
 <div class="nav-item" onclick="showView('lessons')"><span class="icon">📢</span> Lessons Learned</div>
 <div class="nav-item" onclick="showView('safetyassurance')"><span class="icon">🔍</span> Safety Assurance</div>
@@ -2849,8 +2857,9 @@ function updateOaciDefinitionDropdown(sel) {
 </div>
 </div>
 <div class="view" id="view-controls">
-<div class="dash-header"><div><div class="dash-title">CONTROLS REVIEW</div><div class="dash-subtitle">Reg. (EU) 376/2014 — Periodic review of safety control measures, ALARP acceptance, effectiveness</div></div><button class="btn btn-ghost" onclick="renderControlsView()">↺ Refresh</button></div>
+<div class="dash-header"><div><div class="dash-title">CONTROLS REVIEW</div><div class="dash-subtitle">ORO.GEN.200(a)(3) · Reg. (EU) 376/2014 Art. 13 for occurrence-derived actions — Risk controls, acceptance and effectiveness review</div></div><button class="btn btn-ghost" onclick="renderControlsView()">↺ Refresh</button></div>
 <div id="controls-content"></div></div>
+<div class="view" id="view-barrierreg"><div class="dash-header"><div><div class="dash-title">BARRIER REGISTER</div><div class="dash-subtitle">Origin and traceability of each prevention, mitigation and recovery measure</div></div><button class="btn btn-ghost" onclick="helRenderBarrierRegister()">↺ Refresh</button></div><div id="barrierreg-content"></div></div>
 <div class="view" id="view-bowtie">
 <div class="dash-header"><div><div class="dash-title">BOW-TIE ANALYSIS</div><div class="dash-subtitle">ICAO Doc 9859 §6 — Causes → Undesirable Event → Consequences with barriers</div></div></div>
 <div id="bowtie-panel" style="padding:0 28px 28px;">
@@ -4895,6 +4904,7 @@ function safImportAllData(evt){
 
 function saveDB() {
   if (!__isSmsConsolidatedDB(DB)) __forceSmsConsolidatedDB('saveDB');
+  if (typeof helBarriersBackfillAll === 'function') helBarriersBackfillAll({verbose:false});
   localStorage.setItem('safRiskDB', JSON.stringify(DB));
   try { localStorage.setItem('safRiskDBVersion', _DB_VERSION); } catch(e) {}
   try { ejsLoadConfig(); } catch(e) {}
@@ -5593,6 +5603,9 @@ function renderTable() {
   if(!tbody) return;
   const start = (currentPage-1)*PAGE_SIZE;
   const page = filteredDB.slice(start, start+PAGE_SIZE);
+  if (typeof helBarriersSync === 'function') {
+    page.forEach(function(r){ try { helBarriersSync(r,{}); } catch(_e){} });
+  }
 
   if(page.length === 0) {
     tbody.innerHTML = `<tr><td colspan="13"><div class="empty-state"><div class="empty-icon">◉</div>No risks match the current filters.</div></td></tr>`;
@@ -5677,15 +5690,15 @@ function renderTable() {
           <!-- Barriers -->
           <div class="detail-block">
             <span class="detail-label">🛡 Prevention Measures</span>
-            <div class="detail-val">${fmtList(r.prevention)}</div>
+            <div class="detail-val">${fmtBarriers(r,'prevention')}</div>
           </div>
           <div class="detail-block">
             <span class="detail-label">⚖ Mitigation Measures</span>
-            <div class="detail-val">${fmtList(r.mitigation)}</div>
+            <div class="detail-val">${fmtBarriers(r,'mitigation')}</div>
           </div>
           <div class="detail-block full-width" style="grid-column:1/-1;">
             <span class="detail-label">🩺 Recovery Measures</span>
-            <div class="detail-val">${fmtList(r.recovery)}</div>
+            <div class="detail-val">${fmtBarriers(r,'recovery')}</div>
           </div>
 
           <!-- ROW 3: Doc ref + ECCAIRS + statut (3 colonnes) -->
@@ -6345,7 +6358,12 @@ function submitEntry() {
     effectiveness_assessed_date: existingEntry ? (existingEntry.effectiveness_assessed_date||'') : '',
     effectiveness_assessed_by: existingEntry ? (existingEntry.effectiveness_assessed_by||'') : '',
     history: existingEntry && Array.isArray(existingEntry.history) ? [...existingEntry.history] : [],
+    barriers: existingEntry && Array.isArray(existingEntry.barriers) ? JSON.parse(JSON.stringify(existingEntry.barriers)) : [],
+    barriers_archive: existingEntry && Array.isArray(existingEntry.barriers_archive) ? JSON.parse(JSON.stringify(existingEntry.barriers_archive)) : [],
   };
+
+  // Keep prevention / mitigation / recovery provenance stable across edits.
+  if (typeof helBarriersSync === 'function') helBarriersSync(entry,{actor:'SMS User'});
 
   if(barrierEval.barrier_failure_suspected) {
     const proceed = confirm('Barrier review required.\n\nThis event appears to show that prevention, mitigation or recovery barriers already in place may not have worked.\n\nDo you want to save the event and flag it for review?');
@@ -6735,6 +6753,7 @@ function showView(name) {
   if(name==='export')      renderExportView();
   if(name==='spi')         renderSPIView();
   if(name==='controls')    renderControlsView();
+  if(name==='barrierreg') helRenderBarrierRegister();
   if(name==='bowtie')    { btPopulateSelect(); renderBowtie(); }
   if(name==='occurrences'){ renderOccurrenceList(); if(typeof updatePendingBadge==='function') updatePendingBadge(); }
   if(name==='eventaccounting') renderEventAccounting();
@@ -12399,10 +12418,12 @@ function erpAddLogEntry() {
 
 // ── Helpers for risk register display ───────────────────────────
 function fmtBarrierCell(text, type) {
+  // Exact SAF folded-row behaviour: compact summary in the main Risk Register.
+  // The full measures + provenance chips are rendered only in the unfolded detail via fmtBarriers().
   if (!text || text === '—') {
     return '<span style="font-family:var(--font-mono);font-size:10px;color:var(--grey-600);">—</span>';
   }
-  var raw = text.replace(/\\n/g, '\n');
+  var raw = String(text).replace(/\\n/g, '\n');
   var lines = raw.split(/\n/).map(function(l){ return l.trim(); }).filter(Boolean);
   var count = lines.length;
 
@@ -12413,18 +12434,16 @@ function fmtBarrierCell(text, type) {
   };
   var c = colors[type] || colors.prevention;
 
-  // First measure for the visible truncated preview
   var first = lines[0].replace(/^\d+\s*[-–.]\s*/, '');
   var trunc = first.length > 48 ? first.slice(0, 48) + '…' : first;
 
-  // Build tooltip items
   var items = lines.map(function(line, i) {
     var m = line.match(/^(\d+)\s*[-–.]\s*(.*)/);
     var num = m ? m[1] : String(i+1);
     var txt = m ? m[2] : line;
     return '<div class="barrier-tooltip-item">'
       + '<span class="barrier-tooltip-num" style="background:'+c.badge+';">'+num+'</span>'
-      + '<span class="barrier-tooltip-text">'+txt+'</span>'
+      + '<span class="barrier-tooltip-text">'+helBrkEsc(txt)+'</span>'
       + '</div>';
   }).join('');
 
@@ -12442,13 +12461,12 @@ function fmtBarrierCell(text, type) {
     +   '</div>'
     +   '<div style="font-size:10px;color:var(--grey-300);line-height:1.4;padding:4px 6px;'
     +         'background:'+c.bg+';border-left:2px solid '+c.border+';border-radius:0 3px 3px 0;">'
-    +     trunc
+    +     helBrkEsc(trunc)
     +   '</div>'
     + '</div>'
     + tooltip
     + '</div>';
 }
-
 function fmtList(text) {
   if (!text || text === '—') return '<span style="color:var(--grey-400);font-style:italic;">—</span>';
   // Split on numbered items: "1-", "1.", "1 -", or newlines
@@ -16658,6 +16676,297 @@ function occRestoreHFACS(hfacs,severity){
   function boot(){document.documentElement.lang='en';apply(document.body);new MutationObserver(function(rs){rs.forEach(function(r){r.addedNodes.forEach(function(n){if(n.nodeType===1||n.nodeType===11)apply(n);else applyText(n);});});}).observe(document.body,{subtree:true,childList:true});}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
+
+
+// ════════════════════════════════════════════════════════════════════════════
+// HELION-X 2026-09-03 · BARRIER PROVENANCE / ORIGIN TRACEABILITY
+// Mirrors the SAF Risk Register model for prevention, mitigation and recovery
+// measures. The legacy text fields remain compatible with all existing exports;
+// barriers[] is the structured traceability layer and is synchronised both ways.
+// ════════════════════════════════════════════════════════════════════════════
+function helBarrierRender(b){
+  var f=b.fmt||{};
+  if(f.num===null||typeof f.num==='undefined') return b.text;
+  return (f.pad||'')+f.num+(f.sep||'')+(f.tag?'['+f.tag+']'+(f.tagTrail||''):'')+b.text;
+}
+function helBarrierSyncFields(risk){
+  if(!risk||!Array.isArray(risk.barriers)) return risk;
+  ['prevention','mitigation','recovery'].forEach(function(k){
+    risk[k]=risk.barriers.filter(function(b){return b.kind===k&&b.status!=='superseded';})
+                         .map(helBarrierRender).join('\n');
+  });
+  return risk;
+}
+function helBarrierFind(bid){
+  if(typeof DB==='undefined'||!Array.isArray(DB)) return null;
+  for(var i=0;i<DB.length;i++){
+    var bs=(DB[i].barriers||[]).concat(DB[i].barriers_archive||[]);
+    for(var j=0;j<bs.length;j++) if(bs[j].bid===bid) return {barrier:bs[j],risk:DB[i]};
+  }
+  return null;
+}
+function helBarriersFromOrigin(ref){
+  var out=[];
+  if(typeof DB==='undefined'||!Array.isArray(DB)) return out;
+  DB.forEach(function(r){(r.barriers||[]).forEach(function(b){
+    var o=b.origin||{};
+    if(o.ref===ref||(o.also_from||[]).indexOf(ref)>=0||(o.moc_risk_ids||[]).indexOf(ref)>=0)
+      out.push({risk:r.id,bid:b.bid,kind:b.kind,text:b.text,status:o.status});
+  });});
+  return out;
+}
+function helBarrierCoverage(){
+  var t=0,d=0,by={};
+  if(typeof DB==='undefined'||!Array.isArray(DB)) return {total:0,documented:0,pct:0,by_status:{}};
+  DB.forEach(function(r){(r.barriers||[]).forEach(function(b){
+    var st=(b.origin||{}).status||'undocumented'; by[st]=(by[st]||0)+1; t++;
+    if(st==='confirmed'||st==='deduced') d++;
+  });});
+  return {total:t,documented:d,pct:t?Math.round(1000*d/t)/10:0,by_status:by};
+}
+
+// Qualified tags are accepted (e.g. [FF-NIGHT-D1 SAF]); origin.ref keeps only
+// the leading source identifier while fmt.tag preserves the complete visible tag.
+var HEL_BRK_LINE=/^(\s*)(\d+)([-.)\]]\s*)(?:\[([A-Z0-9][^\]]{0,39})\](\s*))?([\s\S]*)$/;
+function helBrkParse(raw){
+  var m=String(raw).match(HEL_BRK_LINE);
+  if(!m) return {fmt:{pad:'',num:null,sep:'',tag:'',tagTrail:''},text:String(raw).trim()};
+  return {fmt:{pad:m[1],num:parseInt(m[2],10),sep:m[3],tag:m[4]||'',tagTrail:m[5]||''},text:m[6].trim()};
+}
+function helBrkKey(t){
+  return String(t||'').replace(HEL_BRK_LINE,'$6').replace(/\[[A-Z0-9\-]+\]/g,'')
+    .replace(/[^a-z0-9]+/gi,' ').trim().toLowerCase();
+}
+function helBrkCode(kind){return kind==='prevention'?'P':(kind==='mitigation'?'M':'R');}
+function helBrkNextBid(risk,kind,pending){
+  var c=helBrkCode(kind),n=0;
+  (risk.barriers||[]).concat(risk.barriers_archive||[],pending||[]).forEach(function(b){
+    var m=String(b.bid||'').match(new RegExp('-'+c+'(\\d+)$')); if(m)n=Math.max(n,parseInt(m[1],10));
+  });
+  return risk.id+'-'+c+String(n+1).padStart(2,'0');
+}
+// Barrier origins are derived exclusively from HELION-X data.
+// No SAF barrier origin or SAF cross-reference is imported or used for attribution.
+function helBrkOriginFromEvidence(risk,fmt,kind,text){
+  var src=String(risk.source_risk_ids||'').split(',').map(function(x){return x.trim();}).filter(Boolean);
+  var moc=String(risk.linked_change_study||'').trim();
+  var tagBase=fmt.tag?String(fmt.tag).split(/\s+/)[0]:'';
+  if(tagBase&&src.indexOf(tagBase)>=0)
+    return {type:'legacy',ref:tagBase,also_from:[],status:'confirmed',evidence:'inline_tag_matches_source_risk_ids',rationale:''};
+  if(tagBase)
+    return {type:'legacy',ref:tagBase,also_from:[],status:'to_reconcile',evidence:'inline_tag_absent_from_source_risk_ids',rationale:''};
+  if(src.length===1)
+    return {type:'legacy',ref:src[0],also_from:[],status:'deduced',evidence:'single_source_risk_id',rationale:''};
+  if(moc)
+    return {type:'moc',ref:moc,also_from:[],status:'to_verify',evidence:'linked_change_study',rationale:''};
+  return {type:'',ref:'',also_from:[],status:'undocumented',evidence:'',rationale:''};
+}
+function helBrkOriginIsForeign(o){
+  o=o||{};
+  return o.status==='arbitrated' || /(?:^|[_\s-])(saf|sm_arbitration)(?:$|[_\s-])/i.test(String(o.evidence||''));
+}
+function helBarriersSync(risk,ctx){
+  if(!risk) return risk;
+  ctx=ctx||{};
+  var now=new Date().toISOString(), day=now.slice(0,10);
+  var prev=Array.isArray(risk.barriers)?risk.barriers.slice():[];
+  var byKey={}; prev.forEach(function(b){var k=helBrkKey(b.text);if(k&&!byKey[k])byKey[k]=b;});
+  var seen={},next=[];
+  ['prevention','mitigation','recovery'].forEach(function(kind){
+    String(risk[kind]||'').split('\n').filter(function(l){return l.trim();}).forEach(function(raw,i){
+      var p=helBrkParse(raw),key=helBrkKey(p.text),old=key?byKey[key]:null;
+      if(old&&old.kind===kind){
+        var repaired=ctx.origin?JSON.parse(JSON.stringify(ctx.origin)):helBrkOriginFromEvidence(risk,p.fmt,kind,p.text);
+        // Remove any attribution created by the previous SAF cross-mapping version.
+        if(helBrkOriginIsForeign(old.origin)){
+          old.origin=repaired;
+        } else if(!old.origin || old.origin.status==='undocumented' || old.origin.status==='to_reconcile' || old.origin.status==='to_verify'){
+          if(repaired && repaired.status!=='undocumented') old.origin=repaired;
+        }
+        seen[old.bid]=1; old.seq=i+1; old.text=p.text; old.fmt=p.fmt; old.status='active'; next.push(old); return;
+      }
+      var origin=ctx.origin?JSON.parse(JSON.stringify(ctx.origin)):helBrkOriginFromEvidence(risk,p.fmt,kind,p.text);
+      var b={bid:helBrkNextBid(risk,kind,next),kind:kind,seq:i+1,text:p.text,status:'active',
+        owner:ctx.owner||'',created_at:risk.created_at||risk.timestamp||now,created_by:ctx.actor||'',
+        origin:origin,supersedes:[],superseded_by:'',evidence:[],fmt:p.fmt};
+      if(origin&&!origin.also_from)origin.also_from=[];
+      next.push(b);seen[b.bid]=1;
+    });
+  });
+  var gone=prev.filter(function(b){return !seen[b.bid];});
+  if(gone.length){
+    if(!Array.isArray(risk.barriers_archive))risk.barriers_archive=[];
+    gone.forEach(function(b){
+      if((risk.barriers_archive||[]).some(function(x){return x.bid===b.bid&&x.superseded_at===b.superseded_at;}))return;
+      b.status='superseded';b.superseded_at=now;b.superseded_by=ctx.mocRef||ctx.actor||('edit '+day);
+      risk.barriers_archive.push(b);
+    });
+  }
+  risk.barriers=next;
+  return risk;
+}
+function helBarriersBackfillAll(opts){
+  opts=opts||{};
+  if(typeof DB==='undefined'||!Array.isArray(DB))return null;
+  var created=0,synced=0;
+  DB.forEach(function(r){
+    var before=Array.isArray(r.barriers)?r.barriers.length:0;
+    helBarriersSync(r,{});
+    if(!before)created+=(r.barriers||[]).length;else synced++;
+  });
+  if(opts.verbose&&typeof console!=='undefined')console.log('[HELION-X] barrier provenance:',created,'created,',synced,'records synchronised');
+  return {created:created,synced:synced,coverage:helBarrierCoverage()};
+}
+
+var HEL_BRK_COLORS={
+  confirmed:{bg:'rgba(63,185,80,.15)',fg:'#3fb950',lbl:'confirmed'},
+  deduced:{bg:'rgba(74,159,224,.15)',fg:'#4A9FE0',lbl:'deduced'},
+  to_verify:{bg:'rgba(255,140,66,.15)',fg:'#ff8c42',lbl:'to verify'},
+  to_reconcile:{bg:'rgba(255,140,66,.15)',fg:'#ff8c42',lbl:'to reconcile'},
+  undocumented:{bg:'rgba(248,81,73,.15)',fg:'#f85149',lbl:'origin undocumented'}
+};
+function helBrkEsc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function helBrkOriginLabel(o){
+  o=o||{};var r=o.ref||'';
+  if(o.type==='moc'&&o.moc_risk_ids&&o.moc_risk_ids.length)r+=' / '+o.moc_risk_ids.join('+');
+  if(o.also_from&&o.also_from.length)r+=' + '+o.also_from.join(' + ');
+  return r||'?';
+}
+// Human-readable evidence label. The stored technical evidence code is preserved;
+// the UI additionally shows the actual source reference carried by origin.ref.
+function helBrkEvidenceLabel(o){
+  o=o||{};
+  var ev=String(o.evidence||'');
+  var ref=String(o.ref||'').trim()||helBrkOriginLabel(o);
+  if(ev==='inline_tag_matches_source_risk_ids') return 'Confirmed by matching source Risk ID: '+ref;
+  if(ev==='inline_tag_absent_from_source_risk_ids') return 'Inline source tag not found in Risk Source IDs: '+ref;
+  if(ev==='single_source_risk_id') return 'Deduced from single source Risk ID: '+ref;
+  if(ev==='linked_change_study') return 'Linked change study: '+ref;
+  return ev||'—';
+}
+function helBrkChip(b){
+  var o=b.origin||{},c=HEL_BRK_COLORS[o.status]||HEL_BRK_COLORS.undocumented;
+  var icon=o.type==='moc'?'◈':(o.type==='legacy'?'⌘':(o.type==='occurrence'?'⚠':'·'));
+  var tip=helBrkEsc(b.bid+'  —  origin '+c.lbl+'\n'+helBrkOriginLabel(o)+
+          (o.evidence?'\nevidence: '+helBrkEvidenceLabel(o):'')+(o.rationale?'\n'+o.rationale:''));
+  return '<span class="hel-brk-chip" title="'+tip+'" onclick="event.stopPropagation();helBarrierOriginPopup(decodeURIComponent(\''+encodeURIComponent(b.bid)+'\'))" '
+    +'style="cursor:pointer;flex-shrink:0;font-family:var(--font-mono);font-size:8px;font-weight:700;'
+    +'background:'+c.bg+';color:'+c.fg+';border-radius:3px;padding:1px 5px;white-space:nowrap;">'
+    +icon+' '+helBrkEsc(helBrkOriginLabel(o))+'</span>';
+}
+// Same presentation principle as SAF: the provenance button is appended at the end of each measure.
+// Only the small provenance chip is clickable; the measure text itself remains plain text.
+function fmtBarriers(risk,kind){
+  var bs=(risk&&Array.isArray(risk.barriers))?risk.barriers.filter(function(b){return b.kind===kind&&b.status!=='superseded';}):[];
+  if(!bs.length)return typeof fmtList==='function'?fmtList(risk?risk[kind]:''):'—';
+  return '<div style="display:flex;flex-direction:column;gap:6px;">'+bs.map(function(b){
+    return '<div style="display:flex;align-items:flex-start;gap:8px;">'
+      +'<span style="flex-shrink:0;font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);'
+      +'background:rgba(74,159,224,.15);border-radius:3px;padding:1px 5px;min-width:20px;text-align:center;">'+b.seq+'</span>'
+      +'<span style="font-size:11px;color:var(--white);line-height:1.5;">'+helBrkEsc(b.text)+' '+helBrkChip(b)+'</span>'
+      +'</div>';
+  }).join('')+'</div>';
+}
+function helBarrierOriginPopup(encodedBid){
+  var bid;
+  try{bid=decodeURIComponent(encodedBid);}catch(e){bid=encodedBid;}
+  var f=helBarrierFind(bid);if(!f)return;
+  var b=f.barrier,risk=f.risk,o=b.origin||{},c=HEL_BRK_COLORS[o.status]||HEL_BRK_COLORS.undocumented;
+  var refs=[o.ref].concat(o.also_from||[],o.moc_risk_ids||[]).filter(Boolean),sib=[];
+  if(typeof DB!=='undefined'&&Array.isArray(DB))DB.forEach(function(r){(r.barriers||[]).forEach(function(x){
+    var xo=x.origin||{},all=[xo.ref].concat(xo.also_from||[],xo.moc_risk_ids||[]);
+    if(x.bid!==bid&&refs.some(function(z){return all.indexOf(z)>=0;}))sib.push({r:r.id,bid:x.bid,kind:x.kind,text:x.text});
+  });});
+  var row=function(l,v){return '<div style="display:grid;grid-template-columns:155px 1fr;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);">'
+    +'<span style="font-family:var(--font-mono);font-size:10px;color:var(--grey-400);">'+l+'</span><span style="font-size:11px;color:var(--white);">'+v+'</span></div>';};
+  var ov=document.getElementById('hel-brk-popup');
+  if(!ov){ov=document.createElement('div');ov.id='hel-brk-popup';ov.style.cssText='position:fixed;inset:0;z-index:500;background:rgba(13,27,42,.96);overflow-y:auto;padding:32px;';ov.onclick=function(e){if(e.target===ov)ov.remove();};document.body.appendChild(ov);}
+  ov.innerHTML='<div style="max-width:760px;margin:0 auto;">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;"><div><div style="font-size:17px;font-weight:700;color:#fff;">Barrier provenance</div><div style="font-family:var(--font-mono);font-size:11px;color:var(--grey-400);margin-top:3px;">'+helBrkEsc(bid)+' · '+helBrkEsc(risk.id)+'</div></div>'
+    +'<button onclick="document.getElementById(\'hel-brk-popup\').remove()" style="background:none;border:1px solid rgba(255,255,255,.2);color:var(--grey-200);border-radius:5px;padding:5px 12px;font-family:var(--font-mono);font-size:11px;cursor:pointer;">Close ×</button></div>'
+    +'<div class="chart-card" style="padding:16px 18px;margin-bottom:16px;"><div style="font-size:12px;color:var(--white);line-height:1.6;margin-bottom:12px;">'+helBrkEsc(b.text)+'</div>'
+    +row('Barrier type',helBrkEsc(b.kind))
+    +row('Origin status','<span style="background:'+c.bg+';color:'+c.fg+';padding:1px 7px;border-radius:3px;font-family:var(--font-mono);font-size:10px;font-weight:700;">'+c.lbl+'</span>')
+    +row('Origin',helBrkEsc(helBrkOriginLabel(o))+' <span style="color:var(--grey-400);font-family:var(--font-mono);font-size:10px;">('+helBrkEsc(o.type||'—')+')</span>')
+    +row('Origin evidence','<span style="font-family:var(--font-mono);font-size:10px;color:var(--gold-light);">'+helBrkEsc(helBrkEvidenceLabel(o))+'</span>')
+    +(o.rationale?row('Rationale',helBrkEsc(o.rationale)):'')
+    +row('Risk source IDs','<span style="font-family:var(--font-mono);font-size:10px;color:var(--steel-bright);">'+helBrkEsc(risk.source_risk_ids||'—')+'</span>')
+    +row('Linked change study','<span style="font-family:var(--font-mono);font-size:10px;color:var(--gold-light);">'+helBrkEsc(risk.linked_change_study||'—')+'</span>')
+    +row('Created',helBrkEsc((b.created_at||'').slice(0,10)||'—')+(b.created_by?' by '+helBrkEsc(b.created_by):''))
+    +(b.superseded_by?row('Superseded by',helBrkEsc(b.superseded_by)):'')+'</div>'
+    +'<div class="chart-card" style="padding:16px 18px;"><div class="chart-title" style="margin:0 0 10px;">Reverse origin index — '+sib.length+' other barrier(s) from the same source</div>'
+    +(sib.length?sib.map(function(x){return '<div style="display:flex;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05);"><span style="font-family:var(--font-mono);font-size:10px;color:var(--steel-bright);flex-shrink:0;min-width:115px;">'+helBrkEsc(x.bid)+'</span><span style="font-size:11px;color:var(--grey-200);">'+helBrkEsc(x.text)+'</span></div>';}).join(''):'<div style="font-size:11px;color:var(--grey-400);font-style:italic;">No other barrier is linked to this origin.</div>')
+    +'</div></div>';
+}
+window.helBarrierFind=helBarrierFind;
+window.helBarriersFromOrigin=helBarriersFromOrigin;
+window.helBarrierCoverage=helBarrierCoverage;
+window.helBarriersSync=helBarriersSync;
+window.helBarriersBackfillAll=helBarriersBackfillAll;
+window.helBarrierOriginPopup=helBarrierOriginPopup;
+window.fmtBarriers=fmtBarriers;
+
+
+// ── HELION-X Barrier Register: visible provenance and traceability ──────────
+var HEL_TRAC_FILTERS={q:'',risk:'',kind:'',status:''};
+function helTracDocSegments(docRef){
+  var segs={},str=String(docRef||''); if(str.indexOf('[')<0)return segs;
+  var parts=str.split(/(\[[^\]]+\])/).filter(Boolean),cur=null;
+  parts.forEach(function(p){if(/^\[[^\]]+\]$/.test(p)){cur=p.slice(1,-1);if(!segs[cur])segs[cur]='';}else if(cur)segs[cur]+=p;});
+  Object.keys(segs).forEach(function(k){segs[k]=segs[k].replace(/\s+/g,' ').trim();}); return segs;
+}
+function helTracMigrate(){
+  var n=0; if(typeof DB==='undefined'||!Array.isArray(DB))return 0;
+  try{helBarriersBackfillAll({verbose:false});}catch(e){}
+  DB.forEach(function(r){var segs=helTracDocSegments(r.doc_ref);(r.barriers||[]).forEach(function(b){
+    if(b.trac&&b.trac.v)return; var o=b.origin||{},doc={ref:'',section:'',status:'missing',source:'none'};
+    if(o.type==='moc'&&o.ref){doc.ref=o.ref;doc.status='derived';doc.source='moc_reference';}
+    else if(segs[o.ref]&&segs[o.ref].length){doc.ref=segs[o.ref];doc.status='derived';doc.source='risk_doc_ref_tagged';}
+    else if(String(r.doc_ref||'').trim()){doc.ref=String(r.doc_ref||'').replace(/\s+/g,' ').trim();doc.status='to_confirm';doc.source='risk_doc_ref_inherited';}
+    b.trac={v:'1.0',doc:doc,created:{date:b.created_at||r.created_at||r.timestamp||'',by:b.created_by||'',source:b.created_at?'barrier_record':((r.created_at||r.timestamp)?'inherited_risk_created_at':'none')},verif:{last:r.effectiveness_assessed_date||'',by:r.effectiveness_assessed_by||'',next:r.effectiveness_due_date||'',method:'',source:'inherited_risk_effectiveness'}};n++;
+  });});
+  if(n){try{saveDB();}catch(e){try{localStorage.setItem('safRiskDB',JSON.stringify(DB));}catch(_e){}}} return n;
+}
+function helTracRows(){
+  var out=[]; if(typeof DB==='undefined'||!Array.isArray(DB))return out; helTracMigrate();
+  DB.forEach(function(r){(r.barriers||[]).filter(function(b){return b.status!=='superseded';}).forEach(function(b){var o=b.origin||{},t=b.trac||{};out.push({bid:b.bid,risk:r.id,event:r.event||'',kind:b.kind,text:b.text||'',originType:o.type||'',originRef:helBrkOriginLabel(o),originStatus:o.status||'undocumented',originEvidence:helBrkEvidenceLabel(o),docRef:(t.doc||{}).ref||'',docStatus:(t.doc||{}).status||'missing',created:(t.created||{}).date||'',owner:b.owner||r.risk_owner||''});});});return out;
+}
+function helTracStats(rows){var s={total:rows.length,confirmed:0,deduced:0,toVerify:0,undocumented:0};rows.forEach(function(x){if(x.originStatus==='confirmed')s.confirmed++;else if(x.originStatus==='deduced')s.deduced++;else if(x.originStatus==='undocumented')s.undocumented++;else s.toVerify++;});return s;}
+function helTracKpi(lbl,val,sub,col){return '<div class="chart-card" style="padding:12px 14px;flex:1;min-width:150px;"><div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);letter-spacing:.5px;">'+helBrkEsc(lbl)+'</div><div style="font-size:22px;font-weight:700;color:'+(col||'var(--white)')+';line-height:1.3;">'+helBrkEsc(val)+'</div><div style="font-size:10px;color:var(--grey-400);">'+helBrkEsc(sub||'')+'</div></div>';}
+function helRenderBarrierRegister(){
+  var host=document.getElementById('barrierreg-content');if(!host)return; var rows=helTracRows(),s=helTracStats(rows),risks=Array.from(new Set(rows.map(function(x){return x.risk;}))).sort();
+  var f=rows.filter(function(x){if(HEL_TRAC_FILTERS.risk&&x.risk!==HEL_TRAC_FILTERS.risk)return false;if(HEL_TRAC_FILTERS.kind&&x.kind!==HEL_TRAC_FILTERS.kind)return false;if(HEL_TRAC_FILTERS.status&&x.originStatus!==HEL_TRAC_FILTERS.status)return false;if(HEL_TRAC_FILTERS.q){var q=HEL_TRAC_FILTERS.q.toLowerCase();if((x.bid+' '+x.risk+' '+x.event+' '+x.text+' '+x.originRef+' '+x.docRef).toLowerCase().indexOf(q)<0)return false;}return true;});
+  var head='<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;">'+helTracKpi('BARRIERS',s.total,'prevention + mitigation + recovery')+helTracKpi('CONFIRMED',s.confirmed,'explicit source tag','#3fb950')+helTracKpi('DEDUCED',s.deduced,'single source risk','#4A9FE0')+helTracKpi('TO VERIFY',s.toVerify,'review required','#ff8c42')+helTracKpi('UNDOCUMENTED',s.undocumented,'no traceable origin',s.undocumented?'#f85149':'#3fb950')+'</div>';
+  var filters='<div class="filter-bar" style="position:static;margin-bottom:16px;"><span class="filter-label">FILTER</span><input id="hel-trac-q" value="'+helBrkEsc(HEL_TRAC_FILTERS.q)+'" placeholder="Search BID, risk, measure, origin or document…"><select id="hel-trac-risk"><option value="">All risks</option>'+risks.map(function(r){return '<option value="'+r+'"'+(HEL_TRAC_FILTERS.risk===r?' selected':'')+'>'+r+'</option>';}).join('')+'</select><select id="hel-trac-kind"><option value="">All types</option><option value="prevention"'+(HEL_TRAC_FILTERS.kind==='prevention'?' selected':'')+'>Prevention</option><option value="mitigation"'+(HEL_TRAC_FILTERS.kind==='mitigation'?' selected':'')+'>Mitigation</option><option value="recovery"'+(HEL_TRAC_FILTERS.kind==='recovery'?' selected':'')+'>Recovery</option></select><select id="hel-trac-status"><option value="">All origin statuses</option>'+['confirmed','deduced','to_verify','to_reconcile','undocumented'].map(function(v){return '<option value="'+v+'"'+(HEL_TRAC_FILTERS.status===v?' selected':'')+'>'+v.replace(/_/g,' ')+'</option>';}).join('')+'</select><button class="btn btn-ghost" onclick="HEL_TRAC_FILTERS={q:\'\',risk:\'\',kind:\'\',status:\'\'};helRenderBarrierRegister();">✕ Clear</button><button class="btn btn-gold" onclick="helTracExportCSV();">⇩ CSV</button></div>';
+  var th='padding:9px 10px;text-align:left;font-family:var(--font-mono);font-size:9px;letter-spacing:.07em;color:var(--grey-400);border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap;';var td='padding:8px 10px;font-size:11px;color:var(--grey-200);vertical-align:top;border-bottom:1px solid rgba(255,255,255,.05);';
+  var body=f.map(function(x){var c=HEL_BRK_COLORS[x.originStatus]||HEL_BRK_COLORS.undocumented;return '<tr style="cursor:pointer;" onclick="helBarrierOriginPopup(decodeURIComponent(\''+encodeURIComponent(x.bid)+'\'))"><td style="'+td+'font-family:var(--font-mono);color:var(--steel-bright);white-space:nowrap;">'+helBrkEsc(x.bid)+'</td><td style="'+td+'font-family:var(--font-mono);white-space:nowrap;">'+helBrkEsc(x.risk)+'</td><td style="'+td+'text-transform:capitalize;white-space:nowrap;">'+helBrkEsc(x.kind)+'</td><td style="'+td+'min-width:320px;">'+helBrkEsc(x.text)+'</td><td style="'+td+'min-width:170px;"><span style="display:inline-block;background:'+c.bg+';color:'+c.fg+';border-radius:3px;padding:2px 6px;font-family:var(--font-mono);font-size:9px;font-weight:700;">'+helBrkEsc(x.originRef)+'</span><div style="font-family:var(--font-mono);font-size:8px;color:var(--grey-400);margin-top:3px;">'+helBrkEsc(x.originType+' · '+x.originStatus)+'</div></td><td style="'+td+'font-family:var(--font-mono);font-size:9px;color:var(--gold-light);min-width:150px;">'+helBrkEsc(x.originEvidence||'—')+'</td><td style="'+td+'font-family:var(--font-mono);font-size:9px;min-width:210px;">'+helBrkEsc(x.docRef||'—')+'</td><td style="'+td+'font-family:var(--font-mono);font-size:9px;white-space:nowrap;">'+helBrkEsc(x.created||'—')+'</td><td style="'+td+'font-family:var(--font-mono);font-size:9px;white-space:nowrap;">'+helBrkEsc(x.owner||'—')+'</td></tr>';}).join('');
+  host.innerHTML=head+'<div class="chart-card" style="padding:12px 16px;margin-bottom:16px;border-left:3px solid var(--steel-bright);font-size:11px;color:var(--grey-200);line-height:1.6;"><b>Origin:</b> each barrier retains only a HELION-X source reference. Click a row to open the provenance record. No SAF reference is imported or used. When HELION-X does not provide enough evidence to attribute a measure to one source, the origin remains <b>Undocumented</b> or <b>To verify</b>.</div>'+filters+'<div class="chart-card" style="padding:0;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;min-width:1250px;"><thead><tr>'+['BID','RISK','TYPE','MEASURE','ORIGIN','ORIGIN EVIDENCE','DOCUMENT','CREATED','OWNER'].map(function(h){return '<th style="'+th+'">'+h+'</th>';}).join('')+'</tr></thead><tbody>'+(body||'<tr><td colspan="9" style="'+td+'color:var(--grey-400);font-style:italic;">No barrier matches the current filters.</td></tr>')+'</tbody></table></div>';
+  ['q','risk','kind','status'].forEach(function(k){var el=document.getElementById('hel-trac-'+k);if(el)el.addEventListener(k==='q'?'input':'change',function(){HEL_TRAC_FILTERS[k]=el.value;helRenderBarrierRegister();if(k==='q'){var n=document.getElementById('hel-trac-q');if(n){n.focus();n.setSelectionRange(n.value.length,n.value.length);}}});});
+}
+function helTracExportCSV(){
+  var rows=helTracRows(),q=function(v){return '"'+String(v==null?'':v).replace(/"/g,'""').replace(/\r?\n/g,' ')+'"';};var cols=['BID','Risk','Event','Type','Measure','Origin type','Origin reference','Origin status','Origin evidence','Document','Created','Owner'];var lines=[cols.map(q).join(';')];rows.forEach(function(x){lines.push([x.bid,x.risk,x.event,x.kind,x.text,x.originType,x.originRef,x.originStatus,x.originEvidence,x.docRef,x.created,x.owner].map(q).join(';'));});var csv='\ufeff'+lines.join('\r\n');if(typeof _download==='function')_download('HELION-X_Barrier_Register_'+new Date().toISOString().slice(0,10)+'.csv',csv,'text/csv;charset=utf-8;');
+}
+window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV=helTracExportCSV;window.helTracRows=helTracRows;
+
+// Backfill both factory data and previously stored Helion-X records without
+// changing the visible wording of prevention / mitigation / recovery fields.
+(function(){
+  function run(){
+    try{
+      var res=helBarriersBackfillAll({verbose:true});
+      if(res&&typeof localStorage!=='undefined'){
+        localStorage.setItem('safRiskDB',JSON.stringify(DB));
+        if(typeof filteredDB!=='undefined'&&Array.isArray(filteredDB))filteredDB=DB.slice();
+        try{helTracMigrate();}catch(_te){}
+        try{if(typeof renderTable==='function')renderTable();}catch(_re){}
+        try{var bv=document.getElementById('view-barrierreg');if(bv&&bv.classList.contains('active'))helRenderBarrierRegister();}catch(_be){}
+      }
+    }catch(e){if(typeof console!=='undefined')console.warn('[HELION-X] barrier provenance backfill failed',e);}
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(run,250);});
+  else setTimeout(run,250);
+})();
+
 </script>
 </body>
 </html>
