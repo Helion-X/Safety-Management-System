@@ -2913,7 +2913,7 @@ function updateOaciDefinitionDropdown(sel) {
     <div><div style="font-size:20px;font-weight:700;color:#fff;">🎯 5 WHYS — Root Cause Analysis</div>
     <div id="fw-occ-meta" style="font-size:11px;color:var(--grey-400);font-family:var(--font-mono);margin-top:4px;"></div></div>
     <div style="display:flex;gap:10px;">
-      <button onclick="saveFiveWhys()" style="padding:8px 18px;background:rgba(26,122,74,.3);border:1px solid #4DB848;border-radius:6px;color:#4DB848;font-family:var(--font-mono);font-size:11px;font-weight:700;cursor:pointer;">✓ Save</button>
+      <button onclick="fwEditInForm()" style="padding:8px 18px;background:rgba(232,160,32,.15);border:1px solid #e3b341;border-radius:6px;color:#e3b341;font-family:var(--font-mono);font-size:11px;font-weight:700;cursor:pointer;">✎ Edit in occurrence form</button>
       <button onclick="printFiveWhys()" style="padding:8px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:6px;color:var(--grey-400);font-family:var(--font-mono);font-size:11px;cursor:pointer;">🖨 Print</button>
       <button onclick="closeFiveWhys()" style="padding:8px 14px;background:rgba(255,60,60,.15);border:1px solid rgba(255,80,80,.3);border-radius:6px;color:#ff9090;font-family:var(--font-mono);font-size:11px;cursor:pointer;">✕ Close</button>
     </div>
@@ -4328,7 +4328,7 @@ function updateOaciDefinitionDropdown(sel) {
 // Utilisé par le client Supabase pour persister la session auth entre les pages
 window._nativeLocalStorage = window.localStorage;
 
-// SAF STORAGE SHIM v3 — memory cache + window.storage write-through + BOOT RESTORE
+// SAF STORAGE SHIM v4 — memory cache + window.storage write-through + BOOT RESTORE
 // Nouveauté v3 : recharge window.storage au démarrage pour reconstruire _cache
 // avant que le reste du code s'exécute (évite données perdues à chaque ouverture).
 window.__SAF_ECCAIRS_OCCLOG_PATCH='V3_2026-06-19';
@@ -4339,12 +4339,31 @@ window.__SAF_E5X_RIT_PATCH='V2_2026-07-03';
 
   function safeKey(k){ return k.replace(/[:\/\'"\\]/g,'-'); }
 
+  // v4 — write-through vers le VRAI localStorage du navigateur.
+  // Sans cela (GitHub Pages : window.storage n'existe pas), rien n'est
+  // conservé localement : toute donnée non encore montée au cloud est perdue
+  // au rechargement de la page.
+  var _native = window._nativeLocalStorage || null;
+  function nativeSet(k,v){
+    if(!_native) return;
+    try{ _native.setItem(k,v); }
+    catch(e){
+      if(!window.__safQuotaWarned){
+        window.__safQuotaWarned = true;
+        console.warn('Helion storage : quota localStorage atteint sur "'+k+'" — '+(e&&e.message));
+      }
+    }
+  }
+  function nativeDel(k){ if(_native){ try{ _native.removeItem(k); }catch(e){} } }
+
   function persist(k,v){
+    nativeSet(k,v);
     if(window.storage && typeof window.storage.set==='function'){
       window.storage.set(safeKey(k), v).catch(function(){});
     }
   }
   function pdel(k){
+    nativeDel(k);
     if(window.storage && typeof window.storage.delete==='function'){
       window.storage.delete(safeKey(k)).catch(function(){});
     }
@@ -4370,8 +4389,21 @@ window.__SAF_E5X_RIT_PATCH='V2_2026-07-03';
     'safOccurrences','safLessons','safSRBMeetings','safAudits',
     'safSAR','safALoS','safCAMOSignals','lastModified',
     'ejsPublicKey','ejsServiceId','ejsTemplateId',
-    'saf_international_safety_management_header_v1'
+    'saf_international_safety_management_header_v1',
+    'saf-seeds-done'
   ];
+
+  // ── Restauration SYNCHRONE depuis le vrai localStorage (v4) ──
+  // Exécutée avant tout le reste du code : les seeds, cloudLoad et l'import
+  // des rapports mobiles voient donc l'état réellement laissé par la session
+  // précédente, même si la dernière sauvegarde cloud n'a pas abouti.
+  (function(){
+    if(!_native) return;
+    for(var i=0;i<SAF_KEYS.length;i++){
+      var k=SAF_KEYS[i];
+      try{ var v=_native.getItem(k); if(v!=null) _cache[k]=v; }catch(e){}
+    }
+  })();
 
   // Intercepte DOMContentLoaded pour bloquer le démarrage le temps du restore
   var _domCbs = [];
@@ -4601,7 +4633,36 @@ function occEventAccountingToggle(mode){var ex=document.getElementById('occ-even
 function occEventAccountingFilter(){eventAccountingEnsure();var sh=document.getElementById('occ-catalog-sheet')?.value||'',sel=document.getElementById('occ-catalog-event');if(!sel)return;var keep=sel.value;sel.innerHTML='<option value="">Select an approved event…</option>'+EVENT_CATALOG.filter(function(e){return e.review_status==='approved'&&(!sh||e.source_sheet===sh);}).map(function(e){return '<option value="'+eventAccountingEsc(e.id)+'">'+eventAccountingEsc(e.id+' — '+e.event)+'</option>';}).join('');if(Array.from(sel.options).some(function(o){return o.value===keep;}))sel.value=keep;occEventAccountingSelected();}
 function occEventAccountingSelected(){eventAccountingEnsure();var id=document.getElementById('occ-catalog-event')?.value||'',p=document.getElementById('occ-catalog-preview'),e=EVENT_CATALOG.find(function(x){return x.id===id;});if(!e){if(p)p.textContent='Select an approved event. Its counter is incremented when this occurrence is saved.';return;}var st=eventAccountingCounts()[id]||{count:0,last_date:''},risk=e.linked_risk_id?DB.find(function(r){return r.id===e.linked_risk_id;}):null;if(p)p.innerHTML='<strong style="color:var(--steel-bright)">'+eventAccountingEsc(e.id)+'</strong> · '+eventAccountingEsc(e.source_sheet)+'<br/>'+eventAccountingEsc(e.event)+'<br/><span class="ea-level-pill ea-level-1">'+eventAccountingEsc(e.occurrence_category||'OTHR')+'</span> <span class="ea-level-pill ea-level-2">'+eventAccountingEsc(safFamilyLabel(e.family_id))+'</span> '+(risk?'<span class="ea-level-pill ea-level-3">'+eventAccountingEsc(risk.id+' — '+risk.event)+'</span>':'<span style="color:var(--grey-400)">No linked risk scenario</span>')+'<br/><span style="color:'+(st.count>0?'#3fb950':'var(--grey-400)')+'">Current count: <strong>'+st.count+'</strong>'+(st.last_date?' · Last occurrence: '+eventAccountingEsc(st.last_date):'')+'</span>';var riskSel=document.getElementById('occ-risk-link');if(riskSel&&e.linked_risk_id&&!riskSel.value)riskSel.value=e.linked_risk_id;}
 function occRestoreEventAccounting(occ){eventAccountingEnsure();occ=occ||{};var item=occ.catalog_event_id?EVENT_CATALOG.find(function(e){return e.id===occ.catalog_event_id;}):null,mode=occ.catalog_event_mode||(item&&item.custom?'new':'existing'),radio=document.querySelector('input[name="occ-event-mode"][value="'+mode+'"]');if(radio)radio.checked=true;occEventAccountingToggle(mode);if(mode==='existing'&&item){var sh=document.getElementById('occ-catalog-sheet');if(sh)sh.value=item.source_sheet||'';occEventAccountingFilter();var sel=document.getElementById('occ-catalog-event');if(sel)sel.value=item.id;occEventAccountingSelected();}else if(mode==='new'&&item){var set=function(id,v){var el=document.getElementById(id);if(el)el.value=v||'';};set('occ-new-event-title',item.event);set('occ-new-event-source',item.source_sheet);set('occ-new-event-family',item.family_id);set('occ-new-event-dangers',item.dangers);set('occ-new-event-prevention',item.prevention);set('occ-new-event-initial',item.initial_risk);set('occ-new-event-residual',item.residual_risk);set('occ-new-event-eccairs',item.occurrence_category||item.eccairs_cat);set('occ-new-event-doc',item.doc_ref);}}
-function occResolveEventAccounting(existingOcc){eventAccountingEnsure();var fb=document.getElementById('occ-form-feedback');function fail(msg){if(fb){fb.textContent=msg;fb.style.color='#f85149';}return null;}var mode=document.querySelector('input[name="occ-event-mode"]:checked')?.value||'existing';if(mode==='existing'){var id=document.getElementById('occ-catalog-event')?.value||'',item=EVENT_CATALOG.find(function(e){return e.id===id&&e.review_status==='approved';});if(!item)return fail('Select an approved catalogue event, or record a new candidate.');var riskLink=item.linked_risk_id||document.getElementById('occ-risk-link')?.value||'';return {catalog_event_id:item.id,catalog_event_mode:'existing',risk_link:riskLink,taxonomy_occurrence_category:item.occurrence_category,taxonomy_family_id:item.family_id};}var val=function(id){return (document.getElementById(id)?.value||'').trim();},title=val('occ-new-event-title'),source=val('occ-new-event-source'),family=val('occ-new-event-family'),dangers=val('occ-new-event-dangers'),prevention=val('occ-new-event-prevention'),initial=val('occ-new-event-initial'),residual=val('occ-new-event-residual'),occCat=val('occ-new-event-eccairs'),doc=val('occ-new-event-doc');if(!title||!source||!family||!dangers||!prevention||!initial||!residual||!occCat)return fail('Complete the event title, activity, proposed occurrence category, proposed SMS family, dangers, prevention measures and risk ratings.');var item=null;if(existingOcc&&existingOcc.catalog_event_id)item=EVENT_CATALOG.find(function(e){return e.id===existingOcc.catalog_event_id&&e.custom;});if(!item){item={id:eventAccountingNextCustomId(),custom:true,created_at:new Date().toISOString(),source:'Created from Helion-X Occurrence Log',review_status:'candidate_review'};EVENT_CATALOG.push(item);}Object.assign(item,{source_sheet:source,event:title,dangers:dangers,initial_risk:initial,prevention:prevention,residual_risk:residual,doc_ref:doc,eccairs_cat:occCat,occurrence_category:occCat,family_id:family,review_status:item.review_status==='approved'?'approved':'candidate_review',updated_at:new Date().toISOString()});eventAccountingSave(true);return {catalog_event_id:item.id,catalog_event_mode:'new',risk_link:item.linked_risk_id||'',taxonomy_occurrence_category:item.occurrence_category,taxonomy_family_id:item.family_id};}
+function occMarkDirty(){
+  window.__occDirty = true;
+  var f=document.getElementById('occ-dirty-flag');
+  if(f) f.style.display='inline-flex';
+}
+function occClearDirty(){
+  window.__occDirty = false;
+  var f=document.getElementById('occ-dirty-flag');
+  if(f) f.style.display='none';
+}
+function occCancelForm(){
+  if(window.__occDirty && !confirm('Des modifications ne sont pas enregistrées et seront perdues.\n\nFermer quand même ?')) return;
+  occClearDirty();
+  var w=document.getElementById('occ-form-wrap');
+  if(w) w.style.display='none';
+}
+function occHighlightEventBlock(soft){
+  var wrap=document.getElementById('occ-event-accounting-wrap');
+  if(!wrap)return;
+  var col=soft?'#e3b341':'#f85149';
+  wrap.style.borderColor=col;
+  wrap.style.boxShadow='0 0 0 2px '+(soft?'rgba(227,179,65,.35)':'rgba(248,81,73,.35)');
+  try{wrap.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){wrap.scrollIntoView();}
+  var mode=document.querySelector('input[name="occ-event-mode"]:checked')?.value||'existing';
+  var target=document.getElementById(mode==='existing'?'occ-catalog-event':'occ-new-event-title');
+  if(target){try{target.focus({preventScroll:true});}catch(e){}}
+  clearTimeout(window.__occTaxoHL);
+  window.__occTaxoHL=setTimeout(function(){wrap.style.boxShadow='';wrap.style.borderColor='rgba(74,159,224,.35)';},8000);
+}
+function occResolveEventAccounting(existingOcc,opts){eventAccountingEnsure();opts=opts||{};var soft=!!opts.soft;var fb=document.getElementById('occ-form-feedback');function fail(msg){if(fb){fb.textContent=(soft?'⚠ Fiche enregistrée, mais NON comptabilisée dans la taxonomie — ':'')+msg;fb.style.color=soft?'#e3b341':'#f85149';}occHighlightEventBlock(soft);if(typeof showToast==='function')showToast((soft?'⚠ Taxonomie à compléter : ':'⚠ ')+msg,'error');return null;}var mode=document.querySelector('input[name="occ-event-mode"]:checked')?.value||'existing';if(mode==='existing'){var id=document.getElementById('occ-catalog-event')?.value||'',item=EVENT_CATALOG.find(function(e){return e.id===id&&e.review_status==='approved';});if(!item)return fail('Select an approved catalogue event, or record a new candidate.');var riskLink=item.linked_risk_id||document.getElementById('occ-risk-link')?.value||'';return {catalog_event_id:item.id,catalog_event_mode:'existing',risk_link:riskLink,taxonomy_occurrence_category:item.occurrence_category,taxonomy_family_id:item.family_id};}var val=function(id){return (document.getElementById(id)?.value||'').trim();},title=val('occ-new-event-title'),source=val('occ-new-event-source'),family=val('occ-new-event-family'),dangers=val('occ-new-event-dangers'),prevention=val('occ-new-event-prevention'),initial=val('occ-new-event-initial'),residual=val('occ-new-event-residual'),occCat=val('occ-new-event-eccairs'),doc=val('occ-new-event-doc');if(!title||!source||!family||!dangers||!prevention||!initial||!residual||!occCat)return fail('Complete the event title, activity, proposed occurrence category, proposed SMS family, dangers, prevention measures and risk ratings.');var item=null;if(existingOcc&&existingOcc.catalog_event_id)item=EVENT_CATALOG.find(function(e){return e.id===existingOcc.catalog_event_id&&e.custom;});if(!item){item={id:eventAccountingNextCustomId(),custom:true,created_at:new Date().toISOString(),source:'Created from Helion-X Occurrence Log',review_status:'candidate_review'};EVENT_CATALOG.push(item);}Object.assign(item,{source_sheet:source,event:title,dangers:dangers,initial_risk:initial,prevention:prevention,residual_risk:residual,doc_ref:doc,eccairs_cat:occCat,occurrence_category:occCat,family_id:family,review_status:item.review_status==='approved'?'approved':'candidate_review',updated_at:new Date().toISOString()});eventAccountingSave(true);return {catalog_event_id:item.id,catalog_event_mode:'new',risk_link:item.linked_risk_id||'',taxonomy_occurrence_category:item.occurrence_category,taxonomy_family_id:item.family_id};}
 
 var _savedDB = null;
 var _DB_VERSION = '10.1-atomic-risk-register-nightff-35-102-164-20260901';
@@ -6552,7 +6613,12 @@ async function csLookupRootCause(){
   let occ = null;
   try {
     const occs = (typeof getOccurrences === 'function') ? getOccurrences() : [];
-    occ = occs.find(o => o && o.id && o.id.toLowerCase() === ref.toLowerCase());
+    const needle = ref.toLowerCase();
+    const idOf = o => (o && o.id ? String(o.id).toLowerCase() : '');
+    occ = occs.find(o => idOf(o) === needle)
+       || occs.find(o => idOf(o).startsWith(needle + ' -') || idOf(o).startsWith(needle + '-') || idOf(o).startsWith(needle + ' '))
+       || occs.find(o => needle.length >= 8 && idOf(o).indexOf(needle) === 0)
+       || occs.find(o => needle.length >= 8 && needle.indexOf(idOf(o)) === 0 && idOf(o).length >= 8);
   } catch(e) {}
 
   if(occ){
@@ -9755,7 +9821,7 @@ function occGetFiveWhys(){
   var becauses=[];for(var i=0;i<n;i++){var el=document.getElementById('occ-fw-because-'+i);if(el)becauses.push((el.value||'').trim());}
   // trim trailing empty entries (keep at least 5)
   while(whys.length>5&&!whys[whys.length-1]&&!becauses[becauses.length-1]){whys.pop();becauses.pop();}
-  var root=(document.getElementById('occ-fw-root-cause')?.value||'').trim();
+  var root=(document.getElementById('occ-fw-root-cause')?.value||document.getElementById('fw-root-cause')?.value||'').trim();
   var actions=[...document.querySelectorAll('#occ-fw-actions-list .occ-fw-action-row')].map(function(row){
     var text=(row.querySelector('.occ-fw-action-input')?.value||'').trim();
     var owner=row.querySelector('.occ-fw-action-owner')?.value||'';
@@ -9766,8 +9832,10 @@ function occGetFiveWhys(){
   }).filter(Boolean);
   var notes=(document.getElementById('occ-fw-notes')?.value||'').trim();
   var conclusion=(document.getElementById('occ-fw-conclusion')?.value||'').trim();
+  var riskLink=(document.getElementById('occ-fw-risk-link')?.value||document.getElementById('fw-risk-link')?.value||'').trim();
+  var dbAction=(document.getElementById('occ-fw-db-action')?.value||document.getElementById('fw-db-action')?.value||'').trim();
   if(!whys.some(Boolean)&&!becauses.some(Boolean)&&!root&&!actions.length&&!notes&&!conclusion) return null;
-  return {whys:whys,becauses:becauses,root_cause:root,corrective_actions:actions,notes:notes,conclusion:conclusion,saved_at:new Date().toISOString()};
+  return {whys:whys,becauses:becauses,root_cause:root,corrective_actions:actions,notes:notes,conclusion:conclusion,risk_link:riskLink,db_action:dbAction,saved_at:new Date().toISOString()};
 }
 function occRestoreFiveWhys(fw){
   fw=fw||{}; var whys=fw.whys||['','','','',''];var becauses=fw.becauses||['','','','',''];
@@ -9786,9 +9854,19 @@ function occRestoreFiveWhys(fw){
     var bel=document.getElementById('occ-fw-because-'+i); if(bel)bel.value=becauses[i]||'';
   }
   var rc=document.getElementById('occ-fw-root-cause'); if(rc)rc.value=fw.root_cause||'';
+  var rcm=document.getElementById('fw-root-cause'); if(rcm)rcm.value=fw.root_cause||'';
   var nt=document.getElementById('occ-fw-notes'); if(nt)nt.value=fw.notes||'';
   var cl=document.getElementById('occ-fw-conclusion'); if(cl)cl.value=fw.conclusion||'';
   var list=document.getElementById('occ-fw-actions-list'); if(list){list.innerHTML=''; (fw.corrective_actions&&fw.corrective_actions.length?fw.corrective_actions:['']).forEach(function(a){occAddFWAction(a);});}
+  var rl=document.getElementById('occ-fw-risk-link');
+  if(rl){
+    var src=(typeof DB!=='undefined'&&DB&&DB.length)?DB:[];
+    rl.innerHTML='<option value="" style="background:#0d1b2a;color:#f4f6f8;">None</option>'+src.map(function(r){
+      return '<option value="'+r.id+'"'+(fw.risk_link===r.id?' selected':'')+' style="background:#0d1b2a;color:#f4f6f8;">'+r.id+' — '+String(r.event||r.title||'').slice(0,70)+'</option>';
+    }).join('');
+    rl.value=fw.risk_link||'';
+  }
+  var da=document.getElementById('occ-fw-db-action'); if(da)da.value=fw.db_action||'';
 }
 
 function occVal(name){var el=document.querySelector('input[name="'+name+'"]:checked');return el?el.value:'';}
@@ -10500,6 +10578,7 @@ function _occMobileReportDetailsHtml(occ){
 }
 function showOccurrenceForm(editId){
   eventAccountingEnsure();
+  if(typeof occClearDirty==='function') occClearDirty();
   const w=document.getElementById('occ-form-wrap');if(!w)return;w.style.display='';
   const _occ = editId ? (getOccurrences().find(function(o){return o.id===editId;})||{}) : {};
   const _isEdit = !!editId;
@@ -10596,6 +10675,13 @@ function showOccurrenceForm(editId){
         <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(232,160,32,.18);">
           <div class="form-field" style="margin:0 0 12px;"><label class="field-label">Corrective / preventive actions</label><div id="occ-fw-actions-list"></div><button type="button" onclick="occAddFWAction()" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(232,160,32,.1);border:1px dashed #e3b341;border-radius:5px;color:#e3b341;font-family:var(--font-mono);font-size:11px;cursor:pointer;"><span style="font-size:14px;font-weight:700;">+</span> Add action</button><button type="button" onclick="occResetActionEmailMap()" title="Reset saved email addresses" style="margin-left:6px;display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:5px;color:var(--grey-400);font-family:var(--font-mono);font-size:10px;cursor:pointer;">Emails ↺</button></div>
           <div class="occ-fw-summary"><div class="occ-jc-result-title" style="margin-bottom:6px;">Expected conclusion</div><textarea id="occ-fw-conclusion" rows="3" placeholder="The root cause should describe why the system allowed the event to occur, not just the active error…" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(232,160,32,.35);border-radius:6px;color:var(--white);font-size:11px;padding:8px 10px;resize:vertical;"></textarea></div>
+          <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(232,160,32,.18);">
+            <div class="occ-jc-result-title" style="margin-bottom:10px;">Link to risk database</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <div class="form-field" style="margin:0;"><label class="field-label">Linked risk ID</label><select id="occ-fw-risk-link" style="width:100%;"></select></div>
+              <div class="form-field" style="margin:0;"><label class="field-label">Recommended DB action</label><select id="occ-fw-db-action" style="width:100%;"><option value="" style="background:#0d1b2a;color:#f4f6f8;">Select…</option><option value="update_barriers" style="background:#0d1b2a;color:#f4f6f8;">Update barriers of existing risk</option><option value="create_change_study" style="background:#0d1b2a;color:#f4f6f8;">Create a Change Study</option><option value="new_risk" style="background:#0d1b2a;color:#f4f6f8;">Add as new risk to database</option><option value="none" style="background:#0d1b2a;color:#f4f6f8;">No action required</option></select></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -10743,17 +10829,20 @@ function showOccurrenceForm(editId){
     <input type="hidden" id="occ-edit-id" value=""/>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
       <button onclick="saveOccurrence()" class="btn btn-primary">✓ Save occurrence</button>
+      <span id="occ-dirty-flag" style="display:none;align-items:center;gap:6px;padding:5px 12px;background:rgba(227,179,65,.12);border:1px solid rgba(227,179,65,.45);border-radius:5px;color:#e3b341;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.4px;">● MODIFICATIONS NON ENREGISTRÉES</span>
       <button onclick="saveAndExportE5X()" class="btn btn-gold" style="display:inline-flex;align-items:center;gap:6px;">📤 Save &amp; Export E5X</button>
-      <button onclick="document.getElementById('occ-form-wrap').style.display='none'" class="btn btn-ghost">Cancel</button>
+      <button onclick="occCancelForm()" class="btn btn-ghost">Cancel</button>
       ${_isEdit && _occ.five_whys ? `<button type="button"
         onclick="closeFiveWhysFromEdit();openFiveWhys('${_occ.id}')"
+        title="Vue de consultation et impression de la version enregistrée. La saisie se fait dans le panneau 5 Whys ci-dessus."
         style="padding:6px 14px;background:rgba(232,160,32,.15);border:1px solid rgba(232,160,32,.4);border-radius:6px;color:#e3b341;font-family:var(--font-mono);font-size:11px;cursor:pointer;">
-        🎯 View/Edit 5 Whys ${_occ.five_whys.root_cause ? '(✓ Done)' : '(Incomplete)'}
-      </button>` : (_isEdit ? `<button type="button"
-        onclick="closeFiveWhysFromEdit();openFiveWhys('${_occ.id}')"
+        🖨 View / print 5 Whys ${_occ.five_whys.root_cause ? '(✓ Done)' : '(Incomplete)'}
+      </button>` : ''}
+      ${_isEdit ? `<button type="button"
+        onclick="var p=document.getElementById('occ-fw-body'); if(p){try{p.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){p.scrollIntoView();}}"
         style="padding:6px 14px;background:rgba(232,160,32,.08);border:1px dashed rgba(232,160,32,.3);border-radius:6px;color:#e3b341;font-family:var(--font-mono);font-size:11px;cursor:pointer;">
-        🎯 + 5 Whys analysis
-      </button>` : '')}
+        🎯 Go to 5 Whys panel
+      </button>` : ''}
     </div>
     <div id="occ-form-feedback" style="margin-top:8px;font-family:var(--font-mono);font-size:10px;min-height:14px;"></div>
   </div>`;
@@ -10861,7 +10950,18 @@ function saveOccurrence(){
     if(newId!==editId && occs.find(function(o,i){return o.id===newId && i!==idx;})){
       if(fb){fb.textContent='This ID already exists. Choose a unique identifier.';fb.style.color='#f85149';}return;
     }
-    var eventAccounting=occResolveEventAccounting(existing);if(!eventAccounting)return;
+    // La taxonomie n'est plus bloquante : on enregistre d'abord le travail
+    // d'instruction (5 Whys, Just Culture, ARMS, ECCAIRS…), puis on exige
+    // l'événement du catalogue pour clore la fiche.
+    var eventAccounting=occResolveEventAccounting(existing,{soft:true});
+    var _taxoMissing=!eventAccounting;
+    if(_taxoMissing) eventAccounting={
+      catalog_event_id: existing.catalog_event_id||'',
+      catalog_event_mode: existing.catalog_event_mode||'',
+      risk_link: existing.risk_link||'',
+      taxonomy_occurrence_category: existing.taxonomy_occurrence_category||'',
+      taxonomy_family_id: existing.taxonomy_family_id||''
+    };
     occs[idx]={
       ...existing,
       id:           newId,
@@ -10888,9 +10988,19 @@ function saveOccurrence(){
       ...occGetNotifDates(),
       // Dès qu'un rapport "À instruire" (importé du mobile) est ouvert et
       // sauvegardé une première fois, on le sort de la file d'attente.
-      status:       existing.status==='pending_review' ? 'reviewed' : existing.status
+      // Une fiche sans événement de catalogue reste « à instruire » : elle
+      // n'est pas comptabilisée et ne peut pas être considérée comme close.
+      status:       (!_taxoMissing && existing.status==='pending_review') ? 'reviewed' : existing.status,
+      taxonomy_pending: _taxoMissing || false
     };
     saveOccurrences(occs);
+    occClearDirty();
+    if(_taxoMissing){
+      renderOccurrenceList();
+      if(typeof updatePendingBadge==='function') updatePendingBadge();
+      showToast('✓ Saisie enregistrée — sélectionnez l\'événement du catalogue pour clore la fiche','success');
+      return;
+    }
     document.getElementById('occ-form-wrap').style.display='none';
     renderOccurrenceList();
     if(typeof renderEventAccounting==='function' && document.getElementById('view-eventaccounting')?.classList.contains('active')) renderEventAccounting();
@@ -10903,7 +11013,9 @@ function saveOccurrence(){
     if(occs.find(function(o){return o.id===customId;})){
       if(fb){fb.textContent='This ID already exists. Choose a unique identifier.';fb.style.color='#f85149';}return;
     }
-    var eventAccounting=occResolveEventAccounting(null);if(!eventAccounting)return;
+    var eventAccounting=occResolveEventAccounting(null,{soft:true});
+    var _taxoMissing=!eventAccounting;
+    if(_taxoMissing) eventAccounting={catalog_event_id:'',catalog_event_mode:'',risk_link:'',taxonomy_occurrence_category:'',taxonomy_family_id:''};
     var occ={
       id:          customId,
       date,
@@ -10925,10 +11037,19 @@ function saveOccurrence(){
       investigation: occGetInvestigation(),
       hfacs:        occGetHFACS(),
       arms:         occGetARMS(),
-      ...occGetNotifDates()
+      ...occGetNotifDates(),
+      taxonomy_pending: _taxoMissing || false
     };
     occs.push(occ);
     saveOccurrences(occs);
+    occClearDirty();
+    if(_taxoMissing){
+      var _ef=document.getElementById('occ-edit-id'); if(_ef) _ef.value=occ.id;
+      renderOccurrenceList();
+      if(typeof updatePendingBadge==='function') updatePendingBadge();
+      showToast('✓ Occurrence '+occ.id+' enregistrée — sélectionnez l\'événement du catalogue pour la clore','success');
+      return;
+    }
     document.getElementById('occ-form-wrap').style.display='none';
     renderOccurrenceList();
     if(typeof renderEventAccounting==='function' && document.getElementById('view-eventaccounting')?.classList.contains('active')) renderEventAccounting();
@@ -10987,6 +11108,9 @@ function renderOccurrenceList() {
     var rowStyle = isPending ? 'border-bottom:1px solid rgba(255,255,255,.05);background:rgba(248,81,73,.04);' : 'border-bottom:1px solid rgba(255,255,255,.05);';
     var pendingTag = isPending ? '<span style="display:inline-block;background:rgba(248,81,73,.2);border:1px solid rgba(248,81,73,.5);color:#f85149;border-radius:3px;padding:1px 5px;font-family:var(--font-mono);font-size:8px;font-weight:700;letter-spacing:.5px;margin-left:4px;">📱 AWAITING REVIEW</span>' : '';
     var eccComp = occEccairsCompleteness(o);
+    if(!o.catalog_event_id){
+      pendingTag += '<span title="Aucun événement de catalogue : occurrence non comptabilisée dans la taxonomie" style="display:inline-block;background:rgba(227,179,65,.15);border:1px solid rgba(227,179,65,.45);color:#e3b341;border-radius:3px;padding:1px 5px;font-family:var(--font-mono);font-size:8px;font-weight:700;letter-spacing:.5px;margin-left:4px;">∑ TAXONOMIE À COMPLÉTER</span>';
+    }
     pendingTag += '<span title="ECCAIRS mandatory completion" style="display:inline-block;background:rgba(74,159,224,.12);border:1px solid rgba(74,159,224,.35);color:var(--steel-bright);border-radius:3px;padding:1px 5px;font-family:var(--font-mono);font-size:8px;font-weight:700;letter-spacing:.5px;margin-left:4px;">ECCAIRS '+eccComp.done+'/'+eccComp.total+'</span>';
     html += '<tr style="'+rowStyle+'">'
       + '<td style="padding:8px 14px;font-family:var(--font-mono);font-size:10px;color:var(--steel-bright);">' + o.id + pendingTag + '</td>'
@@ -11123,14 +11247,50 @@ function openFiveWhys(occId){
     chain.appendChild(addBtn);
   }
   const rc=document.getElementById('fw-root-cause');if(rc)rc.value=saved.root_cause||'';
+  const rci=document.getElementById('occ-fw-root-cause');if(rci&&saved.root_cause)rci.value=saved.root_cause;
   const cl=document.getElementById('fw-corrective-list');if(cl){cl.innerHTML='';(saved.corrective_actions&&saved.corrective_actions.length?saved.corrective_actions:['']). forEach(a=>fwAddCorrectiveAction(a));}
   const rl=document.getElementById('fw-risk-link');if(rl)rl.innerHTML='<option value="" style="background:#0d1b2a;color:#f4f6f8;">None</option>'+DB.map(r=>'<option value="'+r.id+'"'+(saved.risk_link===r.id?' selected':'')+'>'+r.id+' — '+(r.event||'').slice(0,45)+'</option>').join('');
   const da=document.getElementById('fw-db-action');if(da&&saved.db_action)da.value=saved.db_action;
   const fb=document.getElementById('fw-save-feedback');if(fb)fb.textContent='';
+  fwLockReadOnly();
 }
 function closeFiveWhysFromEdit(){
   // When opening 5 Whys from edit form, keep the form open underneath
   document.getElementById('occ-form-wrap').style.display='none';
+}
+// ── La fenêtre 🎯 est une vue de consultation et d'impression ──────────────
+// Toute la saisie se fait dans le panneau intégré au formulaire d'occurrence :
+// une seule source, plus de champs en double (root cause, WHY, actions) dont
+// chaque bouton n'enregistrait que sa moitié.
+function fwEditInForm(){
+  const occId=_fwCurrentOccId;
+  const modal=document.getElementById('five-whys-modal');
+  if(modal)modal.style.display='none';
+  document.body.style.overflow='';
+  _fwCurrentOccId=null;
+  if(occId){
+    showOccurrenceForm(occId);
+    const wrap=document.getElementById('occ-form-wrap');
+    if(wrap){wrap.style.display='';try{wrap.scrollIntoView({behavior:'smooth',block:'start'});}catch(e){}}
+    setTimeout(function(){
+      const p=document.getElementById('occ-fw-body');
+      if(p){try{p.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}}
+    },350);
+  }
+}
+function fwLockReadOnly(){
+  const modal=document.getElementById('five-whys-modal');
+  if(!modal)return;
+  modal.querySelectorAll('textarea,input').forEach(function(el){
+    el.readOnly=true; el.style.opacity='.85'; el.style.cursor='default';
+  });
+  modal.querySelectorAll('select').forEach(function(el){ el.disabled=true; el.style.opacity='.85'; });
+  modal.querySelectorAll('button').forEach(function(b){
+    const fn=b.getAttribute('onclick')||'';
+    if(/fwAddCorrectiveAction|saveFiveWhys/.test(fn)) b.style.display='none';
+  });
+  const fb=document.getElementById('fw-save-feedback');
+  if(fb){fb.textContent='Lecture seule — la saisie se fait dans le formulaire d\'occurrence (✎ ci-dessus).';fb.style.color='#8896a0';}
 }
 function closeFiveWhys(){
   const modal=document.getElementById('five-whys-modal');
@@ -11218,7 +11378,7 @@ function saveFiveWhys(){
   const nWhys=chain2?chain2.querySelectorAll('[data-fw-idx]').length:5;
   const whys=[];for(let i=0;i<nWhys;i++){const el=document.getElementById('fw-why-'+i);whys.push(el?(el.value||'').trim():'');}
   const becauses=[];for(let i=0;i<nWhys;i++){const el=document.getElementById('fw-because-'+i);becauses.push(el?(el.value||'').trim():'');}
-  const root_cause=(document.getElementById('fw-root-cause')?.value||'').trim();
+  const root_cause=(document.getElementById('fw-root-cause')?.value||document.getElementById('occ-fw-root-cause')?.value||'').trim();
   const risk_link=document.getElementById('fw-risk-link')?.value||'';
   const db_action=document.getElementById('fw-db-action')?.value||'';
   const corrective_actions=[...document.querySelectorAll('#fw-corrective-list > div')].map(row=>{
@@ -11246,9 +11406,25 @@ function saveFiveWhys(){
       saveDB();
     }
   }
-  if(fb){fb.textContent='✓ Analysis saved.';fb.style.color='#3fb950';}
-  showToast('✓ 5 Whys saved for '+_fwCurrentOccId,'success');
   setTimeout(renderOccurrenceList,600);
+  // On n'annonce « enregistré » qu'après confirmation d'écriture dans la base.
+  var _fwId=_fwCurrentOccId;
+  if(typeof window.safCloudSaveNow==='function'){
+    if(fb){fb.textContent='Enregistrement…';fb.style.color='#e3b341';}
+    window.safCloudSaveNow().then(function(r){
+      if(r&&r.ok){
+        if(fb){fb.textContent='✓ Analyse enregistrée et synchronisée.';fb.style.color='#3fb950';}
+        showToast('✓ 5 Whys enregistrés et synchronisés ('+_fwId+')','success');
+      }else{
+        var m=(r&&r.error)||'erreur inconnue';
+        if(fb){fb.textContent='⚠ Enregistré localement mais NON synchronisé ('+m+'). Ne rechargez pas la page avant résolution.';fb.style.color='#f85149';}
+        showToast('⚠ 5 Whys non synchronisés : '+m,'error');
+      }
+    });
+  }else{
+    if(fb){fb.textContent='✓ Analysis saved.';fb.style.color='#3fb950';}
+    showToast('✓ 5 Whys saved for '+_fwId,'success');
+  }
 }
 function printFiveWhys(){if(!_fwCurrentOccId)return;const occ=getOccurrences().find(o=>o.id===_fwCurrentOccId);if(!occ)return;const fw=occ.five_whys||{};const whys=fw.whys||[];const becauses=fw.becauses||[];const whyRows=whys.map((w,i)=>{if(!w)return '';var bc=becauses[i]?'<tr><td style="padding:2px 12px 10px 12px;font-weight:700;font-size:10px;color:#8896a0;font-family:monospace;vertical-align:top;white-space:nowrap;">BECAUSE</td><td style="padding:2px 12px 10px 12px;border-left:3px solid #e3b341;font-style:italic;color:#475569;">'+becauses[i]+'</td></tr>':'';return '<tr><td style="padding:8px 12px 2px 12px;font-weight:800;color:#C98000;font-size:13px;vertical-align:top;white-space:nowrap;">WHY #'+(i+1)+'</td><td style="padding:8px 12px 2px 12px;border-left:3px solid #C98000;">'+w+'</td></tr>'+bc;}).join('');const corrHTML=(fw.corrective_actions||[]).length?'<ul style="margin:6px 0 0;padding-left:18px;">'+(fw.corrective_actions.map(a=>'<li>'+occFWActionLabel(a)+'</li>').join(''))+'</ul>':'<em>None defined</em>';const w=window.open('','_blank');w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>5 Whys — '+occ.id+'</title><style>body{font-family:"Segoe UI",Arial,sans-serif;max-width:820px;margin:28px auto;color:#1a2535;font-size:12px;}h1{font-size:18px;font-weight:700;color:#C98000;margin-bottom:4px;}.meta{font-size:10px;color:#6b7a8d;font-family:monospace;margin-bottom:18px;}.problem{background:#fff3e0;border-left:4px solid #C98000;padding:12px 16px;border-radius:0 6px 6px 0;margin-bottom:20px;font-weight:600;font-size:13px;}table{width:100%;border-collapse:collapse;margin-bottom:20px;}td{padding:8px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;}.box{padding:12px 16px;border-radius:0 6px 6px 0;margin-bottom:20px;}.label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}.footer{margin-top:28px;padding-top:10px;border-top:1px solid #e0e8f0;font-size:9px;color:#8896a0;font-family:monospace;display:flex;justify-content:space-between;}@media print{*{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}</style></head><body><h1>&#127919; 5 WHYS — Root Cause Analysis</h1><div class="meta">'+occ.id+' · '+occ.date+' · '+(occ.severity||'').toUpperCase()+' · Helion Helicopters · AS 332 C1 Super Puma</div><div class="problem"><strong>Problem:</strong> '+(occ.description||'—')+'</div><table>'+whyRows+'</table>'+(fw.root_cause?'<div class="box" style="background:#fffde7;border-left:4px solid #e3b341;"><div class="label" style="color:#C98000;">Root Cause</div>'+fw.root_cause+'</div>':'')+'<div class="box" style="background:#f1f8f1;border-left:4px solid #1a7a4a;"><div class="label" style="color:#1a7a4a;">Corrective Actions</div>'+corrHTML+'</div>'+(fw.risk_link?'<p><strong>Linked risk:</strong> '+fw.risk_link+'</p>':'')+'<div class="footer"><span>Helion Helicopters — SMS 5 Whys — '+occ.id+'</span><span>Generated '+new Date().toLocaleDateString('en-GB')+'</span></div><script>window.onload=function(){window.print();}<\/script></body></html>');w.document.close();}
 
@@ -15254,6 +15430,13 @@ function _occRestoreAfterPrint(){
   var KEY = 'safOccurrences';
   var SEED_MARKER = 'saf-seeds-done';
 
+  // ── DÉSACTIVÉ le 4 sept. 2026 ───────────────────────────────────────────
+  // Ces occurrences de démonstration (héritées de SAF International) se
+  // réinstallaient à CHAQUE ouverture : le cache mémoire repartant vide, le
+  // garde-fou ci-dessous ne voyait jamais les données réelles, et la fusion au
+  // chargement les réinjectait ensuite dans le cloud.
+  return;
+
   // If data has been imported (the cache contains safOccurrences), do not seed
   var existing = localStorage.getItem(KEY);
   if(existing && existing !== '[]' && existing !== 'null') return;
@@ -15977,6 +16160,7 @@ setTimeout(function(){
   var loginTriggerBtn = document.getElementById('saf-login-trigger-btn');
   var loginCancelBtn  = document.getElementById('saf-login-cancel-btn');
   var saving  = false, dirty = false, ready = false, saveTimer = null, authenticated = false, isGuest = false;
+  var CC_PENDING = false;  // modifications locales pas encore montées au cloud
 
   function setBar(state, txt){
     bar.style.display = 'flex';
@@ -16134,20 +16318,52 @@ setTimeout(function(){
         { module: MODULE, data: payload, updated_at: new Date() },
         { onConflict: 'module' }
       );
-      if(res.error) setBar('ok','Erreur sauvegarde: '+res.error.message);
-      else setBar('ok','Synchronisé ✓ '+new Date().toLocaleTimeString());
-    }catch(e){ setBar('ok','Sauvegarde impossible: '+e.message); }
+      if(res.error) setBar('error','Erreur sauvegarde: '+res.error.message);
+      else { CC_PENDING = false; setBar('ok','Synchronisé ✓ '+new Date().toLocaleTimeString()); }
+    }catch(e){ setBar('error','Sauvegarde impossible: '+e.message); }
     saving = false;
     if(dirty){ dirty = false; scheduleSave(); }
   }
 
   function scheduleSave(){
     if(!ready) return;
+    CC_PENDING = true;
     clearTimeout(saveTimer);
     setBar('saving','Modification detectee...');
     saveTimer = setTimeout(cloudSave, 1500);
   }
   window.safCloudScheduleSave = scheduleSave;
+
+  // ── Sauvegarde immédiate ET vérifiée ────────────────────────────────────
+  // Utilisée par les enregistrements critiques (5 Whys, occurrences) pour ne
+  // plus annoncer « enregistré » alors que rien n'est parti vers la base.
+  // Renvoie {ok:true} | {error:'…'}
+  window.safCloudSaveNow = async function(){
+    clearTimeout(saveTimer);
+    if(isGuest)        return {error:'mode invité — lecture seule'};
+    if(!authenticated) return {error:'non connecté — rien n\'a été envoyé au cloud'};
+    if(typeof window.safExportForCloud !== 'function') return {error:'export indisponible'};
+    var guard = 0;
+    while(saving && guard < 100){ await new Promise(function(r){ setTimeout(r,120); }); guard++; }
+    saving = true; setBar('saving','Sauvegarde...');
+    var out;
+    try{
+      var payload = window.safExportForCloud();
+      var res = await db.from('helion_data').upsert(
+        { module: MODULE, data: payload, updated_at: new Date() },
+        { onConflict: 'module' }
+      );
+      if(res.error){ out={error:res.error.message}; setBar('error','Erreur sauvegarde: '+res.error.message); }
+      else { out={ok:true}; CC_PENDING = false; setBar('ok','Synchronisé ✓ '+new Date().toLocaleTimeString()); }
+    }catch(e){ out={error:e.message}; setBar('error','Sauvegarde impossible: '+e.message); }
+    saving = false;
+    return out;
+  };
+
+  // Avertit avant de quitter si des modifications ne sont pas encore montées.
+  window.addEventListener('beforeunload', function(e){
+    if(CC_PENDING || saving || window.__occDirty){ e.preventDefault(); e.returnValue = ''; return ''; }
+  });
 
   // ── Lecture cross-fichier en lecture seule (utilisé par le MOC pour retrouver
   //    la root cause d'un CAP/finding enregistré dans la CMS — module 'cms_data').
@@ -16391,10 +16607,24 @@ setTimeout(function(){
   window.safImportMobileReports = importMobileReports;
 
   function attachAutoSave(){
-    document.addEventListener('input',  scheduleSave, true);
-    document.addEventListener('change', scheduleSave, true);
+    // La frappe dans le formulaire d'occurrence ne modifie PAS encore les
+    // données : tant que « Save occurrence » n'est pas cliqué, elle ne vit que
+    // dans les champs. La déclencher ici afficherait « Synchronisé ✓ » alors
+    // que la saisie en cours n'est dans aucune sauvegarde.
+    function inOccForm(t){
+      return !!(t && t.closest && (t.closest('#occ-form-wrap') || t.closest('#five-whys-modal')));
+    }
+    function onEdit(e){
+      if(inOccForm(e.target)){ if(typeof occMarkDirty==='function') occMarkDirty(); return; }
+      scheduleSave();
+    }
+    document.addEventListener('input',  onEdit, true);
+    document.addEventListener('change', onEdit, true);
     document.addEventListener('blur', function(e){
-      if(e.target && e.target.isContentEditable) scheduleSave();
+      if(e.target && e.target.isContentEditable){
+        if(inOccForm(e.target)){ if(typeof occMarkDirty==='function') occMarkDirty(); return; }
+        scheduleSave();
+      }
     }, true);
   }
 
