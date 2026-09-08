@@ -924,20 +924,27 @@ select[id$="-status"].status-clos{border-left-color:#3fb950;}
   background: rgba(201,162,39,.42);
   color: #FFFFFF;
 }
+/* Correctif 08.09.2026 (2e passe) — la colonne Actions n'est plus gelée.
+   Mesure faite en console : tableau 1687 px pour 1053 px de fenêtre. La colonne
+   était donc figée à droite (position:sticky; right:0) au-dessus d'un contenu
+   qui défile dessous — et la colonne qui passe dessous est justement
+   Last Modified, sa voisine immédiate. Réserver de la largeur n'y changeait
+   rien : le recouvrement est le principe même d'une colonne gelée.
+   Actions défile désormais avec le reste du tableau ; plus aucun recouvrement,
+   quel que soit le zoom. L'en-tête reste collant verticalement (règle
+   .risk-table th), seul le gel horizontal est retiré. */
 .actions-cell {
   white-space: nowrap;
-  position: sticky;
-  right: 0;
-  background: var(--navy-mid);
-  box-shadow: -2px 0 6px rgba(0,0,0,.2);
-  z-index: 6;                 /* au-dessus des cellules qui défilent dessous */
+  position: static;
+  right: auto;
+  background: transparent;
+  box-shadow: none;
 }
 .risk-table thead th:last-child {
-  position: sticky;
-  right: 0;
+  right: auto;
   background: var(--navy-light);
-  box-shadow: -2px 0 6px rgba(0,0,0,.2);
-  z-index: 26;                /* au-dessus des autres en-têtes (z-index: 20) */
+  box-shadow: none;
+  z-index: 20;
 }
 
 
