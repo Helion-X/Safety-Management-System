@@ -17941,5 +17941,45 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
 })();
 
 </script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   Correctif 08.09.2026 (5e passe) — barre de défilement horizontale visible.
+   Mesure en console : conteneur 1192 px de large pour 1686 px de contenu, place
+   bien réservée pour la barre. Elle était donc rendue — mais au bas d'un
+   conteneur de 761 px de haut dont le bas tombait sous la ligne de flottaison.
+   Le `calc(100vh - 260px)` du CSS supposait que le tableau commençait à 260 px
+   du haut de la fenêtre ; en pratique la barre de filtres, le compteur et les
+   blocs du registre le repoussent bien plus bas.
+   On calcule donc la hauteur disponible à l'exécution, à partir de la position
+   réelle du conteneur, et on la réapplique au redimensionnement, au changement
+   de vue et au défilement de la page.
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function(){
+  var _last = -1;
+  function fit(){
+    try{
+      var w = document.querySelector('#view-database .table-wrap');
+      if(!w || !w.offsetParent) return;                 // vue masquée : rien à faire
+      var top = w.getBoundingClientRect().top;
+      var avail = Math.round(window.innerHeight - top - 28);   // 28 px de marge basse
+      if(avail < 260) avail = 260;                      // plancher : tableau utilisable
+      if(Math.abs(avail - _last) < 4) return;           // évite les réécritures inutiles
+      _last = avail;
+      w.style.maxHeight = avail + 'px';
+      w.style.overflowY = 'auto';
+      w.style.overflowX = 'scroll';
+    }catch(e){}
+  }
+  window._rrFitTable = fit;
+  try{
+    window.addEventListener('resize', fit);
+    window.addEventListener('scroll', fit, true);
+    document.addEventListener('DOMContentLoaded', fit);
+    setInterval(fit, 800);        // couvre les changements de vue et de pagination
+    fit();
+  }catch(e){}
+})();
+</script>
 </body>
 </html>
