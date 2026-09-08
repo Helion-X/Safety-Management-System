@@ -4823,18 +4823,132 @@ try { _savedDB = JSON.parse(localStorage.getItem('safRiskDB')); } catch(e) {}
 function __isSmsConsolidatedDB(arr){
   return Array.isArray(arr) && arr.length > 0 && arr.every(function(r){ return r && /^SMS-\d{2,}$/.test(String(r.id||'')); });
 }
+/* ═══════════════════════════════════════════════════════════════════════════
+   HELION 2026-09-08 — INTÉGRITÉ DES ENREGISTREMENTS SMS (ORO.GEN.200(a)(3))
+   Défaut corrigé : la fusion d'ouverture reconstruisait tout scénario du
+   référentiel (SMS-01…) depuis INITIAL_DATA et jetait purement et simplement
+   la copie enregistrée. Toute saisie du Safety Manager sur ces scénarios —
+   mesures, cotations, acceptation du risque, preuves d'efficacité, propriétaire
+   de barrière — disparaissait à la réouverture, sans message.
+   Le mécanisme ci-dessous est celui de la suite SAF : champs détenus par
+   l'utilisateur réinjectés, non-régression des statuts, union des historiques,
+   et adoption complète de la fiche dès qu'elle porte user_edited_at.
+   ═══════════════════════════════════════════════════════════════════════════ */
+var SAF_USER_OWNED_FIELDS = [
+  'risk_acceptance','risk_acceptance_date','risk_acceptance_by','acceptance_status',
+  'effectiveness_evidence','effectiveness_assessed_date','effectiveness_assessed_by',
+  'control_effectiveness','control_status','last_control_date','barrier_failure_suspected','operational_status'
+];
+function __safIsFilled(v){
+  if(v === undefined || v === null) return false;
+  if(typeof v === 'string') return v.trim() !== '';
+  if(Array.isArray(v)) return v.length > 0;
+  return true;
+}
+var SAF_RANK_ACCEPTANCE = {'':0,'unknown':0,'pending_formal_acceptance':1,'managed_under_approved_sms_procedure':2,'accepted':3};
+var SAF_RANK_CONTROL    = {'':0,'unknown':0,'not_controlled':1,'partially_controlled':2,'controlled':3};
+var SAF_DATE_FIELDS     = ['last_control_date','risk_acceptance_date','effectiveness_assessed_date'];
+function __safPreserveUserData(target, saved, seed){
+  if(!target || !saved) return target;
+  SAF_USER_OWNED_FIELDS.forEach(function(k){
+    var v = saved[k];
+    if(!__safIsFilled(v)) return;
+    if(k === 'acceptance_status'){
+      if((SAF_RANK_ACCEPTANCE[v]||0) > (SAF_RANK_ACCEPTANCE[target[k]]||0)) target[k] = v;
+      return;
+    }
+    if(k === 'control_status'){
+      if((SAF_RANK_CONTROL[v]||0) > (SAF_RANK_CONTROL[target[k]]||0)) target[k] = v;
+      return;
+    }
+    if(SAF_DATE_FIELDS.indexOf(k) >= 0){
+      if(String(v) > String(target[k]||'')) target[k] = v;
+      return;
+    }
+    if(seed && __safIsFilled(target[k]) && JSON.stringify(v) === JSON.stringify(seed[k])) return;
+    target[k] = v;
+  });
+  var th = Array.isArray(target.history) ? target.history : [];
+  var sh = Array.isArray(saved.history)  ? saved.history  : [];
+  if(sh.length){
+    var seen = {}, merged = [];
+    th.concat(sh).forEach(function(h){
+      if(!h) return;
+      var k2 = String(h.action||'')+'|'+String(h.date||'')+'|'+String(h.by||'')+'|'+String(h.reason||h.occ_id||h.value||'');
+      if(seen[k2]) return; seen[k2] = 1; merged.push(h);
+    });
+    merged.sort(function(a,b){ return String(a.date||'').localeCompare(String(b.date||'')); });
+    target.history = merged;
+  }
+  if(Array.isArray(target.barriers) && Array.isArray(saved.barriers)){
+    var savedByBid = {};
+    saved.barriers.forEach(function(b){ if(b && b.bid) savedByBid[b.bid] = b; });
+    target.barriers.forEach(function(b){
+      var sb = b && b.bid ? savedByBid[b.bid] : null;
+      if(!sb) return;
+      if(__safIsFilled(sb.owner))    b.owner = sb.owner;
+      if(__safIsFilled(sb.evidence)) b.evidence = sb.evidence;
+      if(__safIsFilled(sb.trac))     b.trac = sb.trac;
+      if(sb.status && sb.status !== 'active') b.status = sb.status;
+      if(__safIsFilled(sb.superseded_by)) b.superseded_by = sb.superseded_by;
+    });
+  }
+  return target;
+}
+function __safAdoptUserRecord(refRec, userRec){
+  var out = JSON.parse(JSON.stringify(userRec));
+  if(!Array.isArray(out.barriers) || !out.barriers.length) out.barriers = refRec.barriers;
+  ['family_id','seed_version','source_risk_ids','record_kind','workflow_status'].forEach(function(k){
+    if(!__safIsFilled(out[k]) && __safIsFilled(refRec[k])) out[k] = refRec[k];
+  });
+  var a = Array.isArray(refRec.history) ? refRec.history : [];
+  var b = Array.isArray(out.history)   ? out.history   : [];
+  var seen = {}, merged = [];
+  a.concat(b).forEach(function(h){
+    if(!h) return;
+    var k = String(h.action||'')+'|'+String(h.date||'')+'|'+String(h.by||'')+'|'+String(h.reason||h.occ_id||h.value||'');
+    if(seen[k]) return; seen[k] = 1; merged.push(h);
+  });
+  merged.sort(function(x,y){ return String(x.date||'').localeCompare(String(y.date||'')); });
+  out.history = merged;
+  out.ref_overridden = true;
+  return out;
+}
 function __mergeSmsDBWithCustom(){
   var base=JSON.parse(JSON.stringify(INITIAL_DATA));
   var baseIds={};base.forEach(function(r){baseIds[r.id]=1;});
+  var baseById={};base.forEach(function(r){baseById[r.id]=r;});
+  var seedById={};base.forEach(function(r){
+    var d={}; SAF_USER_OWNED_FIELDS.forEach(function(k){ d[k]=r[k]; }); seedById[r.id]=d;
+  });
   var customById={};
+  var savedById={};
   Array.prototype.slice.call(arguments).forEach(function(src){
     if(typeof src==='string'){try{src=JSON.parse(src);}catch(e){src=null;}}
     if(!Array.isArray(src))return;
     src.forEach(function(r){
       if(!r||!/^SMS-\d{2,}$/.test(String(r.id||'')))return;
-      if(r.is_custom_event || !baseIds[r.id]) customById[r.id]=r;
+      /* L'appartenance au référentiel prime sur is_custom_event : sinon une
+         copie locale ancienne encore marquée is_custom_event crée un doublon. */
+      if(!baseIds[r.id]){
+        var prev = customById[r.id];
+        customById[r.id] = r;
+        if(prev) __safPreserveUserData(r, prev, null);
+        return;
+      }
+      if(baseById[r.id]){
+        if(r.user_edited_at){
+          baseById[r.id] = __safAdoptUserRecord(baseById[r.id], r);
+          for(var _bi=0; _bi<base.length; _bi++){ if(base[_bi] && base[_bi].id === r.id){ base[_bi] = baseById[r.id]; break; } }
+        } else {
+          __safPreserveUserData(baseById[r.id], r, seedById[r.id]);
+        }
+        savedById[r.id]=1;
+      }
     });
   });
+  var _preserved=Object.keys(savedById).length;
+  if(_preserved && typeof window!=='undefined' && window.console) console.info('SMS register : saisies utilisateur conservées sur '+_preserved+' scénario(s) du référentiel.');
   Object.keys(customById).sort(function(a,b){return parseInt(a.split('-')[1],10)-parseInt(b.split('-')[1],10);}).forEach(function(id){base.push(customById[id]);});
   return safApplyTaxonomyToDB(base);
 }
@@ -6332,6 +6446,8 @@ function saveEditModal() {
     barriers_declared:   barrierEval.barriers_declared,
     failure_evidence:    barrierEval.failure_evidence,
     updated_at:          new Date().toISOString(),
+    user_edited_at:      new Date().toISOString(),
+    user_edited_by:      (typeof safCurrentUser === 'function' ? safCurrentUser() : (typeof SAF_USER_EMAIL !== 'undefined' ? SAF_USER_EMAIL : '')),
     created_at:          prev.created_at || prev.timestamp,
     history:             Array.isArray(prev.history) ? [...prev.history] : [],
   };
@@ -17041,8 +17157,21 @@ setTimeout(function(){
     try{ if(typeof guardWriteFunctions === 'function') guardWriteFunctions(); }catch(e){}
     try{ if(typeof applyReadOnly === 'function' && !window.__safReadOnlyObserver) applyReadOnly(); }catch(e){}
 
-    // 4. Bandeau : perimetre et date de publication, pour ne pas laisser croire
-    //    que la consultation porte sur l'etat en cours de travail.
+    // 4. Bandeau. applyReadOnly() a deja pose son propre bandeau « MODE LECTURE
+    //    SEULE » depuis loadAndApplyRole() : deux bandeaux fixes a top:0 se
+    //    superposeraient. On retire donc l'ancien avant de poser celui-ci, plus
+    //    precis puisqu'il nomme le perimetre et la date de publication.
+    try{
+      Array.prototype.slice.call(document.body.children).forEach(function(el){
+        if(el.id === 'saf-rr-banner') return;
+        if(el.tagName !== 'DIV') return;
+        var st = el.style || {};
+        if(st.position !== 'fixed' || st.top !== '0px' || st.zIndex !== '9999') return;
+        var t = (el.textContent || '');
+        if(t.length < 200 && /LECTURE SEULE|ACC\u00c8S INVIT|READ[- ]ONLY|GUEST/i.test(t)) el.remove();
+      });
+    }catch(e){}
+
     var b = document.createElement('div');
     b.id = 'saf-rr-banner';
     b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(30,50,80,.94);'
@@ -17067,6 +17196,10 @@ setTimeout(function(){
     }
     authenticated = true;
 
+    // Client expose en console pour les controles de cloisonnement RLS.
+    // Sans risque : la cle anon est publique, c'est la RLS qui decide.
+    try{ window.safDb = db; }catch(e){}
+
     // Reader : la RLS ne lui ouvre que la ligne du registre publie. Charger
     // sms_data echouerait, et l'import des rapports ne le concerne pas.
     if(SAF_ROLE !== 'admin' && SAF_ROLE !== 'editor'){
@@ -17075,7 +17208,7 @@ setTimeout(function(){
       return;
     }
 
-    rrMountPublishControl();
+    try{ rrMountPublishControl(); }catch(e){ console.warn('Controle de publication non monte :', e.message); }
     await cloudLoad();
     await importMobileReports();
     ready = true;
