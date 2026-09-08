@@ -257,8 +257,27 @@ main { flex: 1; overflow-y: auto; background: #0A1520; }
   background: var(--navy-mid);
   border: 1px solid rgba(255,255,255,.08);
   border-radius: 10px;
-  overflow-x: auto;
+  /* Correctif 08.09.2026 — barre de défilement horizontale permanente.
+     `auto` laisse le système masquer la barre tant qu'on ne fait pas défiler
+     (barres superposées de Windows et macOS) : depuis le retrait du gel de la
+     colonne Actions, plus rien n'indiquait que le tableau continuait à droite.
+     `scroll` la rend permanente, et le style ci-dessous la rend lisible sur
+     fond sombre. */
+  overflow-x: scroll;
+  scrollbar-width: auto;
+  scrollbar-color: var(--gold, #C98000) rgba(255,255,255,.06);
 }
+.table-wrap::-webkit-scrollbar { height: 14px; }
+.table-wrap::-webkit-scrollbar-track {
+  background: rgba(255,255,255,.06);
+  border-radius: 0 0 10px 10px;
+}
+.table-wrap::-webkit-scrollbar-thumb {
+  background: var(--gold, #C98000);
+  border: 3px solid var(--navy-mid);
+  border-radius: 8px;
+}
+.table-wrap::-webkit-scrollbar-thumb:hover { background: var(--gold-light, #E0A030); }
 
 .risk-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 /* Correctif 08.09.2026 — chevauchement Last Modified / Actions.
@@ -1832,7 +1851,13 @@ nav { top: 118px !important; }
         <label style="font-family:var(--font-mono);font-size:10px;color:var(--grey-400);letter-spacing:.06em;display:block;margin-bottom:6px;">RISK ID <span style="color:#e05000;">*</span></label>
         <input id="em-id" style="width:100%;background:var(--navy-deep);border:1px solid rgba(255,255,255,.12);color:var(--white);font-family:var(--font-mono);font-size:12px;padding:8px 12px;border-radius:6px;box-sizing:border-box;" type="text"/>
       </div>
-      <div>
+      <!-- Retrait 08.09.2026 — le domaine « legacy » n'est plus affiché dans le
+           registre. Le champ reste dans le DOM, masqué : il est renseigné
+           automatiquement à partir de la famille (safLegacyDomainFor) et
+           conservé dans la donnée pour la traçabilité et l'export CSV.
+           Le supprimer casserait saveEditModal(), editEntry() et l'export,
+           qui lisent tous #em-category. -->
+      <div style="display:none;">
         <label style="font-family:var(--font-mono);font-size:10px;color:var(--grey-400);letter-spacing:.06em;display:block;margin-bottom:6px;">LEGACY DOMAIN <span style="color:#e05000;">*</span></label>
         <select id="em-category" style="width:100%;background:var(--navy-deep);border:1px solid rgba(255,255,255,.12);color:var(--white);font-family:var(--font-mono);font-size:12px;padding:8px 12px;border-radius:6px;box-sizing:border-box;">
           <option value="" style="background:#0d1b2a;color:#f4f6f8;">Select…</option>
@@ -2465,7 +2490,7 @@ function updateOaciDefinitionDropdown(sel) {
 <div class="form-field"><label class="field-label">Level 1 — Occurrence Category <span class="req">*</span></label><select id="f-occurrence-category"><option value="">Select…</option></select></div>
 <div class="form-field"><label class="field-label">Level 2 — SMS Family <span class="req">*</span></label><select id="f-family"><option value="">Select…</option></select></div>
 </div>
-<div class="form-field">
+<div class="form-field" style="display:none;"><!-- Legacy Domain masqué 08.09.2026 : renseigné automatiquement, conservé pour la traçabilité et l'export CSV -->
 <label class="field-label">Legacy Domain <span class="req">*</span></label>
 <select id="f-saf-category">
           <option value="" style="background:#0d1b2a;color:#f4f6f8;">Select…</option>
@@ -6018,7 +6043,6 @@ function renderTable() {
               <span class="ea-level-pill ea-level-3">Level 3 · ${r.id} — ${r.event}</span>
               <span class="ea-status ${r.workflow_status==='approved'?'ea-status-approved':'ea-status-candidate_review'}">${(r.record_kind||'risk_scenario').replace(/_/g,' ').toUpperCase()}</span>
             </div>
-            <div style="font-size:10px;color:var(--grey-400);margin-top:7px;">Legacy domain retained for traceability: ${r.category||'—'}</div>
           </div>
 
           <!-- Hazard chain: hazards → top event → consequences -->
@@ -6647,7 +6671,7 @@ function updateBarrierAlertZone() {
 
 function submitEntry() {
   const id = getVal('f-report-id') || eventAccountingNextRiskId();
-  const cat = getVal('f-saf-category');
+  const cat = getVal('f-saf-category') || getVal('f-family');   // repli 08.09.2026 : champ masqué
   const occurrenceCategory = getVal('f-occurrence-category');
   const familyId = getVal('f-family');
   const ue = getVal('f-ue');
