@@ -261,6 +261,19 @@ main { flex: 1; overflow-y: auto; background: #0A1520; }
 }
 
 .risk-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+/* Correctif 08.09.2026 — chevauchement Last Modified / Actions.
+   La colonne Actions est gelée à droite (position:sticky; right:0). Sans
+   largeur réservée, le navigateur comprime les dernières colonnes sous leur
+   largeur de contenu dès que la fenêtre est étroite (ou le zoom élevé) : la
+   colonne figée vient alors recouvrir Last Modified, d'où le « LAST MODI »
+   tronqué et l'heure invisible. On force donc une largeur minimale au tableau
+   — .table-wrap porte overflow-x:auto et prend le relais en défilement — et on
+   réserve la place des deux dernières colonnes. */
+.risk-table { min-width: 1480px; }
+.risk-table thead th:nth-last-child(2),
+.risk-table tbody td:nth-last-child(2) { min-width: 124px; padding-right: 18px; }
+.risk-table thead th:last-child,
+.risk-table td.actions-cell { min-width: 196px; width: 196px; }
 .risk-table thead tr { background: var(--navy-light); }
 .risk-table th {
   padding: 10px 12px;
@@ -917,12 +930,14 @@ select[id$="-status"].status-clos{border-left-color:#3fb950;}
   right: 0;
   background: var(--navy-mid);
   box-shadow: -2px 0 6px rgba(0,0,0,.2);
+  z-index: 6;                 /* au-dessus des cellules qui défilent dessous */
 }
 .risk-table thead th:last-child {
   position: sticky;
   right: 0;
   background: var(--navy-light);
   box-shadow: -2px 0 6px rgba(0,0,0,.2);
+  z-index: 26;                /* au-dessus des autres en-têtes (z-index: 20) */
 }
 
 
