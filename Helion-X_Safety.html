@@ -264,8 +264,16 @@ main { flex: 1; overflow-y: auto; background: #0A1520; }
      `scroll` la rend permanente, et le style ci-dessous la rend lisible sur
      fond sombre. */
   overflow-x: scroll;
-  scrollbar-width: auto;
-  scrollbar-color: var(--gold, #C98000) rgba(255,255,255,.06);
+}
+/* Correctif 08.09.2026 (4e passe) — pourquoi la barre restait invisible.
+   Chrome désactive TOUT le style ::-webkit-scrollbar dès qu'une des propriétés
+   standard `scrollbar-width` / `scrollbar-color` est posée sur le même élément.
+   Les deux règles que j'avais ajoutées annulaient donc mes propres règles
+   ::-webkit-scrollbar, et le navigateur retombait sur ses barres superposées,
+   masquées tant qu'on ne fait pas défiler. On réserve désormais les propriétés
+   standard à Firefox, qui ne comprend pas ::-webkit-scrollbar. */
+@supports (-moz-appearance: none) {
+  .table-wrap { scrollbar-width: auto; scrollbar-color: var(--gold, #C98000) rgba(255,255,255,.06); }
 }
 /* Correctif 08.09.2026 (3e passe) — la barre horizontale existait déjà mais
    restait invisible : elle se trouve au BAS de .table-wrap, c'est-à-dire sous
