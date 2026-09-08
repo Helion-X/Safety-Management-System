@@ -267,7 +267,19 @@ main { flex: 1; overflow-y: auto; background: #0A1520; }
   scrollbar-width: auto;
   scrollbar-color: var(--gold, #C98000) rgba(255,255,255,.06);
 }
-.table-wrap::-webkit-scrollbar { height: 14px; }
+/* Correctif 08.09.2026 (3e passe) — la barre horizontale existait déjà mais
+   restait invisible : elle se trouve au BAS de .table-wrap, c'est-à-dire sous
+   la vingtième ligne du registre, très en dessous de l'écran. On borne donc la
+   hauteur du conteneur du registre : le tableau défile à l'intérieur, l'en-tête
+   reste collant en haut (règle .risk-table th) et la barre horizontale est
+   toujours au bas de la zone visible. Limité à #view-database pour ne pas
+   toucher les autres tableaux qui partagent la classe. */
+#view-database .table-wrap {
+  max-height: calc(100vh - 260px);
+  min-height: 320px;
+  overflow-y: auto;
+}
+.table-wrap::-webkit-scrollbar { height: 14px; width: 14px; }
 .table-wrap::-webkit-scrollbar-track {
   background: rgba(255,255,255,.06);
   border-radius: 0 0 10px 10px;
