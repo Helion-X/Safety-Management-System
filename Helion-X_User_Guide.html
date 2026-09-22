@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Helion-X User Guide — English / Ελληνικά</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0D1B2A;--navy-mid:#1A2E42;--navy-light:#243B55;--gold:#C9A227;--gold-light:#F0C040;--steel:#4A9FE0;--white:#F4F6F8;--g1:#C8D0D8;--g2:#8896A0;--red:#e07070;--green:#70d0a0;--side:310px}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:#0A1520;color:var(--white);font-family:'IBM Plex Sans',sans-serif;line-height:1.62}
+header{position:sticky;top:0;z-index:50;background:linear-gradient(135deg,#07111e,#13233a);border-bottom:1px solid rgba(201,162,39,.35);padding:14px 20px}
+.head{max-width:1600px;margin:auto;display:flex;align-items:center;gap:18px;flex-wrap:wrap} .brand{font-family:'Bebas Neue',sans-serif;font-size:29px;letter-spacing:.06em} .sub{font-family:'IBM Plex Mono',monospace;color:var(--g2);font-size:10px} .spacer{flex:1}
+.topbtn{border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:var(--g1);padding:8px 12px;border-radius:7px;font:600 11px 'IBM Plex Mono',monospace;cursor:pointer;text-decoration:none} .topbtn:hover,.topbtn.on{border-color:var(--gold);color:var(--gold-light)}
+.search{min-width:240px;background:#07111e;border:1px solid rgba(255,255,255,.14);color:white;border-radius:7px;padding:9px 11px;font:12px 'IBM Plex Sans',sans-serif}
+.layout{max-width:1600px;margin:auto;display:grid;grid-template-columns:var(--side) minmax(0,1fr);min-height:calc(100vh - 82px)}
+aside{position:sticky;top:82px;height:calc(100vh - 82px);overflow:auto;background:#0D1B2A;border-right:1px solid rgba(255,255,255,.08);padding:18px 14px 40px} .nav-group{font:600 9px 'IBM Plex Mono',monospace;letter-spacing:.15em;color:var(--gold);padding:15px 9px 7px;text-transform:uppercase} aside a{display:block;color:#b9c6d4;text-decoration:none;font-size:11.5px;padding:7px 9px;border-radius:6px;margin:1px 0} aside a:hover{background:rgba(74,159,224,.12);color:#fff} aside a.hidden{display:none}
+main{padding:28px clamp(20px,4vw,64px) 70px;min-width:0} .hero{background:linear-gradient(135deg,#13233a,#0d1b2a);border:1px solid rgba(201,162,39,.25);border-radius:14px;padding:24px 26px;margin-bottom:24px} .hero h1{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:.05em;margin:0} .hero p{color:var(--g1);max-width:980px} .chips{display:flex;gap:7px;flex-wrap:wrap} .chip{font:10px 'IBM Plex Mono',monospace;border:1px solid rgba(74,159,224,.3);padding:4px 8px;border-radius:999px;color:#9ccff6}
+.guide-section{scroll-margin-top:105px;background:#101f30;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:23px 26px;margin:0 0 18px} h2{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:.035em;color:#fff;margin:0 0 13px;border-bottom:1px solid rgba(201,162,39,.2);padding-bottom:9px} h4{font-size:14px;color:var(--gold-light);margin:18px 0 7px} p{margin:7px 0 12px} ul,ol{padding-left:24px;margin:8px 0 14px} li{margin:5px 0} strong{color:#fff} .note,.warn{padding:12px 14px;border-left:3px solid var(--steel);background:rgba(74,159,224,.08);border-radius:0 7px 7px 0;margin:14px 0} .warn{border-left-color:var(--red);background:rgba(224,112,112,.08)} table{width:100%;border-collapse:collapse;margin:12px 0 16px;font-size:12px} th{text-align:left;color:var(--gold-light);font:600 10px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;background:#0b1724} th,td{padding:9px 10px;border:1px solid rgba(255,255,255,.08);vertical-align:top}
+.lang.el{display:none} body[data-lang="el"] .lang.en{display:none} body[data-lang="el"] .lang.el{display:block} body[data-lang="el"]{font-family:'IBM Plex Sans',Arial,sans-serif}
+.guide-section.search-hide{display:none} .no-results{display:none;color:var(--g2);padding:18px;border:1px dashed rgba(255,255,255,.15);border-radius:9px}
+footer{text-align:center;color:#536273;font:10px 'IBM Plex Mono',monospace;padding:30px}
+@media(max-width:950px){.layout{grid-template-columns:1fr} aside{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid rgba(255,255,255,.08);max-height:320px} header{position:relative} .search{min-width:180px;flex:1}}
+@media print{header,aside,.topbtn,.search{display:none!important} .layout{display:block} main{padding:0} .guide-section{break-inside:avoid;background:#fff;color:#111;border:1px solid #ccc} body{background:#fff;color:#111} h2{color:#000} h4{color:#333} strong{color:#000} .note,.warn{background:#f5f5f5} table,th,td{border-color:#bbb;color:#111} .lang{display:block!important} .lang.el{page-break-before:avoid}}
+</style>
+</head>
+<body data-lang="en">
+<header><div class="head"><div><div class="brand">HELION-X USER GUIDE</div><div class="sub">Complete operating manual · English / Ελληνικά · 22.09.2026</div></div><div class="spacer"></div><input id="search" class="search" placeholder="Search guide…"/><button class="topbtn on" data-langbtn="en">ENGLISH</button><button class="topbtn" data-langbtn="el">ΕΛΛΗΝΙΚΑ</button><button class="topbtn" onclick="window.print()">PRINT / PDF</button><a class="topbtn" href="index.html">⌂ HOME</a><a class="topbtn" href="Helion-X_Safety.html">SMS</a><a class="topbtn" href="Helion-X_Compliance_Monitoring_System.html">CMS</a><a class="topbtn" href="Helion-X_Appendices_OMM.html">OMM</a><a class="topbtn" href="Helion-X_Report.html">REPORT</a></div></header>
+<div class="layout"><aside id="toc"><div class="nav-group">GENERAL</div>
+<a href="#home" data-en="1. Helion-X overview" data-el="1. Επισκόπηση Helion-X">1. Helion-X overview</a>
+<a href="#access" data-en="2. Access, roles and read-only mode" data-el="2. Πρόσβαση, ρόλοι και λειτουργία μόνο ανάγνωσης">2. Access, roles and read-only mode</a>
+<a href="#saving" data-en="3. Saving, synchronization, exports and backups" data-el="3. Αποθήκευση, συγχρονισμός, εξαγωγές και αντίγραφα ασφαλείας">3. Saving, synchronization, exports and backups</a>
+<a href="#workflow" data-en="4. Recommended cross-module workflow" data-el="4. Συνιστώμενη ροή μεταξύ modules">4. Recommended cross-module workflow</a>
+<div class="nav-group">REPORT</div>
+<a href="#report" data-en="5. Safety / Security Report" data-el="5. Αναφορά Safety / Security">5. Safety / Security Report</a>
+<div class="nav-group">SMS</div>
+<a href="#sms" data-en="6. SMS module — orientation" data-el="6. SMS module — προσανατολισμός">6. SMS module — orientation</a>
+<a href="#sms-dashboard" data-en="6.1 SMS Dashboard" data-el="6.1 SMS Dashboard">6.1 SMS Dashboard</a>
+<a href="#sms-risk" data-en="6.2 APP08-OMM — Risk Register" data-el="6.2 APP08-OMM — Μητρώο Κινδύνων">6.2 APP08-OMM — Risk Register</a>
+<a href="#sms-moc" data-en="6.3 APP09-OMM — Management of Change" data-el="6.3 APP09-OMM — Διαχείριση Αλλαγών">6.3 APP09-OMM — Management of Change</a>
+<a href="#sms-erp" data-en="6.4 APP10-OMM — Emergency Response Plan" data-el="6.4 APP10-OMM — Σχέδιο Αντιμετώπισης Έκτακτης Ανάγκης">6.4 APP10-OMM — Emergency Response Plan</a>
+<a href="#sms-spi" data-en="6.5 APP11-OMM — Safety Performance Indicators" data-el="6.5 APP11-OMM — Δείκτες Επιδόσεων Ασφάλειας">6.5 APP11-OMM — Safety Performance Indicators</a>
+<a href="#sms-occ" data-en="6.6 APP12-OMM — Occurrence Log" data-el="6.6 APP12-OMM — Καταγραφή Συμβάντων">6.6 APP12-OMM — Occurrence Log</a>
+<a href="#sms-accounting" data-en="6.7 Event Accounting" data-el="6.7 Event Accounting / Καταμέτρηση Συμβάντων">6.7 Event Accounting</a>
+<a href="#sms-assurance" data-en="6.8 Safety Policy, controls and assurance tools" data-el="6.8 Safety Policy, controls και assurance tools">6.8 Safety Policy, controls and assurance tools</a>
+<a href="#sms-export" data-en="6.9 SMS Export / backup area" data-el="6.9 SMS Export / backup area">6.9 SMS Export / backup area</a>
+<div class="nav-group">CMS</div>
+<a href="#cms" data-en="7. CMS module — orientation" data-el="7. CMS module — προσανατολισμός">7. CMS module — orientation</a>
+<a href="#cms-dashboard" data-en="7.1 CMS Dashboard" data-el="7.1 CMS Dashboard">7.1 CMS Dashboard</a>
+<a href="#cms-auditplan" data-en="7.2 APP13-OMM — Audit Plan" data-el="7.2 APP13-OMM — Πρόγραμμα Ελέγχων">7.2 APP13-OMM — Audit Plan</a>
+<a href="#cms-kpi" data-en="7.3 APP14-OMM — Compliance indicators" data-el="7.3 APP14-OMM — Δείκτες Συμμόρφωσης">7.3 APP14-OMM — Compliance indicators</a>
+<a href="#cms-cap" data-en="7.4 APP15-OMM — Corrective Action Plan (CAP)" data-el="7.4 APP15-OMM — Σχέδιο Διορθωτικών Ενεργειών (CAP)">7.4 APP15-OMM — Corrective Action Plan (CAP)</a>
+<a href="#cms-competence" data-en="7.5 APP16–APP18 — Subcontractors, Auditors and Trainers" data-el="7.5 APP16–APP18 — Subcontractors, Auditors και Trainers">7.5 APP16–APP18 — Subcontractors, Auditors and Trainers</a>
+<a href="#cms-srb" data-en="7.6 SRB Checklist and SRB record" data-el="7.6 SRB Checklist και SRB record">7.6 SRB Checklist and SRB record</a>
+<a href="#cms-easa" data-en="7.7 EASA Audit Grid" data-el="7.7 EASA Audit Grid">7.7 EASA Audit Grid</a>
+<a href="#cms-matrix" data-en="7.8 Compliance Matrix" data-el="7.8 Πίνακας Συμμόρφωσης">7.8 Compliance Matrix</a>
+<a href="#cms-watch" data-en="7.9 Regulatory Watch" data-el="7.9 Κανονιστική Παρακολούθηση">7.9 Regulatory Watch</a>
+<a href="#cms-audits" data-en="7.10 Audits &amp; Authority" data-el="7.10 Audits &amp; Authority">7.10 Audits &amp; Authority</a>
+<a href="#cms-annual" data-en="7.11 Annual Report and Settings" data-el="7.11 Annual Report και Settings">7.11 Annual Report and Settings</a>
+<a href="#cms-smsbridge" data-en="7.12 Safety (SMS) bridge" data-el="7.12 Safety (SMS) bridge">7.12 Safety (SMS) bridge</a>
+<div class="nav-group">OMM</div>
+<a href="#omm" data-en="8. OMM Appendices module — orientation" data-el="8. OMM Appendices — προσανατολισμός">8. OMM Appendices module — orientation</a>
+<a href="#omm-app01" data-en="8.1 APP01-OMM — List of Appendices" data-el="8.1 APP01-OMM — Λίστα Παραρτημάτων">8.1 APP01-OMM — List of Appendices</a>
+<a href="#omm-app02" data-en="8.2 APP02-OMM — Facilities &amp; Infrastructure" data-el="8.2 APP02-OMM — Facilities &amp; Infrastructure">8.2 APP02-OMM — Facilities &amp; Infrastructure</a>
+<a href="#omm-app03" data-en="8.3 APP03-OMM — Organizational Chart" data-el="8.3 APP03-OMM — Οργανόγραμμα">8.3 APP03-OMM — Organizational Chart</a>
+<a href="#omm-app04" data-en="8.4 APP04-OMM — Management Personnel" data-el="8.4 APP04-OMM — Διοικητικό Προσωπικό">8.4 APP04-OMM — Management Personnel</a>
+<a href="#omm-app06" data-en="8.5 APP06-OMM — Aircraft being used" data-el="8.5 APP06-OMM — Aircraft being used">8.5 APP06-OMM — Aircraft being used</a>
+<a href="#omm-app07" data-en="8.6 APP07-OMM — Safety Promotion &amp; Training" data-el="8.6 APP07-OMM — Safety Promotion &amp; Training">8.6 APP07-OMM — Safety Promotion &amp; Training</a>
+<div class="nav-group">GENERAL</div>
+<a href="#closing" data-en="9. Closing a Helion-X module" data-el="9. Κλείσιμο Helion-X module">9. Closing a Helion-X module</a>
+<a href="#troubleshooting" data-en="10. Troubleshooting checklist" data-el="10. Checklist αντιμετώπισης προβλημάτων">10. Troubleshooting checklist</a>
+<a href="#quickref" data-en="11. Quick reference — which module should I use?" data-el="11. Γρήγορη αναφορά — ποιο module χρησιμοποιώ;">11. Quick reference — which module should I use?</a></aside><main>
+<div class="hero"><h1>HELION-X OPERATING MANUAL</h1><div class="lang en"><p>This manual covers all functions visible in the supplied Helion-X HOME, SMS, CMS, OMM Appendices and Safety/Security Report files. It is designed as an operational user guide: what each module is for, how to enter and review data, how records link together, and what must be checked before saving, exporting or closing.</p></div><div class="lang el"><p>Το εγχειρίδιο καλύπτει όλες τις λειτουργίες που εμφανίζονται στα αρχεία Helion-X HOME, SMS, CMS, OMM Appendices και Safety/Security Report. Είναι επιχειρησιακός οδηγός: σκοπός κάθε module, data entry/review, συνδέσεις μεταξύ records και έλεγχοι πριν από save, export ή close.</p></div><div class="chips"><span class="chip">HOME</span><span class="chip">SMS</span><span class="chip">CMS</span><span class="chip">OMM</span><span class="chip">SAFETY REPORT</span><span class="chip">EN / EL</span></div></div>
+<div id="no-results" class="no-results">No matching section / Δεν βρέθηκε αντίστοιχη ενότητα.</div>
+<section class="guide-section" id="home">
+<div class="lang en"><h2>1. Helion-X overview</h2>
+<p><strong>Helion-X</strong> is the management portal that brings together the Safety Management System (SMS), Compliance Monitoring System (CMS), OMM Appendices and the Safety/Security reporting form. The home page is the normal starting point.</p>
+<h4>From the home page</h4>
+<ol>
+<li>Select <strong>SMS</strong> for risks, occurrences, change management, ERP, safety indicators and safety assurance.</li>
+<li>Select <strong>CMS</strong> for audit planning, findings, corrective actions, compliance matrices, regulatory watch, SRB and annual reporting.</li>
+<li>Select <strong>OMM</strong> for the controlled OMM appendices, management lists, aircraft list and safety-promotion/training records.</li>
+<li>Select <strong>Safety Report</strong> when a user needs to submit a safety, security or Part-IS related report.</li>
+<li>Select <strong>User Guide / Οδηγός Χρήστη</strong> to open this manual.</li>
+</ol>
+<div class="note"><strong>Recommended practice:</strong> use the HOME/SMS/CMS/OMM navigation bar rather than the browser Back button when moving between Helion-X management modules.</div>
+</div>
+<div class="lang el"><h2>1. Επισκόπηση Helion-X</h2>
+<p>Το <strong>Helion-X</strong> είναι η πύλη διαχείρισης που συγκεντρώνει το Σύστημα Διαχείρισης Ασφάλειας (SMS), το Σύστημα Παρακολούθησης Συμμόρφωσης (CMS), τα Παραρτήματα OMM και τη φόρμα αναφοράς Safety/Security. Η αρχική σελίδα είναι το κανονικό σημείο εκκίνησης.</p>
+<h4>Από την αρχική σελίδα</h4>
+<ol>
+<li>Επιλέξτε <strong>SMS</strong> για κινδύνους, συμβάντα, διαχείριση αλλαγών, ERP, δείκτες ασφάλειας και safety assurance.</li>
+<li>Επιλέξτε <strong>CMS</strong> για προγραμματισμό ελέγχων, ευρήματα, διορθωτικές ενέργειες, πίνακες συμμόρφωσης, κανονιστική παρακολούθηση, SRB και ετήσια αναφορά.</li>
+<li>Επιλέξτε <strong>OMM</strong> για τα ελεγχόμενα παραρτήματα OMM, τις λίστες διοίκησης, τον στόλο και τα αρχεία safety promotion/εκπαίδευσης.</li>
+<li>Επιλέξτε <strong>Safety Report</strong> όταν πρέπει να υποβληθεί αναφορά safety, security ή Part-IS.</li>
+<li>Επιλέξτε <strong>User Guide / Οδηγός Χρήστη</strong> για αυτό το εγχειρίδιο.</li>
+</ol>
+<div class="note"><strong>Συνιστώμενη πρακτική:</strong> χρησιμοποιείτε τη γραμμή HOME/SMS/CMS/OMM αντί για το κουμπί Back του browser όταν μετακινείστε μεταξύ των κύριων modules.</div>
+</div>
+</section>
+<section class="guide-section" id="access">
+<div class="lang en"><h2>2. Access, roles and read-only mode</h2>
+<p>Helion-X distinguishes between users who may modify data and users who may only view data.</p>
+<table><thead><tr><th>Role</th><th>Typical rights</th></tr></thead><tbody>
+<tr><td><strong>Admin</strong></td><td>Read/write access to management modules; administrative restore functions may also be available.</td></tr>
+<tr><td><strong>Editor</strong></td><td>Read/write access to the operational management modules.</td></tr>
+<tr><td><strong>Authority</strong></td><td>Viewing access only. Editing controls are intentionally disabled.</td></tr>
+<tr><td><strong>Reader / Guest</strong></td><td>Viewing access only; the portal may restrict the modules shown to the user.</td></tr>
+</tbody></table>
+<h4>Signing in</h4><ol>
+<li>On HOME or a module, select the login control when displayed.</li>
+<li>Enter the Helion-X account email and password.</li>
+<li>Check the role badge after authentication. If the badge shows <strong>READ ONLY</strong> unexpectedly, do not attempt to work around the restriction; ask the system administrator to verify the declared role/email.</li>
+<li>When finished, use <strong>Sign out / Log out</strong> on a shared computer.</li>
+</ol>
+<div class="warn"><strong>Important:</strong> a disabled field or Save/Add/Delete button in read-only mode is a permission control, not a malfunction.</div>
+</div>
+<div class="lang el"><h2>2. Πρόσβαση, ρόλοι και λειτουργία μόνο ανάγνωσης</h2>
+<p>Το Helion-X διαχωρίζει τους χρήστες που μπορούν να τροποποιούν δεδομένα από εκείνους που έχουν μόνο δικαίωμα προβολής.</p>
+<table><thead><tr><th>Ρόλος</th><th>Τυπικά δικαιώματα</th></tr></thead><tbody>
+<tr><td><strong>Admin</strong></td><td>Ανάγνωση/εγγραφή στα modules διαχείρισης· μπορεί να διαθέτει και λειτουργίες επαναφοράς.</td></tr>
+<tr><td><strong>Editor</strong></td><td>Ανάγνωση/εγγραφή στα επιχειρησιακά modules διαχείρισης.</td></tr>
+<tr><td><strong>Authority</strong></td><td>Μόνο προβολή. Τα στοιχεία επεξεργασίας είναι σκόπιμα απενεργοποιημένα.</td></tr>
+<tr><td><strong>Reader / Guest</strong></td><td>Μόνο προβολή· η πύλη μπορεί να περιορίζει τα modules που εμφανίζονται.</td></tr>
+</tbody></table>
+<h4>Σύνδεση</h4><ol>
+<li>Στην HOME ή σε module, επιλέξτε το στοιχείο login όταν εμφανίζεται.</li>
+<li>Εισαγάγετε email και password του λογαριασμού Helion-X.</li>
+<li>Ελέγξτε το badge ρόλου. Αν εμφανίζεται <strong>READ ONLY</strong> απρόσμενα, μην παρακάμψετε τον περιορισμό· ζητήστε από τον διαχειριστή να ελέγξει τον δηλωμένο ρόλο/email.</li>
+<li>Σε κοινόχρηστο υπολογιστή χρησιμοποιήστε <strong>Sign out / Log out</strong> όταν ολοκληρώσετε.</li>
+</ol>
+<div class="warn"><strong>Σημαντικό:</strong> ένα απενεργοποιημένο πεδίο ή κουμπί Save/Add/Delete σε read-only mode είναι έλεγχος δικαιωμάτων και όχι βλάβη.</div>
+</div>
+</section>
+<section class="guide-section" id="saving">
+<div class="lang en"><h2>3. Saving, synchronization, exports and backups</h2>
+<p>Different Helion-X modules use a combination of local browser storage, cloud synchronization and explicit export files. Treat an export as a controlled backup, not as a substitute for completing the normal Save workflow.</p>
+<h4>Safe working sequence</h4><ol>
+<li>Make the change in the relevant module.</li>
+<li>Use the module-specific <strong>Save</strong> button when one exists.</li>
+<li>Allow the cloud/status indicator to return to a normal/connected state before closing the browser.</li>
+<li>For significant changes, export JSON/CSV/PDF as appropriate to the record type.</li>
+<li>Before a restore/import, create a fresh export of the current state.</li>
+</ol>
+<h4>What the export formats are for</h4>
+<ul><li><strong>JSON:</strong> full or module backup designed for re-import/restore.</li><li><strong>CSV:</strong> tabular analysis, registers and traceability in Excel-compatible form.</li><li><strong>PDF / Print:</strong> controlled snapshot for review, signature, filing or authority evidence.</li><li><strong>HTML:</strong> used in the OMM module to save a self-contained updated working file.</li></ul>
+<div class="warn"><strong>Restore/import is potentially destructive.</strong> Confirm that the selected file belongs to the correct Helion-X environment and that a current backup exists before replacing data.</div>
+</div>
+<div class="lang el"><h2>3. Αποθήκευση, συγχρονισμός, εξαγωγές και αντίγραφα ασφαλείας</h2>
+<p>Τα modules του Helion-X χρησιμοποιούν συνδυασμό τοπικής αποθήκευσης browser, cloud synchronization και ρητών αρχείων export. Το export είναι ελεγχόμενο backup και όχι υποκατάστατο της κανονικής διαδικασίας Save.</p>
+<h4>Ασφαλής σειρά εργασίας</h4><ol>
+<li>Κάντε την αλλαγή στο σωστό module.</li>
+<li>Χρησιμοποιήστε το ειδικό κουμπί <strong>Save</strong> όταν υπάρχει.</li>
+<li>Περιμένετε το cloud/status indicator να επιστρέψει σε κανονική/connected κατάσταση πριν κλείσετε τον browser.</li>
+<li>Για σημαντικές αλλαγές εξάγετε JSON/CSV/PDF ανάλογα με το αρχείο.</li>
+<li>Πριν από restore/import δημιουργήστε νέο export της τρέχουσας κατάστασης.</li>
+</ol>
+<h4>Χρήση των μορφών export</h4>
+<ul><li><strong>JSON:</strong> πλήρες ή module backup για re-import/restore.</li><li><strong>CSV:</strong> πίνακες, μητρώα και ανάλυση συμβατή με Excel.</li><li><strong>PDF / Print:</strong> ελεγχόμενο στιγμιότυπο για review, υπογραφές, αρχειοθέτηση ή evidence προς αρχή.</li><li><strong>HTML:</strong> χρησιμοποιείται στο OMM για αποθήκευση ενημερωμένου αυτοτελούς αρχείου.</li></ul>
+<div class="warn"><strong>Το restore/import μπορεί να αντικαταστήσει δεδομένα.</strong> Βεβαιωθείτε ότι το αρχείο ανήκει στο σωστό περιβάλλον Helion-X και ότι υπάρχει πρόσφατο backup.</div>
+</div>
+</section>
+<section class="guide-section" id="workflow">
+<div class="lang en"><h2>4. Recommended cross-module workflow</h2>
+<p>Use the modules as one management system rather than isolated registers.</p>
+<ol>
+<li><strong>Report / detect:</strong> receive a mobile Safety/Security report, an audit finding, a CAMO signal or another safety input.</li>
+<li><strong>Classify:</strong> in the SMS Occurrence Log, assign the occurrence category, SMS family and event/risk linkage.</li>
+<li><strong>Assess:</strong> create or update the corresponding Risk Register entry when risk exposure changes.</li>
+<li><strong>Act:</strong> use corrective actions in the occurrence, a CMS CAP for compliance findings, or a Management of Change study for an organisational/operational/technical change.</li>
+<li><strong>Verify effectiveness:</strong> record control status, due date, evidence and effectiveness review rather than closing an action solely because it was implemented.</li>
+<li><strong>Review:</strong> use SPI/KPI dashboards, SRB, Safety Assurance and annual CMS reporting to confirm trends and management decisions.</li>
+</ol>
+<div class="note"><strong>Traceability rule:</strong> whenever the interface offers a linked risk ID, change-study reference, finding reference or document reference, use it. These links are what turn separate entries into an auditable management chain.</div>
+</div>
+<div class="lang el"><h2>4. Συνιστώμενη ροή μεταξύ modules</h2>
+<p>Χρησιμοποιείτε τα modules ως ένα ενιαίο management system και όχι ως ανεξάρτητα μητρώα.</p>
+<ol>
+<li><strong>Report / detect:</strong> λήψη mobile Safety/Security report, audit finding, CAMO signal ή άλλου safety input.</li>
+<li><strong>Classify:</strong> στο SMS Occurrence Log αντιστοιχίστε occurrence category, SMS family και σύνδεση event/risk.</li>
+<li><strong>Assess:</strong> δημιουργήστε ή ενημερώστε το αντίστοιχο Risk Register entry όταν αλλάζει η έκθεση σε κίνδυνο.</li>
+<li><strong>Act:</strong> χρησιμοποιήστε corrective actions στο occurrence, CMS CAP για compliance findings ή Management of Change για οργανωτική/επιχειρησιακή/τεχνική αλλαγή.</li>
+<li><strong>Verify effectiveness:</strong> καταγράψτε control status, due date, evidence και effectiveness review· μην κλείνετε ενέργεια μόνο επειδή εφαρμόστηκε.</li>
+<li><strong>Review:</strong> χρησιμοποιήστε SPI/KPI dashboards, SRB, Safety Assurance και annual CMS reporting για τάσεις και διοικητικές αποφάσεις.</li>
+</ol>
+<div class="note"><strong>Κανόνας ιχνηλασιμότητας:</strong> όπου υπάρχει linked risk ID, change-study reference, finding reference ή document reference, συμπληρώστε το. Αυτές οι συνδέσεις δημιουργούν auditable αλυσίδα διαχείρισης.</div>
+</div>
+</section>
+<section class="guide-section" id="report">
+<div class="lang en"><h2>5. Safety / Security Report</h2>
+<p>The reporting form is intended for rapid submission of flight-safety occurrences, security/unlawful-interference events and information-security events.</p>
+<h4>Step-by-step</h4><ol>
+<li>Choose <strong>SAFETY</strong> or <strong>SECURITY</strong>. The form reveals only the fields relevant to the selected branch.</li>
+<li>Decide whether the report is <strong>Anonymous</strong>. Anonymous reporting removes identity data; for security reports, remember that anonymity can limit follow-up.</li>
+<li>Select the entity concerned (Operations, CAMO, Part 145 or Other).</li>
+<li>Complete the event type and the aircraft/operation fields that become applicable.</li>
+<li>Enter the <strong>Date</strong>, local time and <strong>Location of event</strong>.</li>
+<li>Describe what happened in factual chronological order. Separate observations from assumptions.</li>
+<li>Record immediate actions already taken, external notifications already made and any useful comments/suggestions.</li>
+<li>Attach photos/files when they materially help the investigation and do not expose unnecessary sensitive information.</li>
+<li>Select <strong>SUBMIT REPORT</strong>. Do not leave the page until the success screen and report reference are displayed.</li>
+</ol>
+<h4>If submission cannot reach the backend</h4><p>The form includes a local pending-report mechanism. If connectivity is unreliable, preserve the device/browser state and retry when connection is restored rather than creating multiple duplicate reports.</p>
+<div class="warn"><strong>Live emergency or ongoing security threat:</strong> follow the emergency/security call process first. The electronic report is not a substitute for immediate operational response.</div>
+</div>
+<div class="lang el"><h2>5. Αναφορά Safety / Security</h2>
+<p>Η φόρμα reporting χρησιμοποιείται για γρήγορη υποβολή flight-safety occurrences, security/unlawful-interference events και information-security events.</p>
+<h4>Βήμα προς βήμα</h4><ol>
+<li>Επιλέξτε <strong>SAFETY</strong> ή <strong>SECURITY</strong>. Η φόρμα εμφανίζει μόνο τα σχετικά πεδία.</li>
+<li>Αποφασίστε αν η αναφορά θα είναι <strong>Anonymous</strong>. Η ανώνυμη αναφορά αφαιρεί στοιχεία ταυτότητας· στα security reports μπορεί να περιορίσει το follow-up.</li>
+<li>Επιλέξτε concerned entity (Operations, CAMO, Part 145 ή Other).</li>
+<li>Συμπληρώστε τον τύπο συμβάντος και τα aircraft/operation fields που εφαρμόζονται.</li>
+<li>Καταχωρίστε <strong>Date</strong>, local time και <strong>Location of event</strong>.</li>
+<li>Περιγράψτε τι συνέβη με πραγματική χρονολογική σειρά. Διαχωρίστε παρατηρήσεις από υποθέσεις.</li>
+<li>Καταγράψτε immediate actions, εξωτερικές notifications και χρήσιμα comments/suggestions.</li>
+<li>Επισυνάψτε photos/files μόνο όταν βοηθούν ουσιαστικά την έρευνα και χωρίς περιττά ευαίσθητα δεδομένα.</li>
+<li>Επιλέξτε <strong>SUBMIT REPORT</strong>. Μην φύγετε από τη σελίδα πριν εμφανιστεί success screen και report reference.</li>
+</ol>
+<h4>Αν δεν υπάρχει σύνδεση με το backend</h4><p>Η φόρμα διαθέτει local pending-report mechanism. Σε ασταθή σύνδεση διατηρήστε το ίδιο browser/device state και επαναλάβετε όταν αποκατασταθεί η σύνδεση, αντί να δημιουργείτε διπλές αναφορές.</p>
+<div class="warn"><strong>Ενεργή κατάσταση έκτακτης ανάγκης ή security threat:</strong> ακολουθήστε πρώτα την emergency/security διαδικασία. Η ηλεκτρονική αναφορά δεν αντικαθιστά την άμεση επιχειρησιακή αντίδραση.</div>
+</div>
+</section>
+<section class="guide-section" id="sms">
+<div class="lang en"><h2>6. SMS module — orientation</h2>
+<p>The SMS sidebar is organised around the operational safety lifecycle: dashboard, risk register, change management, ERP, indicators, occurrence handling and assurance tools.</p>
+<h4>Main navigation</h4><ul>
+<li><strong>Dashboard</strong> — overall status and safety picture.</li><li><strong>APP08-OMM Risk Register</strong> — hazard/risk scenarios and controls.</li><li><strong>APP09-OMM Management of Change</strong> — formal change studies.</li><li><strong>APP10-OMM Emergency Response Plan</strong> — crisis response information and records.</li><li><strong>APP11-OMM Safety Performance Indicators</strong> — monitored safety performance.</li><li><strong>APP12-OMM Occurrence Log</strong> — occurrence record, analysis and follow-up.</li><li><strong>Event Accounting</strong> — event catalogue and taxonomy review.</li><li><strong>Safety Policy, Controls Review, Barrier Register, Bow-Tie, Lessons Learned, Safety Assurance, Internal SMS Audits, ALoS/Safety Case and CAMO → SMS Interface</strong> — assurance and governance.</li>
+</ul>
+</div>
+<div class="lang el"><h2>6. SMS module — προσανατολισμός</h2>
+<p>Το sidebar του SMS ακολουθεί τον κύκλο safety management: dashboard, risk register, change management, ERP, indicators, occurrences και assurance tools.</p>
+<h4>Κύρια πλοήγηση</h4><ul>
+<li><strong>Dashboard</strong> — συνολική εικόνα ασφάλειας.</li><li><strong>APP08-OMM Risk Register</strong> — hazards/risk scenarios και controls.</li><li><strong>APP09-OMM Management of Change</strong> — επίσημες μελέτες αλλαγών.</li><li><strong>APP10-OMM Emergency Response Plan</strong> — πληροφορίες και αρχεία διαχείρισης κρίσης.</li><li><strong>APP11-OMM Safety Performance Indicators</strong> — παρακολούθηση safety performance.</li><li><strong>APP12-OMM Occurrence Log</strong> — καταγραφή, ανάλυση και follow-up συμβάντων.</li><li><strong>Event Accounting</strong> — event catalogue και taxonomy review.</li><li><strong>Safety Policy, Controls Review, Barrier Register, Bow-Tie, Lessons Learned, Safety Assurance, Internal SMS Audits, ALoS/Safety Case και CAMO → SMS Interface</strong> — assurance και governance.</li>
+</ul>
+</div>
+</section>
+<section class="guide-section" id="sms-dashboard">
+<div class="lang en"><h2>6.1 SMS Dashboard</h2>
+<p>Use the Dashboard as the first review screen, not as a data-entry substitute.</p>
+<ol><li>Review the risk and occurrence indicators displayed.</li><li>Check whether any items require attention before opening individual registers.</li><li>Use <strong>+ ADD NEW EVENT</strong> when the purpose is to start a new occurrence workflow.</li><li>After major changes elsewhere in SMS, return to the Dashboard and verify that counts/indicators reflect the new state.</li></ol>
+</div>
+<div class="lang el"><h2>6.1 SMS Dashboard</h2>
+<p>Χρησιμοποιείτε το Dashboard ως πρώτη οθόνη review και όχι ως υποκατάστατο data entry.</p>
+<ol><li>Ελέγξτε τους risk και occurrence indicators.</li><li>Εντοπίστε items που απαιτούν προσοχή πριν ανοίξετε τα αντίστοιχα registers.</li><li>Χρησιμοποιήστε <strong>+ ADD NEW EVENT</strong> για ένα νέο occurrence workflow.</li><li>Μετά από σημαντικές αλλαγές επιστρέψτε στο Dashboard και επιβεβαιώστε ότι counts/indicators ενημερώθηκαν.</li></ol>
+</div>
+</section>
+<section class="guide-section" id="sms-risk">
+<div class="lang en"><h2>6.2 APP08-OMM — Risk Register</h2>
+<p>The Risk Register is the core record of identified safety risk scenarios and their controls.</p>
+<h4>Finding an existing risk</h4><ol><li>Use the free-text search first.</li><li>Use Level 1 occurrence category and Level 2 SMS family filters to narrow the list.</li><li>Open advanced filters only when needed. Active filters are shown so that you do not review a partially filtered register unknowingly.</li><li>Use <strong>Compact</strong> when you need more rows on screen; this changes presentation, not data.</li></ol>
+<h4>Creating or editing a risk</h4><ol>
+<li>Select <strong>+ NEW ENTRY</strong> (or edit an existing line).</li>
+<li>Enter the unique <strong>Risk ID</strong>, Legacy Domain, Level 1 occurrence category and Level 2 SMS family.</li>
+<li>Write one clear <strong>Undesirable Event</strong>. Put causes/exposure in <strong>Dangers / Hazards</strong> and outcomes in <strong>Consequences</strong>.</li>
+<li>Describe <strong>Prevention</strong>, <strong>Mitigation</strong> and <strong>Recovery</strong> measures separately when applicable.</li>
+<li>Assign <strong>Initial Risk</strong> before credited controls and <strong>Residual Risk</strong> after the stated controls.</li>
+<li>Complete control governance: Control Status, Last Control Date, Control Comment, Risk Owner and Effectiveness Due Date.</li>
+<li>Where used, define the Safety Performance Indicator, Target/Trigger, Effectiveness Verification Method and Formal Acceptance Basis/Conditions.</li>
+<li>Link a Management of Change study when the risk originates from or is materially affected by a change.</li>
+<li>Use <strong>PREVIEW</strong> to inspect the record and <strong>SAVE TO DATABASE</strong> to commit it.</li>
+</ol>
+<h4>Exports</h4><p><strong>PDF — Barrier Sheets</strong> creates barrier-oriented printable records; JSON is suited to backup; CSV is suited to register analysis.</p>
+<div class="warn"><strong>Do not use a single row for several unrelated undesirable events.</strong> If the event, consequences or control set differ materially, create separate risk scenarios so that residual risk and effectiveness can be verified independently.</div>
+</div>
+<div class="lang el"><h2>6.2 APP08-OMM — Μητρώο Κινδύνων</h2>
+<p>Το Risk Register είναι το βασικό αρχείο των αναγνωρισμένων safety risk scenarios και των controls τους.</p>
+<h4>Εύρεση υπάρχοντος risk</h4><ol><li>Χρησιμοποιήστε πρώτα το free-text search.</li><li>Χρησιμοποιήστε Level 1 occurrence category και Level 2 SMS family για περιορισμό.</li><li>Ανοίξτε advanced filters μόνο όταν χρειάζεται. Τα ενεργά filters εμφανίζονται ώστε να μην εξετάζετε κατά λάθος μερικώς φιλτραρισμένο register.</li><li>Χρησιμοποιήστε <strong>Compact</strong> για περισσότερες γραμμές στην οθόνη· αλλάζει μόνο την εμφάνιση.</li></ol>
+<h4>Δημιουργία ή επεξεργασία risk</h4><ol>
+<li>Επιλέξτε <strong>+ NEW ENTRY</strong> ή edit σε υπάρχουσα γραμμή.</li>
+<li>Καταχωρίστε μοναδικό <strong>Risk ID</strong>, Legacy Domain, Level 1 occurrence category και Level 2 SMS family.</li>
+<li>Γράψτε ένα σαφές <strong>Undesirable Event</strong>. Βάλτε αιτίες/έκθεση στα <strong>Dangers / Hazards</strong> και αποτελέσματα στα <strong>Consequences</strong>.</li>
+<li>Διαχωρίστε <strong>Prevention</strong>, <strong>Mitigation</strong> και <strong>Recovery</strong> measures.</li>
+<li>Ορίστε <strong>Initial Risk</strong> πριν από credited controls και <strong>Residual Risk</strong> μετά τα controls.</li>
+<li>Συμπληρώστε Control Status, Last Control Date, Control Comment, Risk Owner και Effectiveness Due Date.</li>
+<li>Όπου εφαρμόζεται ορίστε Safety Performance Indicator, Target/Trigger, Effectiveness Verification Method και Formal Acceptance Basis/Conditions.</li>
+<li>Συνδέστε Management of Change study όταν ο risk προέρχεται από ή επηρεάζεται ουσιαστικά από αλλαγή.</li>
+<li>Χρησιμοποιήστε <strong>PREVIEW</strong> και μετά <strong>SAVE TO DATABASE</strong>.</li>
+</ol>
+<h4>Exports</h4><p>Το <strong>PDF — Barrier Sheets</strong> δημιουργεί εκτυπώσιμα barrier records, το JSON είναι για backup και το CSV για ανάλυση register.</p>
+<div class="warn"><strong>Μην βάζετε σε μία γραμμή πολλά άσχετα undesirable events.</strong> Αν event, consequences ή controls διαφέρουν ουσιαστικά, δημιουργήστε ξεχωριστά risk scenarios.</div>
+</div>
+</section>
+<section class="guide-section" id="sms-moc">
+<div class="lang en"><h2>6.3 APP09-OMM — Management of Change</h2>
+<p>Use Management of Change (MoC) when a proposed or implemented change can affect safety, compliance, responsibilities, resources, procedures, technology or operations.</p>
+<h4>Create a study</h4><ol>
+<li>Select <strong>+ New Change Study</strong> or <strong>NEW STUDY</strong>.</li>
+<li>Enter Title, Internal Reference and Safety Assessment Type.</li>
+<li>Indicate whether authority approval/authorisation is required before implementation.</li>
+<li>Set Workflow Status and maintain Version History. Use the version note when a revision changes the assessment.</li>
+<li>Describe the change, decision origin, duration, start/end dates and documentation/archiving impact.</li>
+<li>List applicable regulations and the assessor(s).</li>
+<li>If the change is triggered by an occurrence or CMS finding, use the root-cause/reference fields and lookup tools so the link is traceable.</li>
+<li>Identify change-related risk events. Import an existing Risk Register scenario where appropriate instead of rewriting a parallel, inconsistent risk.</li>
+<li>Complete cybersecurity/Part-IS fields when the change introduces information-security exposure.</li>
+<li>Add implementation actions with owner and follow-up status.</li>
+<li>Complete ACM/assessor acknowledgements, nominated-person involvement, effectiveness follow-up, conclusions and final approval.</li>
+<li>Use <strong>PREVIEW</strong> before <strong>SAVE CHANGE STUDY</strong>.</li>
+</ol>
+<div class="note"><strong>Closure criterion:</strong> a change study should not be treated as complete merely because the change has gone live. Record implementation evidence and confirm that the risk-reduction measures are effective.</div>
+</div>
+<div class="lang el"><h2>6.3 APP09-OMM — Διαχείριση Αλλαγών</h2>
+<p>Χρησιμοποιήστε Management of Change (MoC) όταν μια προτεινόμενη ή υλοποιημένη αλλαγή μπορεί να επηρεάσει safety, compliance, responsibilities, resources, procedures, technology ή operations.</p>
+<h4>Δημιουργία study</h4><ol>
+<li>Επιλέξτε <strong>+ New Change Study</strong> ή <strong>NEW STUDY</strong>.</li>
+<li>Συμπληρώστε Title, Internal Reference και Safety Assessment Type.</li>
+<li>Δηλώστε αν απαιτείται authority approval/authorisation πριν από implementation.</li>
+<li>Ορίστε Workflow Status και διατηρήστε Version History. Χρησιμοποιήστε version note όταν η revision αλλάζει την assessment.</li>
+<li>Περιγράψτε change, decision origin, duration, start/end dates και documentation/archiving impact.</li>
+<li>Καταγράψτε applicable regulations και assessors.</li>
+<li>Αν η αλλαγή προέρχεται από occurrence ή CMS finding, χρησιμοποιήστε root-cause/reference και lookup ώστε η σύνδεση να είναι traceable.</li>
+<li>Αναγνωρίστε change-related risk events. Κάντε import existing Risk Register scenario όπου είναι σωστό.</li>
+<li>Συμπληρώστε cybersecurity/Part-IS fields όταν υπάρχει information-security exposure.</li>
+<li>Προσθέστε implementation actions με owner και follow-up status.</li>
+<li>Συμπληρώστε ACM/assessor acknowledgements, nominated-person involvement, effectiveness follow-up, conclusions και final approval.</li>
+<li>Χρησιμοποιήστε <strong>PREVIEW</strong> πριν από <strong>SAVE CHANGE STUDY</strong>.</li>
+</ol>
+<div class="note"><strong>Κριτήριο closure:</strong> ένα MoC δεν θεωρείται ολοκληρωμένο μόνο επειδή η αλλαγή τέθηκε σε λειτουργία. Καταγράψτε evidence και επιβεβαιώστε effectiveness των risk-reduction measures.</div>
+</div>
+</section>
+<section class="guide-section" id="sms-erp">
+<div class="lang en"><h2>6.4 APP10-OMM — Emergency Response Plan</h2>
+<p>The ERP view is both a reference and a crisis-working tool. It contains contacts, checklists, a crisis log, roles and general/return information.</p>
+<ol><li>Use <strong>CONTACTS</strong> to access the call chain and emergency contacts.</li><li>Use <strong>CHECKLIST</strong> during activation so required information and decisions are not missed.</li><li>Use <strong>CRISIS LOG</strong> to add time-stamped entries. Record facts, calls, decisions, instructions and handovers.</li><li>Use <strong>ROLES</strong> to allocate crisis-management responsibilities.</li><li>Use <strong>GENERAL</strong> and <strong>RETURN</strong> for supporting procedures and return-to-normal activities.</li><li>Use <strong>Print ERP</strong> to create an offline/filing copy when required.</li></ol>
+<div class="warn"><strong>Reset</strong> is a destructive control. Do not use it during a live activation unless you are deliberately clearing test/training data and have preserved the required record.</div>
+</div>
+<div class="lang el"><h2>6.4 APP10-OMM — Σχέδιο Αντιμετώπισης Έκτακτης Ανάγκης</h2>
+<p>Το ERP είναι ταυτόχρονα reference και εργαλείο εργασίας σε κρίση. Περιλαμβάνει contacts, checklists, crisis log, roles και general/return information.</p>
+<ol><li>Χρησιμοποιήστε <strong>CONTACTS</strong> για call chain και emergency contacts.</li><li>Χρησιμοποιήστε <strong>CHECKLIST</strong> κατά την activation για να μη χαθούν απαιτούμενες πληροφορίες/αποφάσεις.</li><li>Χρησιμοποιήστε <strong>CRISIS LOG</strong> για time-stamped entries: facts, calls, decisions, instructions και handovers.</li><li>Χρησιμοποιήστε <strong>ROLES</strong> για κατανομή crisis-management responsibilities.</li><li>Χρησιμοποιήστε <strong>GENERAL</strong> και <strong>RETURN</strong> για supporting procedures και return-to-normal.</li><li>Χρησιμοποιήστε <strong>Print ERP</strong> για offline/filing copy.</li></ol>
+<div class="warn"><strong>Reset</strong> είναι destructive control. Μην το χρησιμοποιείτε σε πραγματική activation εκτός αν καθαρίζετε σκόπιμα test/training data και έχετε διατηρήσει το απαιτούμενο record.</div>
+</div>
+</section>
+<section class="guide-section" id="sms-spi">
+<div class="lang en"><h2>6.5 APP11-OMM — Safety Performance Indicators</h2>
+<p>The SPI view is for monitoring performance and triggers, not for replacing the underlying occurrence/risk records.</p>
+<ol><li>Select <strong>Refresh</strong> after material changes to occurrences or risks.</li><li>Review indicator value, target/trigger and status together.</li><li>When an indicator moves to watch/alert, open the underlying records and document the management response in the appropriate risk, action, assurance review or SRB record.</li><li>Do not manually interpret a green indicator as proof that all related risks are controlled; use it as one input to management review.</li></ol>
+</div>
+<div class="lang el"><h2>6.5 APP11-OMM — Δείκτες Επιδόσεων Ασφάλειας</h2>
+<p>Το SPI view χρησιμοποιείται για monitoring performance και triggers, όχι για αντικατάσταση των underlying occurrence/risk records.</p>
+<ol><li>Επιλέξτε <strong>Refresh</strong> μετά από ουσιαστικές αλλαγές σε occurrences ή risks.</li><li>Εξετάστε indicator value, target/trigger και status μαζί.</li><li>Όταν indicator περάσει σε watch/alert, ανοίξτε τα underlying records και καταγράψτε management response στο σωστό risk, action, assurance review ή SRB.</li><li>Ένα green indicator δεν αποδεικνύει μόνο του ότι όλοι οι σχετικοί risks είναι controlled.</li></ol>
+</div>
+</section>
+<section class="guide-section" id="sms-occ">
+<div class="lang en"><h2>6.6 APP12-OMM — Occurrence Log</h2>
+<p>The Occurrence Log is the controlled internal record used to capture event facts, ECCAIRS-oriented fields, taxonomy, analysis, risk linkage and follow-up.</p>
+<h4>Create or open an occurrence</h4><ol>
+<li>Select <strong>+ New Occurrence</strong>, or open a report from <strong>Mobile Reports</strong>.</li>
+<li>Complete headline, UTC/local date and time, location and occurrence classification fields.</li>
+<li>Complete aircraft and operation details where applicable: registration, model, serial number, operation type, departure/destination and call sign.</li>
+<li>Record the reporter description without rewriting it as a conclusion.</li>
+<li>Assign <strong>Level 1 — Occurrence Category</strong> and <strong>Level 2 — SMS Family</strong>.</li>
+<li>For Level 3/event accounting, select an approved catalogue event whenever one exists. If none fits, create a <strong>new event candidate</strong> and send it through review rather than forcing a wrong existing taxonomy.</li>
+<li>Link the relevant risk scenario. If the event reveals a new risk or materially changes exposure, update/create the Risk Register entry.</li>
+<li>Complete Risk Classification, Risk Assessment, Analysis/Follow-up and Conclusions.</li>
+<li>Add corrective actions with responsible person, due date and evidence/follow-up.</li>
+<li>Save the occurrence, then use Print when a controlled snapshot is required.</li>
+</ol>
+<h4>Bulk taxonomy assignment</h4><p><strong>Assign taxonomy &amp; risk</strong> is intended for records requiring structured classification. Review each proposed assignment before applying it in bulk.</p>
+<div class="note"><strong>Data-quality rule:</strong> event facts, analysis and conclusions should remain distinguishable. A later investigator must be able to see what was reported, what was established and what was inferred.</div>
+</div>
+<div class="lang el"><h2>6.6 APP12-OMM — Καταγραφή Συμβάντων</h2>
+<p>Το Occurrence Log είναι το ελεγχόμενο internal record για event facts, ECCAIRS-oriented fields, taxonomy, analysis, risk linkage και follow-up.</p>
+<h4>Δημιουργία ή άνοιγμα occurrence</h4><ol>
+<li>Επιλέξτε <strong>+ New Occurrence</strong> ή ανοίξτε report από <strong>Mobile Reports</strong>.</li>
+<li>Συμπληρώστε headline, UTC/local date/time, location και classification fields.</li>
+<li>Συμπληρώστε aircraft/operation στοιχεία όπου εφαρμόζεται: registration, model, serial number, operation type, departure/destination, call sign.</li>
+<li>Διατηρήστε το reporter description ως πραγματική περιγραφή και όχι ως conclusion.</li>
+<li>Ορίστε <strong>Level 1 — Occurrence Category</strong> και <strong>Level 2 — SMS Family</strong>.</li>
+<li>Για Level 3/Event Accounting επιλέξτε approved catalogue event όταν υπάρχει. Αν δεν ταιριάζει κανένα, δημιουργήστε <strong>new event candidate</strong> και περάστε το από review.</li>
+<li>Συνδέστε το relevant risk scenario. Αν το event αποκαλύπτει νέο risk ή αλλάζει σημαντικά την exposure, ενημερώστε/create Risk Register entry.</li>
+<li>Συμπληρώστε Risk Classification, Risk Assessment, Analysis/Follow-up και Conclusions.</li>
+<li>Προσθέστε corrective actions με responsible person, due date και evidence/follow-up.</li>
+<li>Αποθηκεύστε και χρησιμοποιήστε Print όταν απαιτείται controlled snapshot.</li>
+</ol>
+<h4>Bulk taxonomy assignment</h4><p>Το <strong>Assign taxonomy &amp; risk</strong> προορίζεται για records που χρειάζονται structured classification. Ελέγξτε κάθε assignment πριν το εφαρμόσετε μαζικά.</p>
+<div class="note"><strong>Κανόνας ποιότητας δεδομένων:</strong> event facts, analysis και conclusions πρέπει να παραμένουν διακριτά.</div>
+</div>
+</section>
+<section class="guide-section" id="sms-accounting">
+<div class="lang en"><h2>6.7 Event Accounting</h2>
+<p>Event Accounting maintains the Level-3 event catalogue and occurrence counts used for trend analysis.</p>
+<ol><li>Filter the catalogue by activity when needed.</li><li>Use an existing approved event for occurrences that genuinely match it.</li><li>Select <strong>NEW EVENT CANDIDATE</strong> when the event is not represented.</li><li>During review, confirm Level 1 category, Level 2 SMS family, the existing risk scenario (if any), review decision, reviewer, date and justification.</li><li>Use merge/count controls carefully when consolidating duplicate catalogue entries.</li><li>Export CSV when the catalogue/count history is needed for external analysis.</li></ol>
+<div class="warn">Do not approve a candidate merely to make classification faster. Approval changes the controlled event catalogue and can affect future trend counts.</div>
+</div>
+<div class="lang el"><h2>6.7 Event Accounting / Καταμέτρηση Συμβάντων</h2>
+<p>Το Event Accounting διατηρεί το Level-3 event catalogue και τα occurrence counts που χρησιμοποιούνται για trend analysis.</p>
+<ol><li>Φιλτράρετε το catalogue ανά activity όταν χρειάζεται.</li><li>Χρησιμοποιήστε existing approved event μόνο όταν το occurrence πραγματικά ταιριάζει.</li><li>Επιλέξτε <strong>NEW EVENT CANDIDATE</strong> όταν το event δεν εκπροσωπείται.</li><li>Στο review επιβεβαιώστε Level 1 category, Level 2 SMS family, existing risk scenario, review decision, reviewer, date και justification.</li><li>Χρησιμοποιήστε merge/count controls προσεκτικά όταν ενοποιείτε duplicate entries.</li><li>Export CSV όταν απαιτείται εξωτερική ανάλυση.</li></ol>
+<div class="warn">Μην εγκρίνετε candidate απλώς για ταχύτητα. Η approval αλλάζει το controlled event catalogue και επηρεάζει μελλοντικά trend counts.</div>
+</div>
+</section>
+<section class="guide-section" id="sms-assurance">
+<div class="lang en"><h2>6.8 Safety Policy, controls and assurance tools</h2>
+<h4>Safety Policy & Objectives</h4><p>Maintain the version number, drafting/revision date, next scheduled review, policy text, measurable annual objectives, Accountable Manager and approval acknowledgement. Save each controlled revision as a version.</p>
+<h4>Controls Review</h4><p>Use this view to reassess the status and effectiveness of controls linked to risks. A control that exists on paper but has not been verified should not be treated as proven effective.</p>
+<h4>Barrier Register</h4><p>Use <strong>Refresh</strong> to rebuild the cross-risk view of prevention, mitigation and recovery barriers and their provenance/traceability.</p>
+<h4>Bow-Tie Analysis</h4><p>Select a safety event/risk, review threats and prevention on the left and consequences/mitigation/recovery on the right. Use the PDF/CSV exports when the bow-tie structure must be shared or archived.</p>
+<h4>Lessons Learned</h4><p>Use <strong>+ New Lesson</strong> to record transferable learning from occurrences, audits, exercises or external information. Link the lesson to a concrete source/event where possible.</p>
+<h4>Safety Assurance</h4><p>Use <strong>+ New Review</strong> to document assurance reviews and effectiveness checks.</p>
+<h4>Internal SMS Audits</h4><p>Use <strong>+ New Audit</strong> for SMS-specific internal assurance activities.</p>
+<h4>ALoS / Safety Case</h4><p>Use <strong>+ New Safety Case</strong> to document a structured safety case / acceptable-level assessment for a defined operation or change.</p>
+<h4>CAMO → SMS Interface</h4><p>Use <strong>New CAMO Signal</strong> to record airworthiness information that requires SMS attention and keep the link to the originating technical information.</p>
+</div>
+<div class="lang el"><h2>6.8 Safety Policy, controls και assurance tools</h2>
+<h4>Safety Policy & Objectives</h4><p>Διατηρήστε version number, drafting/revision date, next scheduled review, policy text, measurable annual objectives, Accountable Manager και approval acknowledgement. Αποθηκεύστε κάθε controlled revision ως version.</p>
+<h4>Controls Review</h4><p>Χρησιμοποιήστε το view για επανεκτίμηση status/effectiveness των controls. Control που υπάρχει μόνο σε procedure αλλά δεν έχει verified effectiveness δεν πρέπει να θεωρείται αποδεδειγμένα αποτελεσματικό.</p>
+<h4>Barrier Register</h4><p>Χρησιμοποιήστε <strong>Refresh</strong> για cross-risk view των prevention, mitigation και recovery barriers με provenance/traceability.</p>
+<h4>Bow-Tie Analysis</h4><p>Επιλέξτε safety event/risk, εξετάστε threats/prevention αριστερά και consequences/mitigation/recovery δεξιά. Χρησιμοποιήστε PDF/CSV για sharing ή archiving.</p>
+<h4>Lessons Learned</h4><p>Χρησιμοποιήστε <strong>+ New Lesson</strong> για transferable learning από occurrences, audits, exercises ή external information και συνδέστε το με συγκεκριμένη πηγή.</p>
+<h4>Safety Assurance</h4><p>Χρησιμοποιήστε <strong>+ New Review</strong> για assurance reviews και effectiveness checks.</p>
+<h4>Internal SMS Audits</h4><p>Χρησιμοποιήστε <strong>+ New Audit</strong> για SMS-specific internal assurance.</p>
+<h4>ALoS / Safety Case</h4><p>Χρησιμοποιήστε <strong>+ New Safety Case</strong> για structured safety case / acceptable-level assessment.</p>
+<h4>CAMO → SMS Interface</h4><p>Χρησιμοποιήστε <strong>New CAMO Signal</strong> για airworthiness information που απαιτεί SMS attention και διατηρήστε τη σύνδεση με technical source.</p>
+</div>
+</section>
+<section class="guide-section" id="sms-export">
+<div class="lang en"><h2>6.9 SMS Export / backup area</h2>
+<p>The SMS Export view centralises printable outputs and backup/transfer functions.</p>
+<ul><li><strong>Dashboard Report:</strong> management snapshot.</li><li><strong>Full Risk Register PDF:</strong> complete printable risk register.</li><li><strong>Change Study PDF:</strong> controlled output of a change study.</li><li><strong>Full Register CSV / Current Filter CSV:</strong> complete or filtered register data.</li><li><strong>Change Studies CSV:</strong> tabular MoC export.</li><li><strong>Export Full Backup / Export all data (.json):</strong> backup for restoration.</li><li><strong>Import / Restore JSON:</strong> restore from a valid backup.</li><li><strong>Export Risk Register → CMS / Export Occurrences → CMS / Full Export → CMS:</strong> handoff functions used when CMS requires an updated safety data package.</li></ul>
+<div class="warn"><strong>Reset to factory data</strong> removes user state. Use only for a deliberate reset after exporting anything that must be retained.</div>
+</div>
+<div class="lang el"><h2>6.9 SMS Export / backup area</h2>
+<p>Το SMS Export view συγκεντρώνει printable outputs και backup/transfer functions.</p>
+<ul><li><strong>Dashboard Report:</strong> management snapshot.</li><li><strong>Full Risk Register PDF:</strong> πλήρες printable risk register.</li><li><strong>Change Study PDF:</strong> controlled output MoC.</li><li><strong>Full Register CSV / Current Filter CSV:</strong> πλήρη ή φιλτραρισμένα data.</li><li><strong>Change Studies CSV:</strong> tabular MoC export.</li><li><strong>Export Full Backup / Export all data (.json):</strong> backup για restoration.</li><li><strong>Import / Restore JSON:</strong> restore από valid backup.</li><li><strong>Export Risk Register → CMS / Export Occurrences → CMS / Full Export → CMS:</strong> handoff προς CMS.</li></ul>
+<div class="warn"><strong>Reset to factory data</strong> αφαιρεί user state. Χρησιμοποιήστε το μόνο μετά από σκόπιμη απόφαση και export των δεδομένων που πρέπει να διατηρηθούν.</div>
+</div>
+</section>
+<section class="guide-section" id="cms">
+<div class="lang en"><h2>7. CMS module — orientation</h2>
+<p>The CMS combines planned compliance surveillance, findings/actions, competence registers, management review, regulatory mapping and authority follow-up.</p>
+<h4>Main tabs</h4><p>Dashboard · APP13 Audit Plan · APP14 Compliance Indicators · APP15 Corrective Action Plan · APP16 Subcontractors · APP17 Auditors & Inspectors · APP18 Trainers · SRB Checklist · SRB · CMS Dashboard · EASA Audit Grid · Compliance Matrix · Regulatory Watch · Safety (SMS) bridge · Audits & Authority · Annual Report · Settings.</p>
+</div>
+<div class="lang el"><h2>7. CMS module — προσανατολισμός</h2>
+<p>Το CMS συνδυάζει planned compliance surveillance, findings/actions, competence registers, management review, regulatory mapping και authority follow-up.</p>
+<h4>Κύρια tabs</h4><p>Dashboard · APP13 Audit Plan · APP14 Compliance Indicators · APP15 Corrective Action Plan · APP16 Subcontractors · APP17 Auditors & Inspectors · APP18 Trainers · SRB Checklist · SRB · CMS Dashboard · EASA Audit Grid · Compliance Matrix · Regulatory Watch · Safety (SMS) bridge · Audits & Authority · Annual Report · Settings.</p>
+</div>
+</section>
+<section class="guide-section" id="cms-dashboard">
+<div class="lang en"><h2>7.1 CMS Dashboard</h2>
+<p>Use the CMS dashboards to review surveillance completion, finding status and indicator trends before opening individual audit/action records. Recalculate/refresh indicators after major updates and verify any red/amber state against the underlying source data before making a management decision.</p>
+</div>
+<div class="lang el"><h2>7.1 CMS Dashboard</h2>
+<p>Χρησιμοποιήστε τα CMS dashboards για review surveillance completion, finding status και indicator trends πριν ανοίξετε επιμέρους audit/action records. Μετά από σημαντικές αλλαγές κάντε recalculate/refresh και ελέγξτε κάθε red/amber state στα underlying source data.</p>
+</div>
+</section>
+<section class="guide-section" id="cms-auditplan">
+<div class="lang en"><h2>7.2 APP13-OMM — Audit Plan</h2>
+<p>The Audit Plan organises the annual monitoring programme by regulatory/functional family.</p>
+<ol><li>Open the relevant plan tab: <strong>SMS — Management system, ORO/CAT/NCC, SPA, SPO, Part-M, Part-CAMO, Interfaces</strong> or <strong>Annual schedule</strong>.</li><li>Review the planned audit title/scope, timing, applicable references and priority.</li><li>Use the annual schedule to check workload distribution and avoid unplanned gaps/duplication.</li><li>When an audit is executed, create the mission/report in <strong>Audits & Authority</strong> and record resulting findings in the CAP register.</li><li>Update the plan when a change, authority request, significant finding or risk-based review changes surveillance priorities.</li></ol>
+</div>
+<div class="lang el"><h2>7.2 APP13-OMM — Πρόγραμμα Ελέγχων</h2>
+<p>Το Audit Plan οργανώνει το annual monitoring programme ανά regulatory/functional family.</p>
+<ol><li>Ανοίξτε το σωστό tab: <strong>SMS — Management system, ORO/CAT/NCC, SPA, SPO, Part-M, Part-CAMO, Interfaces</strong> ή <strong>Annual schedule</strong>.</li><li>Ελέγξτε planned audit title/scope, timing, applicable references και priority.</li><li>Χρησιμοποιήστε το annual schedule για workload distribution και αποφυγή gaps/duplication.</li><li>Όταν εκτελείται audit, δημιουργήστε mission/report στο <strong>Audits & Authority</strong> και καταγράψτε findings στο CAP register.</li><li>Ενημερώστε το plan όταν change, authority request, significant finding ή risk-based review αλλάζει priorities.</li></ol>
+</div>
+</section>
+<section class="guide-section" id="cms-kpi">
+<div class="lang en"><h2>7.3 APP14-OMM — Compliance indicators</h2>
+<p>This tab presents CMS KPI/SPI-style compliance indicators.</p>
+<ol><li>Select <strong>Recalculate KPI</strong> after updating audits/findings.</li><li>Use <strong>Edit</strong> only when a defined indicator requires a manual override or target/label adjustment.</li><li>Leave a manual override blank when the indicator must remain automatically calculated.</li><li>Use PDF for management review and CSV for trend analysis.</li><li>For any alert/watch status, document the analysis and decision in the SRB/CAP or other relevant record rather than changing the number simply to return the indicator to green.</li></ol>
+</div>
+<div class="lang el"><h2>7.3 APP14-OMM — Δείκτες Συμμόρφωσης</h2>
+<p>Το tab παρουσιάζει CMS KPI/SPI-style compliance indicators.</p>
+<ol><li>Επιλέξτε <strong>Recalculate KPI</strong> μετά από updates σε audits/findings.</li><li>Χρησιμοποιήστε <strong>Edit</strong> μόνο για defined manual override ή target/label adjustment.</li><li>Αφήστε το manual override κενό όταν πρέπει να παραμείνει auto-calculated.</li><li>Χρησιμοποιήστε PDF για management review και CSV για trend analysis.</li><li>Σε alert/watch status καταγράψτε analysis και decision σε SRB/CAP ή άλλο relevant record· μην αλλάζετε απλώς την τιμή για να γίνει green.</li></ol>
+</div>
+</section>
+<section class="guide-section" id="cms-cap">
+<div class="lang en"><h2>7.4 APP15-OMM — Corrective Action Plan (CAP)</h2>
+<p>The CAP register is the controlled follow-up of compliance findings.</p>
+<h4>Add a corrective action</h4><ol>
+<li>Select <strong>+ Add corrective action</strong>.</li>
+<li>Record audit number/date/title, finding origin, finding number and level.</li>
+<li>Enter the exact regulatory reference and a factual finding description.</li>
+<li>Use the <strong>5 Whys</strong> fields as an analysis aid. The purpose is to identify a defendable root cause, not to force five answers when fewer are sufficient.</li>
+<li>State the <strong>Root cause identified</strong>.</li>
+<li>Assign the Nominated Person/responsible owner and, when appropriate, use the email notification function.</li>
+<li>Write the Corrective Action Plan, status and closure deadline.</li>
+<li>When implementation is complete, enter completion date and objective evidence.</li>
+<li>Enter the <strong>Effectiveness verification date</strong> and verification finding. Confirm that the root cause was eliminated/reduced before final closure.</li>
+</ol>
+<p>Use CSV for the whole register, Print for the register view, and <strong>Export selected to PDF</strong> when only selected findings need formal circulation.</p>
+</div>
+<div class="lang el"><h2>7.4 APP15-OMM — Σχέδιο Διορθωτικών Ενεργειών (CAP)</h2>
+<p>Το CAP register είναι το controlled follow-up των compliance findings.</p>
+<h4>Προσθήκη corrective action</h4><ol>
+<li>Επιλέξτε <strong>+ Add corrective action</strong>.</li>
+<li>Καταγράψτε audit number/date/title, finding origin, finding number και level.</li>
+<li>Καταχωρίστε την ακριβή regulatory reference και factual finding description.</li>
+<li>Χρησιμοποιήστε τα <strong>5 Whys</strong> για root-cause analysis. Δεν είναι απαραίτητο να κατασκευαστούν τεχνητά πέντε answers.</li>
+<li>Δηλώστε <strong>Root cause identified</strong>.</li>
+<li>Ορίστε Nominated Person/responsible owner και χρησιμοποιήστε email notification όπου χρειάζεται.</li>
+<li>Γράψτε Corrective Action Plan, status και closure deadline.</li>
+<li>Μετά την implementation καταχωρίστε completion date και objective evidence.</li>
+<li>Καταχωρίστε <strong>Effectiveness verification date</strong> και verification finding. Επιβεβαιώστε ότι root cause eliminated/reduced πριν το final closure.</li>
+</ol>
+<p>Χρησιμοποιήστε CSV για ολόκληρο register, Print για register view και <strong>Export selected to PDF</strong> για επιλεγμένα findings.</p>
+</div>
+</section>
+<section class="guide-section" id="cms-competence">
+<div class="lang en"><h2>7.5 APP16–APP18 — Subcontractors, Auditors and Trainers</h2>
+<h4>APP16 — List of Subcontractors</h4><p>Create a contractor record with service type, organisation, certificate/approval, applicable reference, approval/expiry dates, audit frequency, last audit, scope, monitoring status and findings. Review expiring approvals and overdue surveillance during periodic CMS review.</p>
+<h4>APP17 — Auditors & Inspectors</h4><p>Record name/function, initial/recurrent audit training, authorised domains, excluded domains and remarks/history. Use the excluded-domain field to demonstrate auditor independence where a person cannot audit his/her own responsibility.</p>
+<h4>APP18 — Trainers</h4><p>Record trainer type, qualification/certificate, qualification and recurrent dates, delivered-session count and authorised training domains. Update the record when competence scope changes.</p>
+<p>Each register supports CSV/print outputs for competence and oversight evidence.</p>
+</div>
+<div class="lang el"><h2>7.5 APP16–APP18 — Subcontractors, Auditors και Trainers</h2>
+<h4>APP16 — List of Subcontractors</h4><p>Δημιουργήστε contractor record με service type, organisation, certificate/approval, applicable reference, approval/expiry dates, audit frequency, last audit, scope, monitoring status και findings. Ελέγχετε approvals που λήγουν και overdue surveillance.</p>
+<h4>APP17 — Auditors & Inspectors</h4><p>Καταγράψτε name/function, initial/recurrent audit training, authorised domains, excluded domains και history. Το excluded-domain field χρησιμοποιείται για απόδειξη auditor independence.</p>
+<h4>APP18 — Trainers</h4><p>Καταγράψτε trainer type, qualification/certificate, qualification/recurrent dates, delivered-session count και authorised training domains. Ενημερώστε το scope όταν αλλάζει competence.</p>
+<p>Κάθε register υποστηρίζει CSV/print outputs για evidence.</p>
+</div>
+</section>
+<section class="guide-section" id="cms-srb">
+<div class="lang en"><h2>7.6 SRB Checklist and SRB record</h2>
+<p>The CMS contains two complementary SRB views: a structured checklist/workbook and the formal SRB record.</p>
+<h4>Before the meeting</h4><ol><li>Refresh SMS data so current risks/occurrences are available.</li><li>Enter organisation, SRB reference, date, covered period, status and participants/guests.</li><li>Load or update compliance KPI/SPI status, audit completion and findings.</li></ol>
+<h4>During the meeting</h4><ol><li>Record trend analyses for red/amber indicators.</li><li>Review audit results, occurrences, major risks, barrier effectiveness, SMS maturity, prior actions, regulatory developments and organisational/operational changes.</li><li>Record decisions with clear owners and deadlines.</li><li>Define objectives for the next period and the next SRB date.</li></ol>
+<h4>After the meeting</h4><ol><li>Complete accountable-manager and management signatures/acknowledgements where used.</li><li>Save the SRB record and export/print PDF for controlled filing.</li><li>Ensure every decision requiring action is also entered in the operational action/CAP/risk/MoC record where it will be followed.</li></ol>
+</div>
+<div class="lang el"><h2>7.6 SRB Checklist και SRB record</h2>
+<p>Το CMS περιέχει δύο συμπληρωματικά SRB views: structured checklist/workbook και formal SRB record.</p>
+<h4>Πριν τη συνεδρίαση</h4><ol><li>Κάντε refresh SMS data για current risks/occurrences.</li><li>Συμπληρώστε organisation, SRB reference, date, covered period, status και participants/guests.</li><li>Ενημερώστε compliance KPI/SPI, audit completion και findings.</li></ol>
+<h4>Κατά τη συνεδρίαση</h4><ol><li>Καταγράψτε trend analyses για red/amber indicators.</li><li>Εξετάστε audit results, occurrences, major risks, barrier effectiveness, SMS maturity, prior actions, regulatory developments και organisational/operational changes.</li><li>Καταγράψτε decisions με owners και deadlines.</li><li>Ορίστε objectives για την επόμενη περίοδο και next SRB date.</li></ol>
+<h4>Μετά τη συνεδρίαση</h4><ol><li>Συμπληρώστε signatures/acknowledgements όπου χρησιμοποιούνται.</li><li>Save και export/print PDF για controlled filing.</li><li>Κάθε decision που απαιτεί action πρέπει να περάσει και στο αντίστοιχο CAP/risk/MoC/action record για follow-up.</li></ol>
+</div>
+</section>
+<section class="guide-section" id="cms-easa">
+<div class="lang en"><h2>7.7 EASA Audit Grid</h2>
+<p>The EASA Audit Grid generates audit checklists from the regulatory database embedded in the CMS.</p>
+<h4>Generate a grid</h4><ol>
+<li>Select the <strong>Regulation</strong>.</li>
+<li>Select one or more <strong>Parts</strong> and <strong>Subparts</strong>.</li>
+<li>Select Aircraft Type where the filter is relevant.</li>
+<li>If you already know the exact rule, use <strong>Direct reference</strong> as the priority selector.</li>
+<li>Use <strong>Add to selection</strong> for targeted references, then <strong>Generate the grid</strong>.</li>
+<li>Generate/enter the audit number and metadata.</li>
+</ol>
+<h4>Complete the grid</h4><p>For each IR/AMC control point, select the Result and record Evidence/Document verified, Document Reference, Comments/Deviations, Corrective Action, Owner, Deadline and Priority. Expand the regulatory text when a detailed check is required.</p>
+<h4>Save/output</h4><p>Save the grid in JSON when it must be reopened and edited later. Use CSV for analysis and Print/PDF for the controlled audit record.</p>
+<div class="note">The grid is an audit aid. The auditor remains responsible for selecting the applicable regulatory scope and for recording evidence sufficient to support the result.</div>
+</div>
+<div class="lang el"><h2>7.7 EASA Audit Grid</h2>
+<p>Το EASA Audit Grid δημιουργεί audit checklists από τη regulatory database που είναι ενσωματωμένη στο CMS.</p>
+<h4>Δημιουργία grid</h4><ol>
+<li>Επιλέξτε <strong>Regulation</strong>.</li>
+<li>Επιλέξτε ένα ή περισσότερα <strong>Parts</strong> και <strong>Subparts</strong>.</li>
+<li>Επιλέξτε Aircraft Type όπου σχετικό.</li>
+<li>Αν γνωρίζετε την ακριβή rule, χρησιμοποιήστε <strong>Direct reference</strong>.</li>
+<li>Χρησιμοποιήστε <strong>Add to selection</strong> και μετά <strong>Generate the grid</strong>.</li>
+<li>Δημιουργήστε/καταχωρίστε audit number και metadata.</li>
+</ol>
+<h4>Συμπλήρωση grid</h4><p>Για κάθε IR/AMC control point επιλέξτε Result και καταγράψτε Evidence/Document verified, Document Reference, Comments/Deviations, Corrective Action, Owner, Deadline και Priority.</p>
+<h4>Save/output</h4><p>Save σε JSON όταν το grid πρέπει να ξανανοίξει για editing. CSV για analysis και Print/PDF για controlled audit record.</p>
+<div class="note">Το grid είναι audit aid. Ο auditor παραμένει υπεύθυνος για applicable scope και adequate evidence.</div>
+</div>
+</section>
+<section class="guide-section" id="cms-matrix">
+<div class="lang en"><h2>7.8 Compliance Matrix</h2>
+<p>The Compliance Matrix maps regulatory requirements to Helion-X documentation and implementation status. It uses IR + AMC rows and excludes GM in the matrix logic.</p>
+<ol><li>Open or create the relevant matrix/scope.</li><li>Add the required regulatory reference(s). The module resolves the rule title/text and associated AMC from the embedded database when available.</li><li>Enter the Helion documentation reference (document and chapter/section) that implements the requirement.</li><li>Set the implementation status only after verifying the referenced document and actual implementation.</li><li>Use the matrix link to a Management of Change reference when a compliance mapping is part of a change project.</li><li>Export CSV/PDF when the matrix must be reviewed or provided as evidence.</li></ol>
+<div class="warn">A document reference alone does not prove implementation. If the procedure is not implemented in practice, do not mark the line compliant merely because text exists in a manual.</div>
+</div>
+<div class="lang el"><h2>7.8 Πίνακας Συμμόρφωσης</h2>
+<p>Το Compliance Matrix αντιστοιχίζει regulatory requirements με Helion-X documentation και implementation status. Η λογική του matrix χρησιμοποιεί IR + AMC και εξαιρεί GM.</p>
+<ol><li>Ανοίξτε ή δημιουργήστε το relevant matrix/scope.</li><li>Προσθέστε regulatory references. Το module αναλύει title/text και associated AMC από την embedded database όπου υπάρχουν.</li><li>Καταχωρίστε Helion documentation reference (document και chapter/section).</li><li>Ορίστε implementation status μόνο μετά από verification του document και της πραγματικής implementation.</li><li>Συνδέστε Management of Change reference όταν η mapping αποτελεί μέρος change project.</li><li>Export CSV/PDF για review/evidence.</li></ol>
+<div class="warn">Μια document reference δεν αποδεικνύει implementation. Αν η procedure δεν εφαρμόζεται στην πράξη, μην σημειώνετε compliant μόνο επειδή υπάρχει κείμενο σε manual.</div>
+</div>
+</section>
+<section class="guide-section" id="cms-watch">
+<div class="lang en"><h2>7.9 Regulatory Watch</h2>
+<p>The Regulatory Watch is a traceable review tool for official-source checks and regulatory baseline changes.</p>
+<ol><li>Select <strong>Check now / Vérifier maintenant</strong> to run the available official-source check.</li><li>Review the status banner. A detected publication creates a review requirement; it does <strong>not</strong> automatically mean the change applies to Helion Helicopters.</li><li>Open each unresolved publication/alert and record the compliance assessment/disposition.</li><li>When using a downloaded EASA XML/ZIP source file, import it to calculate and record its SHA-256 fingerprint.</li><li>Use <strong>Adopt verified baseline</strong> or <strong>Adopt imported hash</strong> only after the new source/version has been independently verified and the impact review is complete.</li><li>Use the audit trail to show when checks were performed, by which mode and with what result.</li></ol>
+<div class="note">Green status means the configured checks are current and no unresolved publication remains; it is not a legal opinion that every requirement is applicable.</div>
+</div>
+<div class="lang el"><h2>7.9 Κανονιστική Παρακολούθηση</h2>
+<p>Το Regulatory Watch είναι traceable tool για official-source checks και αλλαγές regulatory baseline.</p>
+<ol><li>Επιλέξτε <strong>Check now / Vérifier maintenant</strong> για official-source check.</li><li>Ελέγξτε το status banner. Detected publication σημαίνει ότι απαιτείται review· <strong>δεν</strong> σημαίνει αυτόματα ότι εφαρμόζεται στην Helion Helicopters.</li><li>Ανοίξτε κάθε unresolved publication/alert και καταγράψτε compliance assessment/disposition.</li><li>Για downloaded EASA XML/ZIP εισαγάγετε το αρχείο ώστε να καταγραφεί SHA-256 fingerprint.</li><li>Χρησιμοποιήστε <strong>Adopt verified baseline</strong> ή <strong>Adopt imported hash</strong> μόνο μετά από independent verification και impact review.</li><li>Χρησιμοποιήστε το audit trail για evidence ημερομηνίας, mode και result.</li></ol>
+<div class="note">Green status σημαίνει ότι τα configured checks είναι current και δεν υπάρχουν unresolved publications· δεν είναι νομική γνώμη περί applicability.</div>
+</div>
+</section>
+<section class="guide-section" id="cms-audits">
+<div class="lang en"><h2>7.10 Audits & Authority</h2>
+<h4>Audit mission order</h4><ol><li>Select <strong>+ New mission order</strong>.</li><li>Enter mission reference, audit type, scope/domain, auditor(s), qualification/independence, auditee/function and planned dates.</li><li>Define specific mission objectives and approval by the Compliance Manager.</li><li>After the audit, use <strong>Draft the audit report</strong> and complete report reference/date, conduct/method, people met, documents reviewed, finding counts, summary, conclusions and distribution.</li></ol>
+<h4>Authority contact / commitment</h4><p>Use <strong>+ New contact / notification</strong> for authority exchanges that need follow-up. Record type, subject, authority reference, commitment deadline and the commitment/expected response. Close the record only when the commitment is demonstrably completed.</p>
+</div>
+<div class="lang el"><h2>7.10 Audits & Authority</h2>
+<h4>Audit mission order</h4><ol><li>Επιλέξτε <strong>+ New mission order</strong>.</li><li>Συμπληρώστε mission reference, audit type, scope/domain, auditor(s), qualification/independence, auditee/function και planned dates.</li><li>Ορίστε specific mission objectives και approval by Compliance Manager.</li><li>Μετά το audit χρησιμοποιήστε <strong>Draft the audit report</strong> και συμπληρώστε report reference/date, conduct/method, people met, documents reviewed, finding counts, summary, conclusions και distribution.</li></ol>
+<h4>Authority contact / commitment</h4><p>Χρησιμοποιήστε <strong>+ New contact / notification</strong> για authority exchanges που απαιτούν follow-up. Καταγράψτε type, subject, authority reference, commitment deadline και commitment/expected response. Κλείστε μόνο όταν υπάρχει evidence completion.</p>
+</div>
+</section>
+<section class="guide-section" id="cms-annual">
+<div class="lang en"><h2>7.11 Annual Report and Settings</h2>
+<h4>Annual Report</h4><ol><li>Select the covered period start/end.</li><li>Enter report author and Accountable Manager approval fields.</li><li>Write the overall conclusions and compliance-level assessment.</li><li>Select <strong>Generate report (live data)</strong> after the underlying registers are up to date.</li><li>Review the generated report for completeness before Print/PDF.</li></ol>
+<h4>Settings</h4><p>Use Settings to maintain KPI/target values. <strong>Save targets</strong> commits the configured values. <strong>Reset (default EASA values)</strong> should only be used when you intentionally want to replace configured targets with the defaults.</p>
+</div>
+<div class="lang el"><h2>7.11 Annual Report και Settings</h2>
+<h4>Annual Report</h4><ol><li>Επιλέξτε covered period start/end.</li><li>Συμπληρώστε report author και Accountable Manager approval.</li><li>Γράψτε overall conclusions και compliance-level assessment.</li><li>Επιλέξτε <strong>Generate report (live data)</strong> όταν τα underlying registers είναι ενημερωμένα.</li><li>Κάντε review πριν Print/PDF.</li></ol>
+<h4>Settings</h4><p>Χρησιμοποιήστε Settings για KPI/target values. <strong>Save targets</strong> αποθηκεύει τα values. <strong>Reset (default EASA values)</strong> μόνο όταν θέλετε σκόπιμα αντικατάσταση των configured targets.</p>
+</div>
+</section>
+<section class="guide-section" id="cms-smsbridge">
+<div class="lang en"><h2>7.12 Safety (SMS) bridge</h2>
+<p>The Safety (SMS) tab is read-only and is intended to bring current SMS risks and occurrences into the compliance review context.</p>
+<ol><li>Select <strong>Refresh from SMS</strong> before a CMS review/SRB when recent safety changes matter.</li><li>Use the risk list to identify whether compliance surveillance priorities should change.</li><li>Use the occurrence list to identify recurring compliance interfaces.</li><li>Make edits in the SMS source module, not in the read-only bridge.</li></ol>
+</div>
+<div class="lang el"><h2>7.12 Safety (SMS) bridge</h2>
+<p>Το Safety (SMS) tab είναι read-only και φέρνει current SMS risks/occurrences στο compliance review context.</p>
+<ol><li>Επιλέξτε <strong>Refresh from SMS</strong> πριν από CMS review/SRB όταν υπάρχουν πρόσφατες safety changes.</li><li>Χρησιμοποιήστε risk list για πιθανή αλλαγή surveillance priorities.</li><li>Χρησιμοποιήστε occurrence list για recurring compliance interfaces.</li><li>Κάντε edits στο SMS source module και όχι στο read-only bridge.</li></ol>
+</div>
+</section>
+<section class="guide-section" id="omm">
+<div class="lang en"><h2>8. OMM Appendices module — orientation</h2>
+<p>The OMM module contains controlled appendix content and editable registers. The left sidebar provides APP01, APP02, APP03, APP04, APP06 and APP07.</p>
+<p>Many cells are directly editable. When an edit bar is present, click the cell, change the content, then save the updated file/data using the controls provided. Use the PDF button on each appendix for a controlled printable output.</p>
+</div>
+<div class="lang el"><h2>8. OMM Appendices — προσανατολισμός</h2>
+<p>Το OMM module περιέχει controlled appendix content και editable registers. Το αριστερό sidebar παρέχει APP01, APP02, APP03, APP04, APP06 και APP07.</p>
+<p>Πολλά cells είναι directly editable. Όταν υπάρχει edit bar, κάντε click στο cell, αλλάξτε το content και αποθηκεύστε με τα διαθέσιμα controls. Χρησιμοποιήστε PDF σε κάθε appendix για controlled printable output.</p>
+</div>
+</section>
+<section class="guide-section" id="omm-app01">
+<div class="lang en"><h2>8.1 APP01-OMM — List of Appendices</h2>
+<ol><li>Use APP01 as the master index of OMM-related appendices and their assigned Helion-X file.</li><li>Click editable cells to update document code, title, version or date.</li><li>Use the <strong>File</strong> selector to indicate which Helion-X file contains the appendix.</li><li>Use <strong>+ Add a row</strong> for a new appendix and the ✕ row action only when a row is intentionally removed.</li><li>Select <strong>Save (HTML)</strong> after changes and retain the newly saved file as the controlled web version to deploy.</li><li>Use <strong>PDF</strong> for review/distribution snapshots.</li></ol>
+</div>
+<div class="lang el"><h2>8.1 APP01-OMM — Λίστα Παραρτημάτων</h2>
+<ol><li>Χρησιμοποιήστε APP01 ως master index των OMM appendices και του Helion-X file που τα περιέχει.</li><li>Κάντε click στα editable cells για document code, title, version ή date.</li><li>Χρησιμοποιήστε το <strong>File</strong> selector για το σωστό Helion-X file.</li><li><strong>+ Add a row</strong> για νέο appendix και ✕ μόνο για σκόπιμη διαγραφή.</li><li>Μετά τις αλλαγές επιλέξτε <strong>Save (HTML)</strong> και χρησιμοποιήστε το νέο αρχείο ως controlled web version.</li><li><strong>PDF</strong> για review/distribution snapshot.</li></ol>
+</div>
+</section>
+<section class="guide-section" id="omm-app02">
+<div class="lang en"><h2>8.2 APP02-OMM — Facilities & Infrastructure</h2>
+<p>Use APP02 to maintain the controlled description of bases, offices, operational facilities, infrastructure and associated information. Update only verified information. When photos/plans are included, verify that the image/caption still matches the current facility after any move or layout change.</p>
+</div>
+<div class="lang el"><h2>8.2 APP02-OMM — Facilities & Infrastructure</h2>
+<p>Χρησιμοποιήστε APP02 για την controlled description βάσεων, offices, operational facilities και infrastructure. Ενημερώνετε μόνο verified information. Όταν υπάρχουν photos/plans, επιβεβαιώστε ότι image/caption αντιστοιχεί ακόμη στην πραγματική εγκατάσταση μετά από αλλαγή χώρου ή layout.</p>
+</div>
+</section>
+<section class="guide-section" id="omm-app03">
+<div class="lang en"><h2>8.3 APP03-OMM — Organizational Chart</h2>
+<p>Use APP03 to present formal reporting/functional relationships. After any nominated-person or management-structure change, update the chart and cross-check APP04, the OMM main text and any related Management of Change study so the organisation is consistent across records.</p>
+</div>
+<div class="lang el"><h2>8.3 APP03-OMM — Οργανόγραμμα</h2>
+<p>Χρησιμοποιήστε APP03 για formal reporting/functional relationships. Μετά από αλλαγή nominated person ή management structure, ενημερώστε το chart και ελέγξτε APP04, OMM main text και σχετικό Management of Change ώστε η organisation να είναι consistent.</p>
+</div>
+</section>
+<section class="guide-section" id="omm-app04">
+<div class="lang en"><h2>8.4 APP04-OMM — Management Personnel</h2>
+<p>Use APP04 for the current list of management personnel, roles and contact information. When a person changes role, verify all connected responsibilities, deputies and contact details. Do not leave an obsolete name in one appendix while another module has already been updated.</p>
+</div>
+<div class="lang el"><h2>8.4 APP04-OMM — Διοικητικό Προσωπικό</h2>
+<p>Χρησιμοποιήστε APP04 για current list management personnel, roles και contact information. Όταν αλλάζει ρόλος, ελέγξτε responsibilities, deputies και contact details σε όλα τα σχετικά records. Μην αφήνετε obsolete name σε ένα appendix ενώ άλλο module έχει ήδη ενημερωθεί.</p>
+</div>
+</section>
+<section class="guide-section" id="omm-app06">
+<div class="lang en"><h2>8.5 APP06-OMM — Aircraft being used</h2>
+<p>Use APP06 as the controlled fleet list. Verify registration, type/version, serial number and engine information before changing it. After aircraft entry/removal or variant change, cross-check the SMS/CMS scope and any operation-specific approvals that depend on the fleet.</p>
+</div>
+<div class="lang el"><h2>8.5 APP06-OMM — Aircraft being used</h2>
+<p>Χρησιμοποιήστε APP06 ως controlled fleet list. Ελέγξτε registration, type/version, serial number και engine information πριν από αλλαγή. Μετά από aircraft entry/removal ή variant change ελέγξτε SMS/CMS scope και operation-specific approvals που εξαρτώνται από τον στόλο.</p>
+</div>
+</section>
+<section class="guide-section" id="omm-app07">
+<div class="lang en"><h2>8.6 APP07-OMM — Safety Promotion & Training</h2>
+<h4>SMS Training Register</h4><ol>
+<li>Add a training row or edit an existing trainee.</li>
+<li>Complete Name, Role/Function, Training Type, Organisation/Trainer and Training Date.</li>
+<li>Use the update function to recalculate validity, automatic references and alarms.</li>
+<li>Review the automatic validity/alert status. Investigate any Expired or &lt;3 months status and plan recurrent training.</li>
+<li>Use the certificate controls to view/regenerate the certificate or import an existing PDF certificate.</li>
+</ol>
+<h4>Certificate generator</h4><ol><li>Select Training module (TM08/TM09 as offered), Training type and candidate.</li><li>Confirm role/function and certificate date.</li><li>Select <strong>Preview / Print</strong>, verify the certificate before printing/saving as PDF, and confirm the related training-register row is updated.</li></ol>
+<h4>Safety-promotion campaigns</h4><p>Use <strong>+ Add a campaign</strong> for traceable promotion/awareness activities and Print/PDF for evidence.</p>
+</div>
+<div class="lang el"><h2>8.6 APP07-OMM — Safety Promotion & Training</h2>
+<h4>SMS Training Register</h4><ol>
+<li>Προσθέστε training row ή edit υπάρχον trainee.</li>
+<li>Συμπληρώστε Name, Role/Function, Training Type, Organisation/Trainer και Training Date.</li>
+<li>Χρησιμοποιήστε update για recalculation validity, automatic references και alarms.</li>
+<li>Ελέγξτε automatic validity/alert status. Για Expired ή &lt;3 months προγραμματίστε recurrent training.</li>
+<li>Χρησιμοποιήστε certificate controls για view/regenerate ή import existing PDF certificate.</li>
+</ol>
+<h4>Certificate generator</h4><ol><li>Επιλέξτε Training module (TM08/TM09), Training type και candidate.</li><li>Επιβεβαιώστε role/function και certificate date.</li><li>Επιλέξτε <strong>Preview / Print</strong>, ελέγξτε certificate πριν PDF/print και επιβεβαιώστε update του training-register row.</li></ol>
+<h4>Safety-promotion campaigns</h4><p>Χρησιμοποιήστε <strong>+ Add a campaign</strong> για traceable promotion/awareness activities και Print/PDF για evidence.</p>
+</div>
+</section>
+<section class="guide-section" id="closing">
+<div class="lang en"><h2>9. Closing a Helion-X module</h2>
+<p>Where a module offers a <strong>Close</strong> button or Save/Export overlay, use it rather than simply closing the browser tab during editing.</p>
+<ol><li>Finish the current entry and use its Save control.</li><li>Check the module status/cloud indicator.</li><li>Create the required export if the change is significant or forms a controlled record.</li><li>Use Close and confirm the prompt only after the save/export has completed.</li><li>If the browser crashes, reopen the same module and verify the record before continuing work.</li></ol>
+</div>
+<div class="lang el"><h2>9. Κλείσιμο Helion-X module</h2>
+<p>Όπου το module διαθέτει <strong>Close</strong> ή Save/Export overlay, χρησιμοποιήστε το αντί να κλείνετε απλώς το browser tab κατά το editing.</p>
+<ol><li>Ολοκληρώστε το current entry και Save.</li><li>Ελέγξτε module status/cloud indicator.</li><li>Δημιουργήστε required export για significant/controlled record.</li><li>Χρησιμοποιήστε Close και επιβεβαιώστε prompt μόνο μετά την ολοκλήρωση save/export.</li><li>Μετά από browser crash ξανανοίξτε το module και verify το record πριν συνεχίσετε.</li></ol>
+</div>
+</section>
+<section class="guide-section" id="troubleshooting">
+<div class="lang en"><h2>10. Troubleshooting checklist</h2>
+<table><thead><tr><th>Symptom</th><th>Check</th></tr></thead><tbody>
+<tr><td>Cannot edit</td><td>Check the role badge and read-only banner first.</td></tr>
+<tr><td>Expected module is missing on HOME</td><td>Check the signed-in role; reader/guest access may intentionally hide modules.</td></tr>
+<tr><td>Counts/dashboard not updated</td><td>Save the source record, then use Refresh/Recalculate in the target view.</td></tr>
+<tr><td>SMS data missing from CMS</td><td>Use the Safety (SMS) bridge Refresh function or the SMS → CMS export function required by the workflow.</td></tr>
+<tr><td>Saved grid cannot be edited later</td><td>Use the JSON save/load format for editable audit-grid backups; PDF is a snapshot.</td></tr>
+<tr><td>Report submission uncertain</td><td>Look for the success screen/reference. Avoid duplicate reports until you have checked the pending/local queue state.</td></tr>
+<tr><td>Restore/import warning</td><td>Stop and create a backup of the current state before confirming replacement.</td></tr>
+<tr><td>Regulatory watch alert</td><td>Review the publication/applicability; do not clear it simply to restore a green banner.</td></tr>
+</tbody></table>
+</div>
+<div class="lang el"><h2>10. Checklist αντιμετώπισης προβλημάτων</h2>
+<table><thead><tr><th>Σύμπτωμα</th><th>Έλεγχος</th></tr></thead><tbody>
+<tr><td>Δεν μπορώ να κάνω edit</td><td>Ελέγξτε πρώτα role badge και read-only banner.</td></tr>
+<tr><td>Module λείπει από HOME</td><td>Ελέγξτε signed-in role· reader/guest μπορεί σκόπιμα να βλέπει λιγότερα modules.</td></tr>
+<tr><td>Counts/dashboard δεν ενημερώθηκαν</td><td>Save source record και μετά Refresh/Recalculate στο target view.</td></tr>
+<tr><td>SMS data λείπουν από CMS</td><td>Χρησιμοποιήστε Safety (SMS) bridge Refresh ή SMS → CMS export σύμφωνα με workflow.</td></tr>
+<tr><td>Saved grid δεν μπορεί να γίνει edit αργότερα</td><td>Χρησιμοποιήστε JSON save/load. PDF είναι snapshot.</td></tr>
+<tr><td>Αβέβαιη report submission</td><td>Ελέγξτε success screen/reference. Αποφύγετε duplicate report πριν ελέγξετε pending/local queue.</td></tr>
+<tr><td>Restore/import warning</td><td>Σταματήστε και δημιουργήστε backup πριν επιβεβαιώσετε replacement.</td></tr>
+<tr><td>Regulatory watch alert</td><td>Κάντε review publication/applicability· μην το καθαρίζετε απλώς για green banner.</td></tr>
+</tbody></table>
+</div>
+</section>
+<section class="guide-section" id="quickref">
+<div class="lang en"><h2>11. Quick reference — which module should I use?</h2>
+<table><thead><tr><th>Need</th><th>Use</th></tr></thead><tbody>
+<tr><td>Submit a new safety/security event</td><td>Safety Report</td></tr>
+<tr><td>Investigate and classify an event</td><td>SMS → Occurrence Log</td></tr>
+<tr><td>Create/update a safety risk</td><td>SMS → Risk Register</td></tr>
+<tr><td>Assess a proposed change</td><td>SMS → Management of Change</td></tr>
+<tr><td>Manage emergency/crisis actions</td><td>SMS → ERP</td></tr>
+<tr><td>Review safety trends</td><td>SMS → SPI / Dashboard / Event Accounting / Safety Assurance</td></tr>
+<tr><td>Plan compliance audits</td><td>CMS → Audit Plan</td></tr>
+<tr><td>Record audit finding/root cause/action</td><td>CMS → Corrective Action Plan</td></tr>
+<tr><td>Create a regulation-based audit checklist</td><td>CMS → EASA Audit Grid</td></tr>
+<tr><td>Map rules to company documentation</td><td>CMS → Compliance Matrix</td></tr>
+<tr><td>Review regulatory changes</td><td>CMS → Regulatory Watch</td></tr>
+<tr><td>Prepare management review</td><td>CMS → SRB / CMS Dashboard</td></tr>
+<tr><td>Maintain OMM appendix index/organisation/fleet/training</td><td>OMM Appendices</td></tr>
+</tbody></table>
+</div>
+<div class="lang el"><h2>11. Γρήγορη αναφορά — ποιο module χρησιμοποιώ;</h2>
+<table><thead><tr><th>Ανάγκη</th><th>Χρήση</th></tr></thead><tbody>
+<tr><td>Νέα safety/security αναφορά</td><td>Safety Report</td></tr>
+<tr><td>Investigation/classification συμβάντος</td><td>SMS → Occurrence Log</td></tr>
+<tr><td>Create/update safety risk</td><td>SMS → Risk Register</td></tr>
+<tr><td>Assessment προτεινόμενης αλλαγής</td><td>SMS → Management of Change</td></tr>
+<tr><td>Emergency/crisis actions</td><td>SMS → ERP</td></tr>
+<tr><td>Safety trends</td><td>SMS → SPI / Dashboard / Event Accounting / Safety Assurance</td></tr>
+<tr><td>Compliance audit planning</td><td>CMS → Audit Plan</td></tr>
+<tr><td>Audit finding/root cause/action</td><td>CMS → Corrective Action Plan</td></tr>
+<tr><td>Regulation-based audit checklist</td><td>CMS → EASA Audit Grid</td></tr>
+<tr><td>Mapping rules σε company documentation</td><td>CMS → Compliance Matrix</td></tr>
+<tr><td>Regulatory changes</td><td>CMS → Regulatory Watch</td></tr>
+<tr><td>Management review</td><td>CMS → SRB / CMS Dashboard</td></tr>
+<tr><td>OMM appendix/organisation/fleet/training</td><td>OMM Appendices</td></tr>
+</tbody></table>
+</div>
+</section>
+<footer>Helion Helicopters · Helion-X · User Guide / Οδηγός Χρήστη · Version 1.0 · 22.09.2026</footer>
+</main></div>
+<script>
+(function(){
+  var body=document.body, q=document.getElementById('search'), no=document.getElementById('no-results');
+  function setLang(lang){body.setAttribute('data-lang',lang);document.documentElement.lang=lang==='el'?'el':'en';localStorage.setItem('helionGuideLang',lang);document.querySelectorAll('[data-langbtn]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-langbtn')===lang)});document.querySelectorAll('#toc a').forEach(function(a){a.textContent=a.getAttribute(lang==='el'?'data-el':'data-en')});q.placeholder=lang==='el'?'Αναζήτηση στον οδηγό…':'Search guide…';filter();}
+  function filter(){var term=(q.value||'').trim().toLowerCase(),lang=body.getAttribute('data-lang')||'en',vis=0;document.querySelectorAll('.guide-section').forEach(function(s){var node=s.querySelector('.lang.'+lang),ok=!term||(node&&node.textContent.toLowerCase().indexOf(term)>=0);s.classList.toggle('search-hide',!ok);var a=document.querySelector('#toc a[href="#'+s.id+'"]');if(a)a.classList.toggle('hidden',!ok);if(ok)vis++;});no.style.display=vis?'none':'block';}
+  document.querySelectorAll('[data-langbtn]').forEach(function(b){b.addEventListener('click',function(){setLang(this.getAttribute('data-langbtn'))})});q.addEventListener('input',filter);
+  setLang(localStorage.getItem('helionGuideLang')==='el'?'el':'en');
+  if(location.hash) setTimeout(function(){var el=document.querySelector(location.hash);if(el)el.scrollIntoView({block:'start'});},80);
+})();
+</script>
+</body></html>

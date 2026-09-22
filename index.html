@@ -170,7 +170,7 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
   <p class="section-label">Tool Access</p>
   <div class="tools-grid">
 
-    <a class="tool-card" href="Helion-X_Safety.html">
+    <a class="tool-card" data-module="sms" href="Helion-X_Safety.html">
       <div class="tool-header">
         <div class="tool-icon icon-sms">🛡️</div>
         <span class="tool-name">Safety Management</span>
@@ -180,7 +180,7 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
       <span class="tool-tag tag-sms">SMS</span>
     </a>
 
-    <a class="tool-card" href="Helion-X_Compliance_Monitoring_System.html">
+    <a class="tool-card" data-module="cms" href="Helion-X_Compliance_Monitoring_System.html">
       <div class="tool-header">
         <div class="tool-icon icon-cms">📋</div>
         <span class="tool-name">Compliance Monitoring</span>
@@ -190,7 +190,7 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
       <span class="tool-tag tag-cms">CMS</span>
     </a>
 
-    <a class="tool-card" href="Helion-X_Appendices_OMM.html">
+    <a class="tool-card" data-module="omm" href="Helion-X_Appendices_OMM.html">
       <div class="tool-header">
         <div class="tool-icon icon-omm">📁</div>
         <span class="tool-name">OMM Appendices</span>
@@ -198,6 +198,16 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
       </div>
       <p class="tool-desc">Operational appendices, organisation chart, training and certificate registers, bases and equipment.</p>
       <span class="tool-tag tag-omm">OMM</span>
+    </a>
+
+    <a class="tool-card" data-module="guide" href="Helion-X_User_Guide.html">
+      <div class="tool-header">
+        <div class="tool-icon" style="background:rgba(201,162,39,.15);color:var(--gold-light);font-family:var(--font-mono);font-weight:700;">?</div>
+        <span class="tool-name">User Guide / Οδηγός</span>
+        <span class="arrow">→</span>
+      </div>
+      <p class="tool-desc">Complete Helion-X operating manual for all modules, with step-by-step procedures in English and Greek.</p>
+      <span class="tool-tag" style="background:rgba(201,162,39,.12);color:var(--gold-light);border:1px solid rgba(201,162,39,.25);">EN · ΕΛ</span>
     </a>
 
 
@@ -268,14 +278,35 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
   var WRITE_ROLES = ['admin','editor'];
   function safCanWrite(r){ return WRITE_ROLES.indexOf(String(r||'').toLowerCase()) !== -1; }
 
+  // ── ACCÈS AUX MODULES PAR RÔLE ──────────────────────────────────────────
+  // Aligné sur le portail SAF International : un lecteur n'accède qu'au SMS.
+  // L'autorité consulte les trois modules, sans jamais pouvoir écrire.
+  var SAF_MODULE_ACCESS = {
+    admin:     ['sms','cms','omm','guide'],
+    editor:    ['sms','cms','omm','guide'],
+    authority: ['sms','cms','omm','guide'],
+    reader:    ['sms','guide']
+  };
+  function applyModuleAccess(role){
+    var allowed = SAF_MODULE_ACCESS[String(role||'').toLowerCase()] || SAF_MODULE_ACCESS.reader;
+    document.querySelectorAll('.tool-card[data-module]').forEach(function(card){
+      card.style.display = allowed.indexOf(card.getAttribute('data-module')) !== -1 ? '' : 'none';
+    });
+  }
+
   function safRenderRoleBadge(role){
     var badge = document.getElementById('saf-role-badge');
     if(!badge) return;
-    var look = role === 'admin'
-      ? { txt:'ADMIN',  col:'#C9A227', bd:'rgba(201,162,39,.4)' }
-      : (role === 'editor'
-          ? { txt:'EDITOR', col:'#5FBF8F', bd:'rgba(95,191,143,.45)' }
-          : { txt:'READ ONLY', col:'#9fc4e8', bd:'rgba(106,130,165,.3)' });
+    /* 'authority' : accès autorité (HCAA) — consultation seule. Le rôle est
+       absent de WRITE_ROLES, donc déjà bloqué en écriture ; ce badge le
+       distingue simplement d'un lecteur ordinaire, pour la traçabilité. */
+    var BADGE = {
+      admin:     { txt:'ADMIN',            col:'#C9A227', bd:'rgba(201,162,39,.4)'   },
+      editor:    { txt:'EDITOR',           col:'#5FBF8F', bd:'rgba(95,191,143,.45)'  },
+      authority: { txt:'AUTHORITY / HCAA', col:'#c8a2ff', bd:'rgba(170,130,255,.45)' },
+      reader:    { txt:'READ ONLY',        col:'#9fc4e8', bd:'rgba(106,130,165,.3)'  }
+    };
+    var look = BADGE[String(role||'').toLowerCase()] || BADGE.reader;
     badge.textContent = look.txt;
     badge.style.color = look.col;
     badge.style.borderColor = look.bd;
@@ -297,6 +328,7 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
     role = String(role||'reader').toLowerCase();
     SAF_ROLE = role;
     safRenderRoleBadge(role);
+    applyModuleAccess(role);
     // Export global : admin + editor — Restauration : admin uniquement
     var bar = document.getElementById('export-bar');
     if(bar) bar.style.display = safCanWrite(role) ? 'flex' : 'none';

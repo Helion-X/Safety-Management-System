@@ -171,6 +171,10 @@ body.mode-security .sec-only{display:block;}
 
 @media(max-width:400px){.cg2{grid-template-columns:1fr;}.frow{grid-template-columns:1fr;}}
 </style>
+<style id="helion-guide-fab-style">
+.helion-guide-fab{position:fixed;right:22px;bottom:22px;z-index:99990;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;background:#C9A227;color:#0D1B2A;border:2px solid #F0C040;box-shadow:0 8px 24px rgba(0,0,0,.38);font-family:'IBM Plex Mono',monospace;font-size:21px;font-weight:800;transition:transform .15s,filter .15s}.helion-guide-fab:hover{transform:translateY(-2px);filter:brightness(1.08)}.helion-guide-fab:focus{outline:2px solid #fff;outline-offset:3px}@media print{.helion-guide-fab{display:none!important}}
+</style>
+
 </head>
 <body>
 <!-- HEADER -->
@@ -188,6 +192,7 @@ body.mode-security .sec-only{display:block;}
 <div class="intro" style="margin-top:4px;">
 
 Reporting is the foundation of aviation safety. Every event you report — even one that seems minor or that ended without consequence — lets us see a risk before it turns into an accident. What you write here is treated in confidence and used to improve our operation, never to assign blame. The few minutes you spend on this report may one day save the life of a colleague.
+<div class="ilinks"><a class="ilink" href="Helion-X_User_Guide.html#report">? User Guide / Οδηγός Χρήστη</a></div>
 </div>
 <div id="rtype">
 <div class="rt" onclick="pickType(this,'Safety')"><div class="rt-t">SAFETY</div><div class="rt-s">Flight safety occurrence</div></div>
@@ -468,12 +473,50 @@ function _keyRef(k){
 const CFG_OK = _keyRef(SKEY)===HELION_REF;
 if(!CFG_OK) console.error('Helion Report: backend key does not belong to the Helion project — submission disabled.');
 
+/* ── LOCAL PENDING QUEUE ───────────────────────────────────────────────────
+   A submission that fails (no network, backend unreachable) is kept on this
+   device and resent when the form is opened. Without this retry the queue was
+   never read back: the report stayed on the reporter's phone even though the
+   message on screen said it had been retained. */
+function pendingLoad(){
+  try{ const v=JSON.parse(localStorage.getItem(SPENDING)||'[]'); return Array.isArray(v)?v:[]; }
+  catch(e){ return []; }
+}
+function pendingSave(q){ try{ localStorage.setItem(SPENDING,JSON.stringify(q)); }catch(e){} }
+function pendingAdd(row){ const q=pendingLoad(); q.push(row); pendingSave(q); }
+/* Accepts entries from the previous version, which stored only the occ object. */
+function pendingRow(e){
+  if(e && e.report_id && e.report_data) return e;
+  return { report_id:   (e&&e.id)||genRef(),
+           submitted_at:(e&&e.created_at)||new Date().toISOString(),
+           report_data: e,
+           operator:    SOPERATOR,
+           status:      'pending_review' };
+}
+async function pendingFlush(){
+  if(!CFG_OK) return;
+  const q=pendingLoad();
+  if(!q.length) return;
+  const left=[];
+  for(const e of q){
+    try{
+      const {error}=await SDB.from(STABLE).insert(pendingRow(e));
+      if(error) throw error;
+    }catch(err){ left.push(e); }
+  }
+  pendingSave(left);
+  const sent=q.length-left.length;
+  if(sent) setStatus('success','Pending report(s) sent: '+sent+(left.length?' — '+left.length+' still failing':''));
+  else     setStatus('error','Pending report(s) not sent: '+left.length+' — will retry next time this form is opened');
+}
+
 /* ── STATE ── */
 let ANON=false, FILES=[], DATA={rtype:'',entity:'',checks:{}};
 
 /* ── INIT ── */
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
+  pendingFlush();
 });
 
 /* ── ANON TOGGLE ── */
@@ -644,13 +687,15 @@ async function submit(){
   }catch(err){
     console.error('Helion Report error:', err);
     /* Local fallback save when offline or the network is unavailable */
+    let kept=false;
     try{
-      const q=JSON.parse(localStorage.getItem(SPENDING)||'[]');
-      q.push(occ);
-      localStorage.setItem(SPENDING,JSON.stringify(q));
+      pendingAdd({ report_id:ref, submitted_at:now, report_data:occ, operator:SOPERATOR, status:'pending_review' });
+      kept=true;
     }catch(e2){}
     const msg=(err&&err.message)||'network error';
-    setStatus('error','Submission failed ('+msg+'). Reference retained: '+ref);
+    setStatus('error', kept
+      ? 'Submission failed ('+msg+') — the report is stored on this device, ref. '+ref+'. Reopen this link once the network is back to send it.'
+      : 'Submission failed ('+msg+') — the report was NOT stored, ref. '+ref+'. Note it down and try again.');
     btn.disabled=false;
   }
 }
@@ -674,5 +719,7 @@ function resetForm(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
+
+<a class="helion-guide-fab" href="Helion-X_User_Guide.html#report" title="User Guide / Οδηγός Χρήστη" aria-label="User Guide / Οδηγός Χρήστη">?</a>
 </body>
 </html>
