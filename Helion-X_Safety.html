@@ -17360,5 +17360,102 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
 </script>
 <!-- ═══ FIN ORIGINE DES SCENARIOS ══════════════════════════════════════════ -->
 
+
+<!-- ═══ OCCURRENCE → RISQUE : création guidée v1 | 2026-09-22 ═══════════════
+     Une occurrence qui revele un danger absent du registre doit produire un
+     scenario ET un lien de retour. Les deux etapes etaient manuelles et la
+     seconde s'oubliait, laissant risk_link vide et le comptage des frequences
+     a zero. Ce bloc enchaine : pre-remplissage du formulaire de creation avec
+     l'origine deja posee, puis pose automatique du Linked risk ID au retour. -->
+<script id="saf-occurrence-to-risk-v1">
+(function(){
+  'use strict';
+  var L = window.__SAF_O2R_LANG || {};
+  function t(k, fb){ return L[k] || fb; }
+
+  function role(){ try{ return (typeof safCurrentRole==='function'? safCurrentRole():'').toLowerCase(); }catch(e){ return ''; } }
+  function canWrite(){ var r=role(); return r==='admin'||r==='editor'; }
+  function toast(m,k){ try{ if(typeof showToast==='function') showToast(m,k||'success'); }catch(e){} }
+  function val(id){ var el=document.getElementById(id); return el? String(el.value||'').trim() : ''; }
+
+  function currentOccId(){ return val('occ-edit-id') || val('occ-custom-id'); }
+
+  /* ── Bouton greffe sous « Recommended DB action » ────────────────────── */
+  function mount(){
+    var sel=document.getElementById('occ-fw-db-action');
+    if(!sel) return;
+    var host=sel.closest('.form-field') || sel.parentNode;
+    var btn=document.getElementById('saf-o2r-btn');
+    if(!btn){
+      btn=document.createElement('button');
+      btn.id='saf-o2r-btn'; btn.type='button';
+      btn.style.cssText='margin-top:8px;width:100%;padding:6px 12px;background:rgba(232,160,32,.15);border:1px solid rgba(232,160,32,.45);color:#e3b341;font-family:var(--font-mono);font-size:10px;border-radius:6px;cursor:pointer;';
+      btn.textContent=t('btn','⟶ Create a risk from this occurrence');
+      btn.onclick=window.safRiskFromOccurrence;
+      host.appendChild(btn);
+    }
+    var show = canWrite() && sel.value==='new_risk';
+    btn.style.display = show ? '' : 'none';
+  }
+  document.addEventListener('change',function(e){ if(e.target && e.target.id==='occ-fw-db-action') mount(); }, true);
+  setInterval(mount, 1500);
+
+  /* ── Ouverture du formulaire de creation, origine deja renseignee ────── */
+  window.safRiskFromOccurrence=function(){
+    if(!canWrite()){ toast(t('ro','Read-only — creation not possible'),'error'); return; }
+    var occId=currentOccId();
+    if(!occId){ toast(t('noocc','Save the occurrence first, then create the risk.'),'error'); return; }
+    var desc=val('occ-desc');
+    var root=val('occ-fw-root-cause');
+
+    window.__safOccToRisk = { occ_id: occId, at: Date.now() };
+
+    try{ if(typeof showView==='function') showView('form'); }catch(e){}
+    setTimeout(function(){
+      function set(id,v){ var el=document.getElementById(id); if(el && !String(el.value||'').trim()) el.value=v; }
+      set('f-origin-type','occurrence');
+      set('f-origin-ref',occId);
+      set('f-ue', desc.slice(0,120));
+      set('f-dangers', root || desc);
+      var el=document.getElementById('f-origin-ref');
+      if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); }
+      toast(t('opened','Origin pre-filled from ')+occId);
+    },120);
+  };
+
+  /* ── Retour : le scenario cree est rattache a l'occurrence ───────────── */
+  if(typeof window.submitEntry==='function'){
+    var _submit=window.submitEntry;
+    window.submitEntry=function(){
+      var pending=window.__safOccToRisk;
+      var before={};
+      if(pending && typeof DB!=='undefined' && Array.isArray(DB)) DB.forEach(function(r){ if(r&&r.id) before[r.id]=1; });
+      var res=_submit.apply(this,arguments);
+      try{
+        if(pending && typeof DB!=='undefined' && Array.isArray(DB)){
+          var created=DB.filter(function(r){ return r && r.id && !before[r.id]; });
+          if(created.length===1){
+            var newId=created[0].id;
+            var occs=getOccurrences();
+            var occ=occs.find(function(o){ return o && o.id===pending.occ_id; });
+            if(occ){
+              occ.risk_link=newId;
+              if(occ.five_whys && typeof occ.five_whys==='object') occ.five_whys.risk_link=newId;
+              saveOccurrences(occs);
+              try{ if(typeof renderOccurrenceList==='function') renderOccurrenceList(); }catch(e){}
+              try{ if(typeof window.safCloudSaveNow==='function') window.safCloudSaveNow(); }catch(e){}
+              toast('✓ '+newId+t('linked',' created and linked to ')+pending.occ_id);
+            }
+            window.__safOccToRisk=null;
+          }
+        }
+      }catch(e){ console.warn('occurrence → risque :', e); }
+      return res;
+    };
+  }
+})();
+</script>
+<!-- ═══ FIN OCCURRENCE → RISQUE ════════════════════════════════════════════ -->
+
 </body>
 </html>
