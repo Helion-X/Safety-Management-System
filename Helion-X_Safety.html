@@ -2792,22 +2792,22 @@ function updateOaciDefinitionDropdown(sel) {
 </div>
 
 <div class="form-field">
-<label class="field-label">Origine du scénario <span class="field-code">ORIG</span></label>
+<label class="field-label">Risk origin <span class="field-code">ORIG</span></label>
 <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:12px;">
 <select id="f-origin-type" style="width:100%;">
-<option value="" style="background:#0d1b2a;color:#f4f6f8;">— non précisée —</option>
-<option value="occurrence" style="background:#0d1b2a;color:#f4f6f8;">Signalement / occurrence</option>
-<option value="audit" style="background:#0d1b2a;color:#f4f6f8;">Constat d'audit ou d'inspection</option>
-<option value="moc" style="background:#0d1b2a;color:#f4f6f8;">Étude de changement (MOC)</option>
-<option value="regwatch" style="background:#0d1b2a;color:#f4f6f8;">Veille réglementaire</option>
+<option value="" style="background:#0d1b2a;color:#f4f6f8;">— not specified —</option>
+<option value="occurrence" style="background:#0d1b2a;color:#f4f6f8;">Safety report / occurrence</option>
+<option value="audit" style="background:#0d1b2a;color:#f4f6f8;">Audit or inspection finding</option>
+<option value="moc" style="background:#0d1b2a;color:#f4f6f8;">Change study (MOC)</option>
+<option value="regwatch" style="background:#0d1b2a;color:#f4f6f8;">Regulatory watch</option>
 <option value="srb" style="background:#0d1b2a;color:#f4f6f8;">Safety Review Board</option>
-<option value="gap" style="background:#0d1b2a;color:#f4f6f8;">Analyse d'écart du référentiel</option>
-<option value="external" style="background:#0d1b2a;color:#f4f6f8;">Source externe (constructeur, autorité, retour de branche)</option>
-<option value="other" style="background:#0d1b2a;color:#f4f6f8;">Autre</option>
+<option value="gap" style="background:#0d1b2a;color:#f4f6f8;">Baseline gap analysis</option>
+<option value="external" style="background:#0d1b2a;color:#f4f6f8;">External source (manufacturer, authority, industry feedback)</option>
+<option value="other" style="background:#0d1b2a;color:#f4f6f8;">Other</option>
 </select>
-<input id="f-origin-ref" type="text" placeholder="Référence de la source : RPT-260722-9BDS, AUD-2026-03, AD/SB, § du règlement…"/>
+<input id="f-origin-ref" type="text" placeholder="Source reference: RPT-260722-9BDS, AUD-2026-03, AD/SB, regulation §…"/>
 </div>
-<div style="margin-top:6px;font-family:var(--font-mono);font-size:10px;color:var(--grey-400);">Facultatif, mais c'est ce qui permet de dire à un auditeur d'où vient ce scénario.</div>
+<div style="margin-top:6px;font-family:var(--font-mono);font-size:10px;color:var(--grey-400);">Optional, but this is what lets you tell an auditor where the scenario came from.</div>
 </div>
 
 <div class="form-field">
@@ -18896,14 +18896,14 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
 
   /* ── Archivage ──────────────────────────────────────────────────────── */
   window.safArchiveRisk=function(id){
-    if(!canWrite()){ toast('Lecture seule — archivage impossible','error'); return; }
+    if(!canWrite()){ toast('Read-only — archiving not possible','error'); return; }
     var rec=(typeof DB!=='undefined'&&Array.isArray(DB))?DB.find(function(r){ return r && r.id===id; }):null;
-    if(!rec){ toast('Scenario introuvable','error'); return; }
+    if(!rec){ toast('Scenario not found','error'); return; }
     var label=rec.id+' – '+(rec.event||'');
-    var reason=window.prompt('ARCHIVER '+label+'\n\nMotif du retrait du registre actif (obligatoire).\nExemples : activite arretee, scenario fusionne avec un autre, hors perimetre.\n\nCe motif reste consultable dans l\'archive.','');
+    var reason=window.prompt('ARCHIVE '+label+'\n\nReason for withdrawal from the active register (mandatory).\nExamples: activity discontinued, scenario merged into another, out of scope.\n\nThis reason remains visible in the \'archive.','');
     if(reason===null) return;
     reason=String(reason).trim();
-    if(reason.length<5){ toast('Motif trop court — archivage annule','error'); return; }
+    if(reason.length<5){ toast('Reason too short — archiving cancelled','error'); return; }
 
     var entry={
       id: rec.id,
@@ -18934,15 +18934,15 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
       if(typeof updateCounts==='function') updateCounts();
     }catch(e){}
     refreshButton();
-    toast('✓ '+rec.id+' archive — consultable dans l\'archive du registre');
+    toast('✓ '+rec.id+' archived — available in the risk register archive');
   };
 
   /* ── Restauration ───────────────────────────────────────────────────── */
   window.safRestoreArchivedRisk=function(id){
-    if(!canWrite()){ toast('Lecture seule — restauration impossible','error'); return; }
+    if(!canWrite()){ toast('Read-only — restoration not possible','error'); return; }
     var list=load(); var entry=list.find(function(a){ return a && a.id===id; });
-    if(!entry){ toast('Entree d\'archive introuvable','error'); return; }
-    if(!window.confirm('Restaurer '+entry.id+' dans le registre actif ?')) return;
+    if(!entry){ toast('Archive entry not found','error'); return; }
+    if(!window.confirm('Restore '+entry.id+' to the active register?')) return;
 
     try{ safUnmarkRiskRemoved(entry.id); }catch(e){}
     try{
@@ -18960,12 +18960,12 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
     }catch(e){}
     store(list.filter(function(a){ return a && a.id!==id; }));
     render(); refreshButton();
-    toast('✓ '+id+' restaure dans le registre actif');
+    toast('✓ '+id+' restored to the active register');
   };
 
   /* ── Export CSV de l'archive ────────────────────────────────────────── */
   window.safArchiveExportCSV=function(){
-    var rows=[['ID','Evenement','Famille','Risque residuel','Archive le','Par','Motif']];
+    var rows=[['ID','Event','Family','Residual risk','Archived on','By','Reason']];
     load().forEach(function(a){
       rows.push([a.id, a.event, a.family_id, a.residual_risk,
                  String(a.archived_at||'').slice(0,10), a.archived_by, a.reason]);
@@ -18989,10 +18989,10 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
     m.addEventListener('click',function(e){ if(e.target===m) close(); });
     m.innerHTML='<div style="max-width:980px;margin:0 auto;background:var(--navy-mid,#16263a);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:22px 24px;">'
       +'<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;">'
-      +'<div style="font-size:15px;font-weight:700;color:var(--white,#fff);">🗄 Archive du registre des risques</div>'
+      +'<div style="font-size:15px;font-weight:700;color:var(--white,#fff);">🗄 Risk register archive</div>'
       +'<div style="display:flex;gap:8px;">'
       +'<button class="btn btn-ghost" onclick="safArchiveExportCSV()">⤓ CSV</button>'
-      +'<button class="btn btn-ghost" onclick="safArchiveClose()">✕ Fermer</button>'
+      +'<button class="btn btn-ghost" onclick="safArchiveClose()">✕ Close</button>'
       +'</div></div>'
       +'<div style="font-family:var(--font-mono,monospace);font-size:10px;color:var(--grey-400,#8fa8c0);margin-bottom:16px;">'
       +'Scenarios retires du registre actif. Ils ne sont pas supprimes : motif, date et auteur sont conserves, et la restauration est possible.</div>'
@@ -19019,9 +19019,9 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
         +'<div style="font-weight:700;color:var(--white,#fff);font-size:13px;margin-bottom:3px;">'+esc(a.id)+' — '+esc(a.event)+'</div>'
         +'<div style="font-family:var(--font-mono,monospace);font-size:10px;color:var(--grey-400,#8fa8c0);margin-bottom:7px;">'
         + esc(a.family_id||'—')+' · residuel '+esc(a.residual_risk||'—')+' · archive le '+esc(d)+' par '+esc(a.archived_by||'—')+'</div>'
-        +'<div style="font-size:11.5px;color:var(--grey-200,#c9d4de);white-space:pre-wrap;"><strong style="color:var(--gold-light,#E0A030);">Motif :</strong> '+esc(a.reason)+'</div>'
+        +'<div style="font-size:11.5px;color:var(--grey-200,#c9d4de);white-space:pre-wrap;"><strong style="color:var(--gold-light,#E0A030);">Reason:</strong> '+esc(a.reason)+'</div>'
         +'</div>'
-        +(w?'<button class="btn btn-ghost" style="flex-shrink:0;" onclick="safRestoreArchivedRisk(\''+esc(a.id)+'\')">↺ Restaurer</button>':'')
+        +(w?'<button class="btn btn-ghost" style="flex-shrink:0;" onclick="safRestoreArchivedRisk(\''+esc(a.id)+'\')">↺ Restore</button>':'')
         +'</div></div>';
     }).join('')+'</div>';
   }
@@ -19072,23 +19072,23 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
   'use strict';
 
   var CREATION = {
-    created_by_moc:            'Étude de changement (MOC)',
-    created_from_moc:          'Étude de changement (MOC)',
-    created_by_composite_split:'Scission d\'un scénario composite',
-    added_after_gap_analysis:  'Analyse d\'écart du référentiel',
-    created_from_occurrence:   'Signalement / occurrence',
-    copied_from:               'Duplication d\'un scénario existant',
-    imported:                  'Import de registre',
-    created:                   'Saisie directe dans le registre'
+    created_by_moc:            'Change study (MOC)',
+    created_from_moc:          'Change study (MOC)',
+    created_by_composite_split:'Split of a composite scenario',
+    added_after_gap_analysis:  'Baseline gap analysis',
+    created_from_occurrence:   'Safety report / occurrence',
+    copied_from:               'Duplication of an existing scenario',
+    imported:                  'Register import',
+    created:                   'Direct entry in the register'
   };
   var DECLARED = {
-    occurrence:'Signalement / occurrence',
-    audit:'Constat d\'audit ou d\'inspection',
-    moc:'Étude de changement (MOC)',
-    regwatch:'Veille réglementaire',
+    occurrence:'Safety report / occurrence',
+    audit:'Audit or inspection finding',
+    moc:'Change study (MOC)',
+    regwatch:'Regulatory watch',
     srb:'Safety Review Board',
-    gap:'Analyse d\'écart du référentiel',
-    external:'Source externe (constructeur, autorité, retour de branche)',
+    gap:'Baseline gap analysis',
+    external:'External source (manufacturer, authority, industry feedback)',
     other:'Autre'
   };
   var KIND_OF = {
@@ -19135,13 +19135,13 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
       out.by    = c.by || '';
       out.ref   = c.moc_ref || c.source_id || c.ref || c.reason || '';
     } else if(r.linked_change_study){
-      out.type='inferred_moc'; out.label='Étude de changement (MOC)'; out.traced=false;
+      out.type='inferred_moc'; out.label='Change study (MOC)'; out.traced=false;
       out.date = r.created_at || r.timestamp || '';
     } else if(r.is_custom_event){
-      out.type='event_accounting'; out.label='Créé depuis l\'Event Accounting'; out.traced=false;
+      out.type='event_accounting'; out.label='Created from Event Accounting'; out.traced=false;
       out.date = r.created_at || r.timestamp || '';
     } else {
-      out.type='referentiel'; out.label='Référentiel embarqué — origine non tracée'; out.traced=false;
+      out.type='referentiel'; out.label='Embedded baseline — origin not traced'; out.traced=false;
       out.date = r.created_at || r.timestamp || '';
     }
     if(!out.kind) out.kind = KIND_OF[out.type] || '';
@@ -19158,11 +19158,11 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
     try{
       var o = origin(r);
       var chip = o.traced
-        ? '<span style="background:rgba(63,185,80,.14);border:1px solid rgba(63,185,80,.4);color:#3fb950;border-radius:4px;padding:2px 8px;font-family:var(--font-mono);font-size:9px;">TRACÉE</span>'
-        : '<span style="background:rgba(227,179,65,.14);border:1px solid rgba(227,179,65,.4);color:#e3b341;border-radius:4px;padding:2px 8px;font-family:var(--font-mono);font-size:9px;">DÉDUITE</span>';
+        ? '<span style="background:rgba(63,185,80,.14);border:1px solid rgba(63,185,80,.4);color:#3fb950;border-radius:4px;padding:2px 8px;font-family:var(--font-mono);font-size:9px;">TRACED</span>'
+        : '<span style="background:rgba(227,179,65,.14);border:1px solid rgba(227,179,65,.4);color:#e3b341;border-radius:4px;padding:2px 8px;font-family:var(--font-mono);font-size:9px;">INFERRED</span>';
 
       var moc = o.moc
-        ? '<span style="font-family:var(--font-mono);color:var(--gold-light);cursor:pointer;" onclick="showView(\'change\')" title="Ouvrir les études de changement">'+esc(o.moc)+'</span>'
+        ? '<span style="font-family:var(--font-mono);color:var(--gold-light);cursor:pointer;" onclick="showView(\'change\')" title="Open change studies">'+esc(o.moc)+'</span>'
         : '<span style="color:var(--grey-400);font-style:italic;">—</span>';
 
       var src = o.sources.length
@@ -19172,25 +19172,25 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
       var occ = o.occ.length
         ? o.occ.map(function(x){
             return '<div style="font-family:var(--font-mono);font-size:10px;margin-bottom:3px;">'
-                 + '<span style="color:var(--steel-bright);cursor:pointer;" onclick="showView(\'occurrences\')" title="Ouvrir l\'Occurrence Log">'+esc(x.id)+'</span>'
+                 + '<span style="color:var(--steel-bright);cursor:pointer;" onclick="showView(\'occurrences\')" title="Open the Occurrence Log">'+esc(x.id)+'</span>'
                  + '<span style="color:var(--grey-400);"> · '+esc(day(x.date))+(x.status?' · '+esc(x.status):'')+'</span></div>';
           }).join('')
-        : '<span style="color:var(--grey-400);font-style:italic;">Aucun signalement rattaché</span>';
+        : '<span style="color:var(--grey-400);font-style:italic;">No linked safety report</span>';
 
       return '<div class="detail-block full-width" style="grid-column:1/-1;border-color:rgba(74,159,224,.35);">'
-        + '<span class="detail-label">⛓ ORIGINE DU SCÉNARIO</span>'
+        + '<span class="detail-label">⛓ RISK ORIGIN</span>'
         + '<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;">'
-        + '<div><div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);margin-bottom:5px;">PROVENANCE</div>'
+        + '<div><div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);margin-bottom:5px;">SOURCE</div>'
         + '<div style="font-size:11px;color:var(--white);font-weight:700;margin-bottom:5px;">'+esc(o.label)+'</div>'
         + chip
         + '<div style="font-family:var(--font-mono);font-size:10px;color:var(--grey-400);margin-top:5px;">'+esc(day(o.date))+(o.by?' · '+esc(o.by):'')+'</div>'
         + (o.ref?'<div style="font-family:var(--font-mono);font-size:10px;color:var(--grey-300);margin-top:3px;">'+esc(o.ref)+'</div>':'')
         + '</div>'
-        + '<div><div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);margin-bottom:5px;">ÉTUDE DE CHANGEMENT</div><div style="font-size:11px;">'+moc+'</div></div>'
-        + '<div><div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);margin-bottom:5px;">SCÉNARIOS SOURCES</div><div>'+src+'</div></div>'
-        + '<div><div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);margin-bottom:5px;">SIGNALEMENTS RATTACHÉS ('+o.occ.length+')</div><div>'+occ+'</div></div>'
+        + '<div><div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);margin-bottom:5px;">CHANGE STUDY</div><div style="font-size:11px;">'+moc+'</div></div>'
+        + '<div><div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);margin-bottom:5px;">SOURCE SCENARIOS</div><div>'+src+'</div></div>'
+        + '<div><div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);margin-bottom:5px;">LINKED SAFETY REPORTS ('+o.occ.length+')</div><div>'+occ+'</div></div>'
         + '</div>'
-        + (o.occ.length ? '' : '<div style="margin-top:10px;font-family:var(--font-mono);font-size:9.5px;color:var(--grey-400);">Le rattachement se fait depuis la fiche d\'occurrence, champ « Linked risk ID » — 1re ligne du formulaire, ou panneau 5 Whys.</div>')
+        + (o.occ.length ? '' : '<div style="margin-top:10px;font-family:var(--font-mono);font-size:9.5px;color:var(--grey-400);">Linking is done from the occurrence sheet, “Linked risk ID” field — first row of the form, or 5 Whys panel.</div>')
         + '</div>';
     }catch(e){ return ''; }
   };
@@ -19199,7 +19199,7 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
   window.safRiskOriginCSV = function(r){
     try{
       var o=origin(r);
-      return [ o.label + (o.ref?' — '+o.ref:'') + (o.traced?'':' (déduite)'), day(o.date)+(o.by?' / '+o.by:''),
+      return [ o.label + (o.ref?' — '+o.ref:'') + (o.traced?'':' (inferred)'), day(o.date)+(o.by?' / '+o.by:''),
                o.sources.join(' '), o.occ.map(function(x){ return x.id; }).join(' ') ];
     }catch(e){ return ['','','','']; }
   };
@@ -19233,11 +19233,11 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
     }).join('');
     host.innerHTML = '<div class="detail-grid">'+window.safRiskOriginHTML(r)+'</div>'
       + (editable ? '<div style="margin-top:10px;padding:12px 14px;background:rgba(74,159,224,.06);border:1px solid rgba(74,159,224,.25);border-radius:8px;">'
-        + '<div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);letter-spacing:.06em;margin-bottom:8px;">DÉCLARER OU CORRIGER L\'ORIGINE</div>'
+        + '<div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);letter-spacing:.06em;margin-bottom:8px;">DECLARE OR CORRECT THE ORIGIN</div>'
         + '<div style="display:grid;grid-template-columns:1fr 1.4fr auto;gap:10px;align-items:center;">'
-        + '<select id="saf-origin-type" style="width:100%;"><option value="" style="background:#0d1b2a;color:#f4f6f8;">— non précisée —</option>'+opts+'</select>'
-        + '<input id="saf-origin-ref" type="text" value="'+esc(r.origin_ref||'')+'" placeholder="Référence de la source (RPT-…, AUD-…, § règlement)"/>'
-        + '<button class="btn btn-ghost" onclick="safOriginSave(\''+esc(id)+'\')">Enregistrer l\'origine</button>'
+        + '<select id="saf-origin-type" style="width:100%;"><option value="" style="background:#0d1b2a;color:#f4f6f8;">— not specified —</option>'+opts+'</select>'
+        + '<input id="saf-origin-ref" type="text" value="'+esc(r.origin_ref||'')+'" placeholder="Source reference (RPT-…, AUD-…, regulation §)"/>'
+        + '<button class="btn btn-ghost" onclick="safOriginSave(\''+esc(id)+'\')">Save origin</button>'
         + '</div>'
         + '<div id="saf-origin-fb" style="margin-top:7px;font-family:var(--font-mono);font-size:10px;color:var(--grey-400);"></div>'
         + '</div>' : '');
@@ -19248,7 +19248,7 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
   window.safOriginSave=function(id){
     var fb=document.getElementById('saf-origin-fb');
     var role=''; try{ role=(typeof safCurrentRole==='function'?safCurrentRole():'').toLowerCase(); }catch(e){}
-    if(role!=='admin'&&role!=='editor'){ if(fb){ fb.textContent='Lecture seule.'; fb.style.color='#f85149'; } return; }
+    if(role!=='admin'&&role!=='editor'){ if(fb){ fb.textContent='Read-only.'; fb.style.color='#f85149'; } return; }
     var r=(typeof DB!=='undefined'&&Array.isArray(DB))?DB.find(function(x){ return x && x.id===id; }):null;
     if(!r) return;
     var t=(document.getElementById('saf-origin-type')||{}).value||'';
@@ -19263,7 +19263,7 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
     try{ if(typeof window.safCloudSaveNow==='function') window.safCloudSaveNow(); }catch(e){}
     mountModalOrigin(id);
     var fb2=document.getElementById('saf-origin-fb');
-    if(fb2){ fb2.textContent='✓ Origine enregistrée.'; fb2.style.color='#3fb950'; }
+    if(fb2){ fb2.textContent='✓ Origin saved.'; fb2.style.color='#3fb950'; }
   };
   if(typeof window.editEntry==='function'){
     var _edit=window.editEntry;
@@ -19296,16 +19296,16 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
     if(!bar) return;
     var sel=document.createElement('select');
     sel.id=FILTER_ID;
-    sel.title='Filtrer par origine du scénario';
-    sel.innerHTML='<option value="">Toutes origines</option>'
-      +'<option value="moc">Issus d\'une MOC</option>'
-      +'<option value="occurrence">Avec signalement rattaché</option>'
-      +'<option value="audit">Constat d\'audit</option>'
-      +'<option value="regwatch">Veille réglementaire</option>'
+    sel.title='Filter by risk origin';
+    sel.innerHTML='<option value="">All origins</option>'
+      +'<option value="moc">From a change study</option>'
+      +'<option value="occurrence">With a linked safety report</option>'
+      +'<option value="audit">Audit finding</option>'
+      +'<option value="regwatch">Regulatory watch</option>'
       +'<option value="srb">Safety Review Board</option>'
-      +'<option value="split">Scission de scénario</option>'
-      +'<option value="gap">Analyse d\'écart</option>'
-      +'<option value="untraced">Origine non tracée</option>';
+      +'<option value="split">Scenario split</option>'
+      +'<option value="gap">Gap analysis</option>'
+      +'<option value="untraced">Origin not traced</option>';
     sel.onchange=function(){ try{ applyFilters(); }catch(e){} };
     var clear=bar.querySelector('button'); 
     if(clear) bar.insertBefore(sel, clear); else bar.appendChild(sel);
