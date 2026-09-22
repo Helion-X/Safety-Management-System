@@ -4613,6 +4613,7 @@ window.__SAF_E5X_RIT_PATCH='V2_2026-07-03';
     'safOccurrences','safLessons','safSRBMeetings','safAudits',
     'safSAR','safALoS','safCAMOSignals','lastModified',
     'ejsPublicKey','ejsServiceId','ejsTemplateId',
+    'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap',
     'saf_international_safety_management_header_v1',
     'saf-seeds-done','helion_live_draft_v1'
   ];
@@ -5296,6 +5297,20 @@ window.safExportAllData_object = function(){
     ejsServiceId:     _getLS('ejsServiceId'),
     ejsTemplateId:    _getLS('ejsTemplateId'),
     saf_header:       _getLS('saf_international_safety_management_header_v1'),
+    // 22.09.2026 — ces onze cles etaient ecrites en local mais absentes de la
+    // sauvegarde : signaux CAMO, politique securite et toutes les sources de
+    // comptage des SPI ne quittaient jamais le navigateur.
+    safCAMOSignals:   _getLS('safCAMOSignals'),
+    safSafetyPolicy:  _getLS('safSafetyPolicy'),
+    safEmployeeCount: _getLS('safEmployeeCount'),
+    safFODInspections:_getLS('safFODInspections'),
+    safFODTraining:   _getLS('safFODTraining'),
+    safHazardMeetings:_getLS('safHazardMeetings'),
+    safIndepChecks:   _getLS('safIndepChecks'),
+    safMaintReports:  _getLS('safMaintReports'),
+    safTechComms:     _getLS('safTechComms'),
+    safWorkOrders:    _getLS('safWorkOrders'),
+    safOccActionEmailMap: _getLS('safOccActionEmailMap'),
     helion_live_draft_v1: _getLS('helion_live_draft_v1'),
   };
   Object.keys(allData).forEach(function(k){
@@ -5385,8 +5400,10 @@ function safImportAllData(evt){
       }
 
       var keys = ['safRiskDB','safRiskDBVersion','safEventCatalog','safEventCatalogVersion','safChangeStudies','safSPITargets','safFlightHours','safOccurrences',
-                  'safLessons','safSRBMeetings','safAudits','lastModified',
-                  'ejsPublicKey','ejsServiceId','ejsTemplateId','helion_live_draft_v1'];
+                  'safLessons','safSRBMeetings','safAudits','safSAR','safALoS','safCAMOSignals','lastModified',
+                  'ejsPublicKey','ejsServiceId','ejsTemplateId',
+                  'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap',
+                  'helion_live_draft_v1'];
       var count = 0;
       keys.forEach(function(k){
         if(k === 'safRiskDB') return;
@@ -7589,9 +7606,9 @@ function showAuditForm(editId){
   if(_ca) _ca.addEventListener('click', function() { w.style.display='none'; });
 }
 
-function saveAudit(editId){
+function saveAudit(editId, _silent){
   var date=document.getElementById('aud-date')?.value; var type=document.getElementById('aud-type')?.value;
-  if(!date||!type){showToast('Please fill Date and Audit Type','error');return;}
+  if(!date||!type){if(!_silent)showToast('Please fill Date and Audit Type','error');return;}
   var item={
     id:editId||('AUD-'+Date.now()),date,type,
     area:document.getElementById('aud-area')?.value||'',ref:(document.getElementById('aud-ref')?.value||'').trim(),
@@ -7606,7 +7623,11 @@ function saveAudit(editId){
   var audits=getAudits();
   if(editId){var i=audits.findIndex(function(a){return a.id===editId;});if(i>=0){item.created_at=audits[i].created_at;audits[i]=item;}else audits.push(item);}
   else{item.created_at=new Date().toISOString();audits.push(item);}
-  saveAudits(audits);document.getElementById('audit-form-wrap').style.display='none';
+  saveAudits(audits);
+  // L'autosave bascule le formulaire en edition de la fiche creee.
+  var _ae=document.getElementById('audit-form-eid'); if(_ae) _ae.value=item.id;
+  if(_silent) return;
+  document.getElementById('audit-form-wrap').style.display='none';
   renderSurveillanceView();showToast('✓ Audit saved','success');
 }
 
@@ -8028,7 +8049,9 @@ function importJSON(event) {
       if(data._version || data._app || data.safRiskDB || data.safOccurrences || data.safChangeStudies) {
         const allKeys = ['safRiskDB','safChangeStudies','safSPITargets','safFlightHours','safOccurrences',
                          'safLessons','safSRBMeetings','safAudits','safSAR','safALoS','safCAMOSignals','lastModified',
-                         'ejsPublicKey','ejsServiceId','ejsTemplateId','helion_live_draft_v1'];
+                         'ejsPublicKey','ejsServiceId','ejsTemplateId',
+                         'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap',
+                         'helion_live_draft_v1'];
         allKeys.forEach(function(k){ if(data[k]!=null){ localStorage.setItem(k,data[k]); imported.push(k); } });
         if(data['saf_header']!=null) localStorage.setItem('saf_international_safety_management_header_v1', data['saf_header']);
 
@@ -8679,6 +8702,9 @@ function getSafetyPolicy(){
 function saveSafetyPolicy(data){
   localStorage.setItem('safSafetyPolicy', JSON.stringify(data));
   updateLastModified();
+  // 22.09.2026 — cette ecriture restait locale : la politique securite ne
+  // partait jamais vers Supabase, contrairement aux autres modules.
+  if(typeof window.safCloudScheduleSave==='function') window.safCloudScheduleSave();
 }
 
 // Reconstruit un hash du contenu signé, afin d'invalider automatiquement la
@@ -9932,6 +9958,9 @@ function filterPendingMobile(){
 function showCAMOSignalForm(editId){
   var wrap = document.getElementById('camo-signal-form-wrap');
   if(!wrap) return;
+  // L'autosave suit le signal ouvert : vide en creation, sinon il ecraserait
+  // le signal precedemment edite.
+  window.__safAutoCamoId = editId || '';
   var ex = editId ? (getCAMOSignals().find(function(s){ return s.id === editId; }) || {}) : {};
   wrap.style.display = 'block';
   wrap.innerHTML = '<div class="chart-card" style="padding:24px;margin-bottom:20px;">'
@@ -9965,11 +9994,11 @@ function hideCAMOSignalForm(){
   if(wrap){ wrap.style.display='none'; wrap.innerHTML=''; }
 }
 
-function saveCAMOSignal(editId){
+function saveCAMOSignal(editId, _silent){
   var date = document.getElementById('csi-date').value;
   var type = document.getElementById('csi-type').value;
   var desc = document.getElementById('csi-desc').value.trim();
-  if(!date || !type || !desc){ alert('Date, type et description sont obligatoires.'); return; }
+  if(!date || !type || !desc){ if(!_silent) alert('Date, type et description sont obligatoires.'); return; }
   var signals = getCAMOSignals();
   var signal = {
     id: editId || ('CAMO-' + Date.now()),
@@ -9988,6 +10017,8 @@ function saveCAMOSignal(editId){
   if(editId){ var idx=signals.findIndex(function(s){return s.id===editId;}); if(idx>=0) signals[idx]=signal; else signals.push(signal); }
   else { signals.push(signal); }
   saveCAMOSignals(signals);
+  window.__safAutoCamoId = signal.id;
+  if(_silent) return;
   hideCAMOSignalForm();
   renderCAMOSignals();
 }
@@ -16518,12 +16549,12 @@ function showSARForm(editId){
     +'</div>';
 }
 
-function saveSARRecord(){
+function saveSARRecord(_silent){
   var date=document.getElementById('sar-date')?.value;
   var type=document.getElementById('sar-type')?.value;
   var scope=document.getElementById('sar-scope')?.value;
   var effectiveness=document.getElementById('sar-effectiveness')?.value;
-  if(!date||!type||!scope||!effectiveness){showToast('Date, Type, Scope and Effectiveness are mandatory','error');return;}
+  if(!date||!type||!scope||!effectiveness){if(!_silent)showToast('Date, Type, Scope and Effectiveness are mandatory','error');return;}
   var editId=document.getElementById('sar-eid')?.value||'';
   var item={
     id:editId||('SAR-'+Date.now()),
@@ -16546,6 +16577,8 @@ function saveSARRecord(){
   if(editId){var i=sars.findIndex(function(s){return s.id===editId;});if(i>=0){item.created_at=sars[i].created_at;sars[i]=item;}else sars.push(item);}
   else{item.created_at=new Date().toISOString();sars.push(item);}
   saveSAR(sars);
+  var _se=document.getElementById('sar-eid'); if(_se) _se.value=item.id;
+  if(_silent) return;
   document.getElementById('sar-form-wrap').style.display='none';
   renderSARList();
   showToast('✓ Safety Assurance review saved — '+item.id,'success');
@@ -16617,7 +16650,7 @@ function deleteSAR(id){
 // AMC1 ORO.GEN.200(a)(3) & AMC1 ORO.GEN.200(a)(4) — Acceptable Level of Safety
 // ═══════════════════════════════════════════════════════════════════════════
 function getALoS(){try{return JSON.parse(localStorage.getItem('safALoS')||'[]');}catch{return[];}}
-function saveALoS(a){localStorage.setItem('safALoS',JSON.stringify(a));updateLastModified();}
+function saveALoS(a){localStorage.setItem('safALoS',JSON.stringify(a));updateLastModified();if(typeof window.safCloudScheduleSave==='function')window.safCloudScheduleSave();}
 
 var ALOS_TYPES=[
   'Organisational ALoS definition (annual)',
@@ -16675,12 +16708,12 @@ function showALoSForm(editId){
     +'</div>';
 }
 
-function saveALoSRecord(){
+function saveALoSRecord(_silent){
   var date=document.getElementById('alos-date')?.value;
   var type=document.getElementById('alos-type')?.value;
   var description=document.getElementById('alos-description')?.value;
   var status=document.getElementById('alos-status')?.value;
-  if(!date||!type||!description||!status){showToast('Date, Type, Description and Status are mandatory','error');return;}
+  if(!date||!type||!description||!status){if(!_silent)showToast('Date, Type, Description and Status are mandatory','error');return;}
   var riskLevel=document.querySelector('input[name="alos-risk-level"]:checked')?.value||'';
   var editId=document.getElementById('alos-eid')?.value||'';
   var item={
@@ -16707,6 +16740,8 @@ function saveALoSRecord(){
   if(editId){var i=alosArr.findIndex(function(s){return s.id===editId;});if(i>=0){item.created_at=alosArr[i].created_at;alosArr[i]=item;}else alosArr.push(item);}
   else{item.created_at=new Date().toISOString();alosArr.push(item);}
   saveALoS(alosArr);
+  var _le=document.getElementById('alos-eid'); if(_le) _le.value=item.id;
+  if(_silent) return;
   document.getElementById('alos-form-wrap').style.display='none';
   renderALoSView();
   showToast('✓ ALoS / Safety Case enregistré — '+item.id,'success');
@@ -16908,7 +16943,9 @@ setTimeout(function(){
   // Liste des clés gérées (identique à safExportAllData / importJSON)
   var KEYS = ['safRiskDB','safRiskDBVersion','safEventCatalog','safEventCatalogVersion','safChangeStudies','safSPITargets','safFlightHours','safOccurrences',
               'safLessons','safSRBMeetings','safAudits','safSAR','safALoS','safCAMOSignals','lastModified',
-              'ejsPublicKey','ejsServiceId','ejsTemplateId','helion_live_draft_v1'];
+              'ejsPublicKey','ejsServiceId','ejsTemplateId',
+              'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap',
+              'helion_live_draft_v1'];
 
   /* ══════════════════════════════════════════════════════════════════════
      ÉDITION CONCURRENTE — verrouillage optimiste (porté de la suite SAF)
@@ -18595,6 +18632,14 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
   function autoSrb(){ var f=document.getElementById('srb-form-wrap');if(!visible(f)||!writingAllowed()||typeof saveSRBMeeting!=='function')return;saveSRBMeeting(window.__safAutoSrbId||'',true);syncCloudNow(); }
   function autoLesson(){ var f=document.getElementById('lessons-form-wrap');if(!visible(f)||!writingAllowed()||typeof saveLesson!=='function')return;saveLesson(true);syncCloudNow(); }
   function autoRisk(){ var f=document.getElementById('edit-modal-overlay');if(!visible(f)||!writingAllowed()||typeof saveEditModal!=='function')return;saveEditModal(true);syncCloudNow(); }
+  function autoAudit(){ var f=document.getElementById('audit-form-wrap');if(!visible(f)||!writingAllowed()||typeof saveAudit!=='function')return;var e=document.getElementById('audit-form-eid');saveAudit(e?e.value:'',true);syncCloudNow(); }
+  function autoCamo(){ var f=document.getElementById('camo-signal-form-wrap');if(!visible(f)||!writingAllowed()||typeof saveCAMOSignal!=='function')return;saveCAMOSignal(window.__safAutoCamoId||null,true);syncCloudNow(); }
+  function autoSar(){ var f=document.getElementById('sar-form-wrap');if(!visible(f)||!writingAllowed()||typeof saveSARRecord!=='function')return;saveSARRecord(true);syncCloudNow(); }
+  function autoAlos(){ var f=document.getElementById('alos-form-wrap');if(!visible(f)||!writingAllowed()||typeof saveALoSRecord!=='function')return;saveALoSRecord(true);syncCloudNow(); }
+  // La politique securite a deja son enregistrement d'etat sans entree
+  // d'historique : on s'appuie dessus, la creation d'une version signee reste
+  // un acte volontaire.
+  function autoPolicy(){ var f=document.getElementById('view-safetypolicy');if(!visible(f)||!writingAllowed()||typeof spSyncCurrent!=='function')return;spSyncCurrent();syncCloudNow(); }
 
   function route(t){
     if(!t||!t.closest||!writingAllowed())return;
@@ -18603,6 +18648,11 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
     if(t.closest('#srb-form-wrap')){ later('srb',autoSrb); return; }
     if(t.closest('#lessons-form-wrap')){ later('lesson',autoLesson); return; }
     if(t.closest('#edit-modal-overlay')){ later('risk',autoRisk); return; }
+    if(t.closest('#audit-form-wrap')){ later('audit',autoAudit); return; }
+    if(t.closest('#camo-signal-form-wrap')){ later('camo',autoCamo); return; }
+    if(t.closest('#sar-form-wrap')){ later('sar',autoSar); return; }
+    if(t.closest('#alos-form-wrap')){ later('alos',autoAlos); return; }
+    if(t.closest('#view-safetypolicy')){ later('policy',autoPolicy); return; }
   }
   document.addEventListener('input',function(e){route(e.target);},true);
   document.addEventListener('change',function(e){route(e.target);},true);
@@ -18610,7 +18660,7 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
 
   // Mention discrète : la saisie est persistée sans clic sur Enregistrer.
   function mark(){
-    [['occ-form-wrap','Autosave on — saved automatically'],['change-form','Autosave on — draft synchronised'],['srb-form-wrap','Autosave on'],['lessons-form-wrap','Autosave on']].forEach(function(x){
+    [['occ-form-wrap','Autosave on — saved automatically'],['change-form','Autosave on — draft synchronised'],['srb-form-wrap','Autosave on'],['lessons-form-wrap','Autosave on'],['audit-form-wrap','Autosave on'],['camo-signal-form-wrap','Autosave on'],['sar-form-wrap','Autosave on'],['alos-form-wrap','Autosave on']].forEach(function(x){
       var root=document.getElementById(x[0]);if(!root||root.querySelector('.helion-autosave-note'))return;var d=document.createElement('div');d.className='helion-autosave-note';d.style.cssText='margin:8px 0;font-family:var(--font-mono);font-size:9px;color:#3fb950;';d.textContent='✓ '+x[1];root.insertBefore(d,root.firstChild);
     });
   }
@@ -18624,6 +18674,11 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
     try{autoSrb();}catch(e){}
     try{autoLesson();}catch(e){}
     try{autoRisk();}catch(e){}
+    try{autoAudit();}catch(e){}
+    try{autoCamo();}catch(e){}
+    try{autoSar();}catch(e){}
+    try{autoAlos();}catch(e){}
+    try{autoPolicy();}catch(e){}
   };
   document.addEventListener('visibilitychange',function(){
     if(document.visibilityState==='hidden'){
