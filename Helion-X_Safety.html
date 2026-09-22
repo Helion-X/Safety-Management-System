@@ -4613,7 +4613,7 @@ window.__SAF_E5X_RIT_PATCH='V2_2026-07-03';
     'safOccurrences','safLessons','safSRBMeetings','safAudits',
     'safSAR','safALoS','safCAMOSignals','lastModified',
     'ejsPublicKey','ejsServiceId','ejsTemplateId',
-    'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap',
+    'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921',
     'saf_international_safety_management_header_v1',
     'saf-seeds-done','helion_live_draft_v1'
   ];
@@ -5114,8 +5114,69 @@ function __safAdoptUserRecord(refRec, userRec){
   out.ref_overridden = true;
   return out;
 }
+/* ═══════════════════════════════════════════════════════════════════════════
+   22.09.2026 — SCENARIOS RETIRES DU REGISTRE (pierres tombales)
+   Defaut corrige : supprimer un scenario du referentiel ne tenait pas. Il
+   disparaissait de l'ecran, puis __mergeSmsDBWithCustom() le reconstruisait
+   depuis INITIAL_DATA a la reouverture — et une copie encore presente dans le
+   cache local ou dans le cloud le reinjectait meme apres reduction du
+   referentiel. D'ou un registre qui passait a 94 puis revenait a 103.
+   La liste ci-dessous est la seule trace qui survit a la fusion : elle est
+   sauvegardee dans Supabase comme les autres donnees (cle safRemovedRiskIds).
+   ═══════════════════════════════════════════════════════════════════════════ */
+var SAF_REMOVED_KEY = 'safRemovedRiskIds';
+function safRemovedRiskIds(){
+  try{ var v = JSON.parse(localStorage.getItem(SAF_REMOVED_KEY)||'[]'); return Array.isArray(v)?v.map(String):[]; }
+  catch(e){ return []; }
+}
+function safRemovedRiskSet(){ var o={}; safRemovedRiskIds().forEach(function(id){ o[id]=1; }); return o; }
+function __safWriteRemoved(list){
+  var uniq=[], seen={};
+  list.forEach(function(id){ id=String(id||'').trim(); if(id && !seen[id]){ seen[id]=1; uniq.push(id); } });
+  uniq.sort();
+  try{ localStorage.setItem(SAF_REMOVED_KEY, JSON.stringify(uniq)); }catch(e){}
+  try{ if(typeof window.safCloudScheduleSave==='function') window.safCloudScheduleSave(); }catch(e){}
+  return uniq;
+}
+/* Marque des scenarios comme retires. */
+function safMarkRiskRemoved(ids){
+  if(!Array.isArray(ids)) ids=[ids];
+  return __safWriteRemoved(safRemovedRiskIds().concat(ids));
+}
+/* Leve la marque : un scenario reintroduit volontairement redevient visible. */
+function safUnmarkRiskRemoved(ids){
+  if(!Array.isArray(ids)) ids=[ids];
+  var drop={}; ids.forEach(function(id){ drop[String(id)]=1; });
+  return __safWriteRemoved(safRemovedRiskIds().filter(function(id){ return !drop[id]; }));
+}
+window.safRemovedRiskIds=safRemovedRiskIds;
+window.safMarkRiskRemoved=safMarkRiskRemoved;
+window.safUnmarkRiskRemoved=safUnmarkRiskRemoved;
+
+/* Remise en etat de l'export du 21.09.2026 (94 scenarios) : les neuf scenarios
+   du referentiel qui en avaient ete retires sont marques une fois pour toutes.
+   Le contenu des 94 autres n'est PAS touche — il vit dans le cloud et peut
+   avoir evolue depuis l'export. Pour en reintroduire un :
+   safUnmarkRiskRemoved('SMS-09') dans la console, puis rechargement. */
+(function(){
+  var MIG='saf_removed_mig_20260921';
+  try{ if(localStorage.getItem(MIG)) return; }catch(e){ return; }
+  try{
+    safMarkRiskRemoved(['SMS-09','SMS-10','SMS-11','SMS-12','SMS-13','SMS-16','SMS-17','SMS-18','SMS-19']);
+    localStorage.setItem(MIG,'1');
+  }catch(e){}
+})();
+
+/* Copie du referentiel embarque, scenarios retires exclus. Tout chemin qui
+   repart de INITIAL_DATA doit passer par la, sinon les retraits sont annules. */
+function __safRefBase(){
+  var gone = safRemovedRiskSet();
+  return JSON.parse(JSON.stringify(INITIAL_DATA)).filter(function(r){ return !(r && gone[String(r.id)]); });
+}
+window.__safRefBase=__safRefBase;
 function __mergeSmsDBWithCustom(){
-  var base=JSON.parse(JSON.stringify(INITIAL_DATA));
+  var __gone = safRemovedRiskSet();
+  var base=__safRefBase();
   var baseIds={};base.forEach(function(r){baseIds[r.id]=1;});
   var baseById={};base.forEach(function(r){baseById[r.id]=r;});
   var seedById={};base.forEach(function(r){
@@ -5128,6 +5189,7 @@ function __mergeSmsDBWithCustom(){
     if(!Array.isArray(src))return;
     src.forEach(function(r){
       if(!r||!/^SMS-\d{2,}$/.test(String(r.id||'')))return;
+      if(__gone[String(r.id)])return;   // retire volontairement : ni base, ni custom
       /* L'appartenance au référentiel prime sur is_custom_event : sinon une
          copie locale ancienne encore marquée is_custom_event crée un doublon. */
       if(!baseIds[r.id]){
@@ -5311,6 +5373,8 @@ window.safExportAllData_object = function(){
     safTechComms:     _getLS('safTechComms'),
     safWorkOrders:    _getLS('safWorkOrders'),
     safOccActionEmailMap: _getLS('safOccActionEmailMap'),
+    safRemovedRiskIds: _getLS('safRemovedRiskIds'),
+    saf_removed_mig_20260921: _getLS('saf_removed_mig_20260921'),
     helion_live_draft_v1: _getLS('helion_live_draft_v1'),
   };
   Object.keys(allData).forEach(function(k){
@@ -5402,7 +5466,7 @@ function safImportAllData(evt){
       var keys = ['safRiskDB','safRiskDBVersion','safEventCatalog','safEventCatalogVersion','safChangeStudies','safSPITargets','safFlightHours','safOccurrences',
                   'safLessons','safSRBMeetings','safAudits','safSAR','safALoS','safCAMOSignals','lastModified',
                   'ejsPublicKey','ejsServiceId','ejsTemplateId',
-                  'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap',
+                  'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921',
                   'helion_live_draft_v1'];
       var count = 0;
       keys.forEach(function(k){
@@ -5490,7 +5554,7 @@ function renderDashboard() {
   if (!__isSmsConsolidatedDB(DB)) __forceSmsConsolidatedDB('render guard');
   // Guard: if DB is empty, show warning and reload from INITIAL_DATA
   if (!DB || DB.length === 0) {
-    DB = JSON.parse(JSON.stringify(INITIAL_DATA));
+    DB = __safRefBase();
     filteredDB = [...DB];
     console.warn('DB was empty, reloaded from INITIAL_DATA');
   }
@@ -6120,7 +6184,7 @@ function renderLeadingIndicators() {
 // TABLE / DATABASE VIEW
 // ══════════════════════════════════════════════════════════════════
 var _legacyCategoryFilter='';
-function filterByCategory(cat){if(!DB||DB.length===0){DB=safApplyTaxonomyToDB(JSON.parse(JSON.stringify(INITIAL_DATA)));filteredDB=[...DB];}showView('database');_legacyCategoryFilter=cat||'';var oc=document.getElementById('filter-occ-cat');if(oc)oc.value=(SAF_OCCURRENCE_CATEGORIES.some(function(x){return x.id===cat;})?cat:'');applyFilters();}
+function filterByCategory(cat){if(!DB||DB.length===0){DB=safApplyTaxonomyToDB(__safRefBase());filteredDB=[...DB];}showView('database');_legacyCategoryFilter=cat||'';var oc=document.getElementById('filter-occ-cat');if(oc)oc.value=(SAF_OCCURRENCE_CATEGORIES.some(function(x){return x.id===cat;})?cat:'');applyFilters();}
 function populateRiskTaxonomyFilters(){var oc=document.getElementById('filter-occ-cat'),fam=document.getElementById('filter-family');if(oc&&oc.options.length<=1)oc.innerHTML=safOccurrenceCategoryOptions('',true);if(fam&&fam.options.length<=1)fam.innerHTML=safFamilyOptions('',true);}
 function applyFilters(){populateRiskTaxonomyFilters();safApplyTaxonomyToDB(DB);const search=(document.getElementById('search-input')?.value||'').toLowerCase(),occCat=document.getElementById('filter-occ-cat')?.value||'',family=document.getElementById('filter-family')?.value||'',risk=document.getElementById('filter-risk')?.value||'',phase=document.getElementById('filter-phase')?.value||'';filteredDB=DB.filter(r=>{if(search&&![r.id,r.event,r.undesirable_event,r.dangers,r.consequences,r.doc_ref,r.category,r.occurrence_category,r.family_id,safFamilyLabel(r.family_id),r.record_kind,r.risk_owner,r.safety_indicator,r.indicator_target].join(' ').toLowerCase().includes(search))return false;if(occCat&&r.occurrence_category!==occCat)return false;if(family&&r.family_id!==family)return false;if(_legacyCategoryFilter&&r.category!==_legacyCategoryFilter&&r.occurrence_category!==_legacyCategoryFilter)return false;if(risk&&riskColor(r.residual_risk)!==risk)return false;if(phase&&!(r.phase||'').includes(phase))return false;return true;});currentPage=1;renderTable();var scopeEl=document.getElementById('rr-export-scope');if(scopeEl)scopeEl.textContent=_rrScopeLabel();try{rrRenderFilterChips();}catch(e){}}
 function clearFilters(){['search-input','filter-occ-cat','filter-family','filter-risk','filter-phase'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});_legacyCategoryFilter='';applyFilters();}
@@ -6549,6 +6613,9 @@ function deleteEntry(id) {
 
   DB = DB.filter(r => r.id !== id);
   filteredDB = filteredDB.filter(r => r.id !== id);
+  // Sans cette trace, la fusion d'ouverture reconstruirait le scenario depuis
+  // INITIAL_DATA et la suppression serait annulee au rechargement.
+  try{ safMarkRiskRemoved(id); }catch(e){}
   saveDB();
 
   const pages = Math.max(1, Math.ceil(filteredDB.length / PAGE_SIZE));
@@ -6565,6 +6632,7 @@ function deleteEntry(id) {
 
 function copyEntry(id){
   var original=DB.find(function(r){return r.id===id;});
+  try{ safUnmarkRiskRemoved(id); }catch(e){}
   if(!original){showToast('Risk not found','error');return;}
   var parts=original.id.split('-');
   var prefix=parts.slice(0,-1).join('-')||parts[0];
@@ -8050,7 +8118,7 @@ function importJSON(event) {
         const allKeys = ['safRiskDB','safChangeStudies','safSPITargets','safFlightHours','safOccurrences',
                          'safLessons','safSRBMeetings','safAudits','safSAR','safALoS','safCAMOSignals','lastModified',
                          'ejsPublicKey','ejsServiceId','ejsTemplateId',
-                         'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap',
+                         'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921',
                          'helion_live_draft_v1'];
         allKeys.forEach(function(k){ if(data[k]!=null){ localStorage.setItem(k,data[k]); imported.push(k); } });
         if(data['saf_header']!=null) localStorage.setItem('saf_international_safety_management_header_v1', data['saf_header']);
@@ -8081,7 +8149,23 @@ function importJSON(event) {
         const risks   = Array.isArray(data) ? data : (data.risks || data.INITIAL_DATA || []);
         const studies = data.change_studies || data.CHANGE_STUDIES || [];
         if(!risks.length && !studies.length) throw new Error('No valid data found in file');
-        if(__isSmsConsolidatedDB(risks)){ DB=risks; filteredDB=[...DB]; saveDB(); } else { __forceSmsConsolidatedDB('legacy risk import ignored'); }
+        if(__isSmsConsolidatedDB(risks)){
+          /* 22.09.2026 — le registre importe fait foi : tout scenario present
+             dans le referentiel embarque ou dans la base en memoire mais absent
+             du fichier est un retrait volontaire, et doit le rester. Sans cela
+             la fusion d'ouverture le reintroduisait aussitot. */
+          try{
+            var _impIds={}; risks.forEach(function(r){ if(r&&r.id) _impIds[String(r.id)]=1; });
+            var _known=[];
+            if(typeof INITIAL_DATA!=='undefined' && Array.isArray(INITIAL_DATA)) INITIAL_DATA.forEach(function(r){ if(r&&r.id) _known.push(String(r.id)); });
+            if(typeof DB!=='undefined' && Array.isArray(DB)) DB.forEach(function(r){ if(r&&r.id) _known.push(String(r.id)); });
+            var _dropped=_known.filter(function(id){ return !_impIds[id]; });
+            safUnmarkRiskRemoved(Object.keys(_impIds));
+            if(_dropped.length) safMarkRiskRemoved(_dropped);
+            if(_dropped.length && window.console) console.info('Import registre : '+_dropped.length+' scenario(s) marque(s) comme retire(s) — '+_dropped.sort().join(', '));
+          }catch(_e){}
+          DB=risks; filteredDB=[...DB]; saveDB();
+        } else { __forceSmsConsolidatedDB('legacy risk import ignored'); }
         if(studies.length){ CHANGE_STUDIES.length=0; studies.forEach(s=>CHANGE_STUDIES.push(s)); saveChangeStudies(); }
         updateCounts();
         try{ renderExportView(); }catch(err2){}
@@ -13098,7 +13182,7 @@ function exportAuditTrailCSV() {
 
 function resetToInitialData() {
   if (!confirm('Réinitialiser la base aux 35 évènements SMS consolidés ?\nToute modification locale sera effacée.')) return;
-  DB = JSON.parse(JSON.stringify(INITIAL_DATA));
+  DB = __safRefBase();
   filteredDB = [...DB];
   saveDB();
   updateCounts();
@@ -16944,7 +17028,7 @@ setTimeout(function(){
   var KEYS = ['safRiskDB','safRiskDBVersion','safEventCatalog','safEventCatalogVersion','safChangeStudies','safSPITargets','safFlightHours','safOccurrences',
               'safLessons','safSRBMeetings','safAudits','safSAR','safALoS','safCAMOSignals','lastModified',
               'ejsPublicKey','ejsServiceId','ejsTemplateId',
-              'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap',
+              'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921',
               'helion_live_draft_v1'];
 
   /* ══════════════════════════════════════════════════════════════════════
@@ -17148,6 +17232,10 @@ setTimeout(function(){
 
       // Keep the 53 embedded families as the controlled baseline, while preserving
       // custom SMS entries created through Event Accounting (SMS-54 and above).
+      // La liste des scenarios retires doit etre en place AVANT la fusion :
+      // sinon, sur un navigateur qui ne l'a pas encore, les scenarios supprimes
+      // reapparaissent le temps de la session et sont reecrits dans le cloud.
+      if(data.safRemovedRiskIds!=null){ try{ localStorage.setItem('safRemovedRiskIds', data.safRemovedRiskIds); }catch(e){} }
       var localRiskJson=null;try{localRiskJson=localStorage.getItem('safRiskDB');}catch(e){}
       var mergedRiskDB=__mergeSmsDBWithCustom(data.safRiskDB,localRiskJson,typeof DB!=='undefined'?DB:null);
       data.safRiskDB=JSON.stringify(mergedRiskDB);
