@@ -18185,17 +18185,21 @@ function cmsxReadModal(){
   };
 }
 
-function cmsxSaveFinding(){
+function cmsxSaveFinding(_silent){
   var id=document.getElementById('cmsx-f-id').value;
   var findings=load(CMSX_KEYS.findings);
   var rec=id?findings.find(function(x){return x.id===id;}):null;
   var data=cmsxReadModal();
-  if(!data.auditNum && !data.desc){ alert('Please enter at least the audit number or a finding description.'); return; }
+  if(!data.auditNum && !data.desc){ if(!_silent) alert('Please enter at least the audit number or a finding description.'); return; }
   // consistency: a completed action with no completion date gets today's date
   if(data.status==='completed' && !data.closed) data.closed=today();
   if(rec){ Object.assign(rec,data); }
   else { data.id=uid(); data.notified=''; findings.push(data); }
   save(CMSX_KEYS.findings, findings);
+  // L'autosave bascule le formulaire en edition de la fiche creee, sinon la
+  // frappe suivante en creerait une deuxieme.
+  var _fid=document.getElementById('cmsx-f-id'); if(_fid && !id) _fid.value=data.id||'';
+  if(_silent) return;
   cmsxCloseModal('cmsx-finding-modal');
   cmsxRenderFindings();
   cmsxToast('Corrective action saved.');
@@ -18315,7 +18319,7 @@ function cmsxOpenMissionModal(id){
   g('cmsx-m-reportbtn').setAttribute('data-mid', m?m.id:'');
   g('cmsx-mission-modal').classList.add('open');
 }
-function cmsxSaveMission(){
+function cmsxSaveMission(_silent){
   var g=function(s){return document.getElementById(s).value;};
   var id=document.getElementById('cmsx-m-id').value;
   var missions=load(CMSX_KEYS.missions);
@@ -18326,9 +18330,11 @@ function cmsxSaveMission(){
     datestart:g('cmsx-m-datestart'),
     dateend:g('cmsx-m-dateend'),status:g('cmsx-m-status'),obj:g('cmsx-m-obj').trim(),
     approver:g('cmsx-m-approver').trim(),approvaldate:g('cmsx-m-approvaldate')};
-  if(!data.ref){alert('The mission reference is required.');return;}
+  if(!data.ref){if(!_silent)alert('The mission reference is required.');return;}
   if(rec)Object.assign(rec,data); else {data.id=uid();missions.push(data);}
   save(CMSX_KEYS.missions,missions);
+  var _mid=document.getElementById('cmsx-m-id'); if(_mid && !id) _mid.value=data.id||'';
+  if(_silent) return;
   cmsxCloseModal('cmsx-mission-modal');
   cmsxRenderMissions();
   cmsxToast('Law enforcement of mission registered.');
@@ -18364,7 +18370,7 @@ function cmsxOpenReport(missionId){
   g('cmsx-r-signed').value=report?report.signed:'';
   g('cmsx-report-modal').classList.add('open');
 }
-function cmsxSaveReport(){
+function cmsxSaveReport(_silent){
   var g=function(s){return document.getElementById(s).value;};
   var missionId=document.getElementById('cmsx-r-missionid').value;
   var reports=load(CMSX_KEYS.reports);
@@ -18380,6 +18386,7 @@ function cmsxSaveReport(){
   var m=missions.find(function(x){return x.id===missionId;});
   if(m){ m.status='reported'; save(CMSX_KEYS.missions,missions); }
   save(CMSX_KEYS.reports,reports);
+  if(_silent) return;
   cmsxRenderMissions();
   cmsxToast('Audit report registered.');
 }
@@ -18403,7 +18410,7 @@ function cmsxRenderTargets(){
       '<td>'+unitInp+'</td></tr>';
   }).join('');
 }
-function cmsxSaveTargetsFromForm(){
+function cmsxSaveTargetsFromForm(_silent){
   var t=cmsxGetTargets();
   document.querySelectorAll('#cmsx-targets-body [data-k][data-f]').forEach(function(el){
     var k=el.dataset.k, f=el.dataset.f, v=el.value;
@@ -18417,6 +18424,7 @@ function cmsxSaveTargetsFromForm(){
   try{ if(typeof cmsxRestoreOverrideInputs==='function') cmsxRestoreOverrideInputs(); }catch(e){}
   try{ cmsxRenderFindings(); }catch(e){}
   cmsxApplyTargetLabels();
+  if(_silent) return;
   cmsxToast('Target recorded and applied throughout.');
 }
 function cmsxResetTargets(){
@@ -18688,7 +18696,7 @@ function cmsxOpenAuthModal(id){
   g('cmsx-a-status').value=a?a.status:'open';
   g('cmsx-auth-modal').classList.add('open');
 }
-function cmsxSaveAuth(){
+function cmsxSaveAuth(_silent){
   var g=function(s){return document.getElementById(s).value;};
   var id=document.getElementById('cmsx-a-id').value;
   var rows=load(CMSX_KEYS.auth);
@@ -18696,9 +18704,11 @@ function cmsxSaveAuth(){
   var data={date:g('cmsx-a-date'),type:g('cmsx-a-type'),subject:g('cmsx-a-subject').trim(),
     ref:g('cmsx-a-ref').trim(),deadline:g('cmsx-a-deadline'),commitment:g('cmsx-a-commitment').trim(),
     status:g('cmsx-a-status')};
-  if(!data.subject){alert('The subject is required.');return;}
+  if(!data.subject){if(!_silent)alert('The subject is required.');return;}
   if(rec)Object.assign(rec,data); else {data.id=uid();rows.push(data);}
   save(CMSX_KEYS.auth,rows);
+  var _aid=document.getElementById('cmsx-a-id'); if(_aid && !id) _aid.value=data.id||'';
+  if(_silent) return;
   cmsxCloseModal('cmsx-auth-modal');
   cmsxRenderAuth();
   cmsxToast('Contact authority registered.');
@@ -19201,7 +19211,7 @@ function safSTUpdateFileList(){
 function safSTRemoveFile(name){ delete stCurrentFiles[name]; safSTUpdateFileList(); }
 window.safSTRemoveFile=safSTRemoveFile;
 
-function safSTSave(){
+function safSTSave(_silent){
   var id=document.getElementById('saf-st-id').value||sfId();
   var data=sfLoad(ST_KEY);
   var idx=data.findIndex(function(r){ return r.id===id; });
@@ -19223,6 +19233,10 @@ function safSTSave(){
   };
   if(idx>=0){ data[idx]=rec; } else { data.push(rec); }
   sfSave(ST_KEY,data);
+  // L'autosave fixe l'identifiant dans le formulaire : sans cela, chaque frappe
+  // creerait une nouvelle ligne au lieu de mettre a jour celle en cours.
+  var _f=document.getElementById('saf-st-id'); if(_f) _f.value=id;
+  if(_silent) return;
   safSTCloseModal();
   safSTRender();
 }
@@ -19357,7 +19371,7 @@ window.safDocOpen=safDocOpen;
 function safDocCloseModal(){ sfCloseModal('saf-doc-modal'); }
 window.safDocCloseModal=safDocCloseModal;
 
-function safDocSave(){
+function safDocSave(_silent){
   var id=document.getElementById('saf-doc-id').value||sfId();
   var data=sfLoad(DOC_KEY);
   var idx=data.findIndex(function(r){ return r.id===id; });
@@ -19377,7 +19391,10 @@ function safDocSave(){
     notes:document.getElementById('saf-doc-notes').value
   };
   if(idx>=0){ data[idx]=rec; } else { data.push(rec); }
-  sfSave(DOC_KEY,data); safDocCloseModal(); safDocRender();
+  sfSave(DOC_KEY,data);
+  var _f=document.getElementById('saf-doc-id'); if(_f) _f.value=id;
+  if(_silent) return;
+  safDocCloseModal(); safDocRender();
 }
 window.safDocSave=safDocSave;
 
@@ -19472,7 +19489,7 @@ window.safAudOpen=safAudOpen;
 function safAudCloseModal(){ sfCloseModal('saf-aud-modal'); }
 window.safAudCloseModal=safAudCloseModal;
 
-function safAudSave(){
+function safAudSave(_silent){
   var id=document.getElementById('saf-aud-id').value||sfId();
   var domains=[];
   document.querySelectorAll('#saf-aud-domains-grid input[type=checkbox]:checked').forEach(function(cb){ domains.push(cb.getAttribute('data-domain')); });
@@ -19492,7 +19509,10 @@ function safAudSave(){
     auditCount:existing.auditCount||0
   };
   if(idx>=0){ data[idx]=rec; } else { data.push(rec); }
-  sfSave(AUD_KEY,data); safAudCloseModal(); safAudRender();
+  sfSave(AUD_KEY,data);
+  var _f=document.getElementById('saf-aud-id'); if(_f) _f.value=id;
+  if(_silent) return;
+  safAudCloseModal(); safAudRender();
 }
 window.safAudSave=safAudSave;
 
@@ -19588,7 +19608,7 @@ window.safTrnOpen=safTrnOpen;
 function safTrnCloseModal(){ sfCloseModal('saf-trn-modal'); }
 window.safTrnCloseModal=safTrnCloseModal;
 
-function safTrnSave(){
+function safTrnSave(_silent){
   var id=document.getElementById('saf-trn-id').value||sfId();
   var domains=[];
   document.querySelectorAll('#saf-trn-domains-grid input[type=checkbox]:checked').forEach(function(cb){ domains.push(cb.getAttribute('data-domain')); });
@@ -19609,7 +19629,10 @@ function safTrnSave(){
     notes:document.getElementById('saf-trn-notes').value
   };
   if(idx>=0){ data[idx]=rec; } else { data.push(rec); }
-  sfSave(TRN_KEY,data); safTrnCloseModal(); safTrnRender();
+  sfSave(TRN_KEY,data);
+  var _f=document.getElementById('saf-trn-id'); if(_f) _f.value=id;
+  if(_silent) return;
+  safTrnCloseModal(); safTrnRender();
 }
 window.safTrnSave=safTrnSave;
 
@@ -20240,6 +20263,10 @@ window.safSmsConfirmImport=safSmsConfirmImport;
               'cmsx_findings','saf_findings_cmsx','kpiv2_kpi5_days',
               'saf_trainers','saf_sous_traitants','saf_documents_rev','saf_auditeurs',
               'cmsx_findings_v1','cmsx_missions_v1','cmsx_reports_v1','cmsx_auth_v1','cmsx_targets_v1','cmsx_compliance_v1','cmsx_regwatch_v1',
+              // 22.09.2026 — ces trois cles etaient ecrites en local mais ABSENTES de la
+              // synchronisation : les grilles d'audit EASA en cours (saf_audits_v1) et les
+              // editions/surcharges de KPI ne quittaient jamais le navigateur.
+              'saf_audits_v1','kpiv2_edits_v1','cms_kpi_overrides',
               'helion_live_draft_v1'];
 
   var overlay = document.getElementById('saf-login-overlay');
@@ -20290,7 +20317,8 @@ window.safSmsConfirmImport=safSmsConfirmImport;
     });
     // 3) Findings / KPI / missions / targets (module cmsx)
     ['cmsxRenderFindings','cmsxRenderMissions','cmsxRenderTargets','cmsxRenderAuth',
-     'safTrnRender']
+     'safTrnRender','safSTRender','safAudRender','safDocRender',
+     'g_renderSavedList','updateKPIsFromData','cmsxRestoreOverrideInputs']
       .forEach(function(fn){ if(typeof window[fn]==='function'){ try{ window[fn](); }catch(e){} } });
   }
 
@@ -20393,6 +20421,7 @@ window.safSmsConfirmImport=safSmsConfirmImport;
     safRenderRoleBadge(SAF_ROLE);
     if(!safCanWrite(SAF_ROLE)) applyReadOnly(SAF_ROLE === 'authority');
     try { localStorage.setItem('saf_role', SAF_ROLE + '|' + email); } catch(e){}
+    try { window.SAF_SESSION_EMAIL = email; window.SAF_SESSION_ROLE = SAF_ROLE; } catch(e){}
   }
 
   var WRITE = /ajouter|enregistrer|sauvegarder|supprimer|modifier|valider|créer|générer|importer|add|save|delete|remove|submit|confirm/i;
@@ -20493,6 +20522,9 @@ window.safSmsConfirmImport=safSmsConfirmImport;
     overlay.style.display='none';
   });
   document.getElementById('saf-logout-btn').addEventListener('click', async function(){
+    // Le role memorise ne doit pas survivre a la deconnexion : l'autosave le lit
+    // pour decider s'il a le droit d'ecrire.
+    try { window.SAF_SESSION_ROLE = null; window.SAF_SESSION_EMAIL = null; localStorage.removeItem('saf_role'); } catch(e){}
     await db.auth.signOut(); location.reload();
   });
 
@@ -21127,13 +21159,13 @@ function cmxEdit(id){
 
 function cmxClose(){ var d=document.getElementById('cmx-modal'); if(d) d.style.display='none'; V.line=null; }
 
-function cmxSaveLine(){
-  if(!canWrite()) return deny();
+function cmxSaveLine(_silent){
+  if(!canWrite()) return _silent ? null : deny();
   var all = load(), i = all.findIndex(function(x){ return x.id===V.open; }); if(i<0) return;
   var l = (all[i].lines||[]).find(function(x){ return x.id===V.line; }); if(!l) return;
   var g = function(id){ var e=document.getElementById(id); return e?String(e.value).trim():''; };
   var msg = document.getElementById('cmx-l-msg');
-  var fail = function(t){ if(msg) msg.textContent = t; return null; };
+  var fail = function(t){ if(!_silent && msg) msg.textContent = t; return null; };
 
   var ref = g('cmx-l-ref'); if(!ref) return fail('Indiquez la référence de l\'exigence.');
   var impl = (g('cmx-l-impl')==='yes') ? 'yes' : 'no';
@@ -21149,7 +21181,9 @@ function cmxSaveLine(){
   l.updated_at = new Date().toISOString(); l.updated_by = who();
 
   all[i].updated_at = new Date().toISOString(); all[i].updated_by = who();
-  save(all); cmxClose(); cmxRender();
+  save(all);
+  if(_silent) return;
+  cmxClose(); cmxRender();
 }
 
 /* ── Export CSV ───────────────────────────────────────────────────────── */
@@ -21634,6 +21668,86 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   window.helionAutosaveRestoreDraft = function(){ restore(document); };
 })();
 </script>
+
+
+<!-- ═══ HELION-X CMS — AUTOSAVE / SYNCHRO CLOUD AUTOMATIQUE v1 | 2026-09-22 ═══
+     Meme moteur que Helion-X_Safety.html. Les modales et formulaires du CMS
+     n'ecrivaient dans localStorage qu'au clic sur Enregistrer ; la couche cloud
+     poussait donc une photo d'avant la saisie. On appelle ici les vraies
+     fonctions d'enregistrement en mode silencieux, puis on force la synchro.
+     Les grilles d'audit EASA (module g_*) et l'en-tete de la matrice de
+     conformite s'enregistrent deja a la frappe : ils ne sont pas routes ici. -->
+<script id="helion-cms-autosave-v1">
+(function(){
+  'use strict';
+  var timers=Object.create(null), DELAY=900;
+  function later(key,fn){ clearTimeout(timers[key]); timers[key]=setTimeout(function(){try{fn();}catch(e){console.warn('CMS autosave '+key,e);}},DELAY); }
+  function visible(el){ if(!el)return false; var cs=window.getComputedStyle?getComputedStyle(el):null; return !cs || (cs.display!=='none' && cs.visibility!=='hidden'); }
+  function role(){ try{ if(window.SAF_SESSION_ROLE) return String(window.SAF_SESSION_ROLE).toLowerCase();
+                        return String((localStorage.getItem('saf_role')||'').split('|')[0]).toLowerCase(); }catch(e){ return ''; } }
+  function writingAllowed(){ var r=role(); return r==='admin'||r==='editor'; }
+  function syncCloudNow(){ try{ if(typeof window.safCloudSaveNow==='function') window.safCloudSaveNow();
+                                else if(typeof window.safCloudScheduleSave==='function') window.safCloudScheduleSave(); }catch(e){} }
+
+  // Conteneur → fonction d'enregistrement silencieuse.
+  var MAP=[
+    ['#cmsx-finding-modal','finding', function(){ return window.cmsxSaveFinding; }],
+    ['#cmsx-mission-modal','mission', function(){ return window.cmsxSaveMission; }],
+    ['#cmsx-report-modal','report',  function(){ return window.cmsxSaveReport;  }],
+    ['#cmsx-auth-modal','auth',      function(){ return window.cmsxSaveAuth;    }],
+    ['#cmsx-targets-body','targets', function(){ return window.cmsxSaveTargetsFromForm; }],
+    ['#saf-st-modal','st',           function(){ return window.safSTSave;  }],
+    ['#saf-doc-modal','doc',         function(){ return window.safDocSave; }],
+    ['#saf-aud-modal','aud',         function(){ return window.safAudSave; }],
+    ['#saf-trn-modal','trn',         function(){ return window.safTrnSave; }],
+    ['#cmx-modal','cmx',             function(){ return window.cmxSaveLine; }]
+  ];
+
+  function runOne(sel,getFn){
+    if(!writingAllowed()) return;
+    var root=document.querySelector(sel); if(!visible(root)) return;
+    var fn=getFn(); if(typeof fn!=='function') return;
+    fn(true); syncCloudNow();
+  }
+
+  function route(t){
+    if(!t||!t.closest||!writingAllowed())return;
+    for(var i=0;i<MAP.length;i++){
+      if(t.closest(MAP[i][0])){
+        (function(m){ later(m[1],function(){ runOne(m[0],m[2]); }); })(MAP[i]);
+        return;
+      }
+    }
+    // Hors formulaire route : la couche cloud existante prend le relais.
+  }
+  document.addEventListener('input',function(e){route(e.target);},true);
+  document.addEventListener('change',function(e){route(e.target);},true);
+  document.addEventListener('blur',function(e){if(e.target&&e.target.isContentEditable)route(e.target);},true);
+
+  function mark(){
+    ['cmsx-finding-modal','cmsx-mission-modal','cmsx-report-modal','cmsx-auth-modal',
+     'saf-st-modal','saf-doc-modal','saf-aud-modal','saf-trn-modal'].forEach(function(id){
+      var root=document.getElementById(id); if(!root||root.querySelector('.helion-autosave-note'))return;
+      var box=root.firstElementChild||root;
+      var d=document.createElement('div'); d.className='helion-autosave-note';
+      d.style.cssText='margin:6px 0;font-family:var(--mono,monospace);font-size:9px;color:#3fb950;';
+      d.textContent='✓ Autosave on — saved automatically';
+      box.insertBefore(d,box.firstChild);
+    });
+  }
+  setInterval(mark,1500); setTimeout(mark,800);
+
+  window.safAutosaveFlushLocal=function(){
+    Object.keys(timers).forEach(function(k){ clearTimeout(timers[k]); delete timers[k]; });
+    MAP.forEach(function(m){ try{ runOne(m[0],m[2]); }catch(e){} });
+  };
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='hidden'){ try{window.safAutosaveFlushLocal();}catch(e){} syncCloudNow(); }
+  });
+  window.addEventListener('pagehide',function(){ try{window.safAutosaveFlushLocal();}catch(e){} syncCloudNow(); });
+})();
+</script>
+<!-- ═══ FIN AUTOSAVE HELION-X CMS ══════════════════════════════════════════ -->
 
 </body>
 </html>

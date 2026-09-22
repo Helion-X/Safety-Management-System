@@ -5012,7 +5012,7 @@ function occHighlightEventBlock(soft){
   clearTimeout(window.__occTaxoHL);
   window.__occTaxoHL=setTimeout(function(){wrap.style.boxShadow='';wrap.style.borderColor='rgba(74,159,224,.35)';},8000);
 }
-function occResolveEventAccounting(existingOcc,opts){eventAccountingEnsure();opts=opts||{};var soft=!!opts.soft;var fb=document.getElementById('occ-form-feedback');function fail(msg){if(fb){fb.textContent=(soft?'⚠ Fiche enregistrée, mais NON comptabilisée dans la taxonomie — ':'')+msg;fb.style.color=soft?'#e3b341':'#f85149';}occHighlightEventBlock(soft);if(typeof showToast==='function')showToast((soft?'⚠ Taxonomie à compléter : ':'⚠ ')+msg,'error');return null;}var mode=document.querySelector('input[name="occ-event-mode"]:checked')?.value||'existing';if(mode==='existing'){var id=document.getElementById('occ-catalog-event')?.value||'',item=EVENT_CATALOG.find(function(e){return e.id===id&&e.review_status==='approved';});if(!item)return fail('Select an approved catalogue event, or record a new candidate.');var riskLink=item.linked_risk_id||document.getElementById('occ-risk-link')?.value||'';return {catalog_event_id:item.id,catalog_event_mode:'existing',risk_link:riskLink,taxonomy_occurrence_category:item.occurrence_category,taxonomy_family_id:item.family_id};}var val=function(id){return (document.getElementById(id)?.value||'').trim();},title=val('occ-new-event-title'),source=val('occ-new-event-source'),family=val('occ-new-event-family'),dangers=val('occ-new-event-dangers'),prevention=val('occ-new-event-prevention'),initial=val('occ-new-event-initial'),residual=val('occ-new-event-residual'),occCat=val('occ-new-event-eccairs'),doc=val('occ-new-event-doc');if(!title||!source||!family||!dangers||!prevention||!initial||!residual||!occCat)return fail('Complete the event title, activity, proposed occurrence category, proposed SMS family, dangers, prevention measures and risk ratings.');var item=null;if(existingOcc&&existingOcc.catalog_event_id)item=EVENT_CATALOG.find(function(e){return e.id===existingOcc.catalog_event_id&&e.custom;});if(!item){item={id:eventAccountingNextCustomId(),custom:true,created_at:new Date().toISOString(),source:'Created from Helion-X Occurrence Log',review_status:'candidate_review'};EVENT_CATALOG.push(item);}Object.assign(item,{source_sheet:source,event:title,dangers:dangers,initial_risk:initial,prevention:prevention,residual_risk:residual,doc_ref:doc,eccairs_cat:occCat,occurrence_category:occCat,family_id:family,review_status:item.review_status==='approved'?'approved':'candidate_review',updated_at:new Date().toISOString()});eventAccountingSave(true);return {catalog_event_id:item.id,catalog_event_mode:'new',risk_link:item.linked_risk_id||'',taxonomy_occurrence_category:item.occurrence_category,taxonomy_family_id:item.family_id};}
+function occResolveEventAccounting(existingOcc,opts){eventAccountingEnsure();opts=opts||{};var soft=!!opts.soft;var silent=!!opts.silent;var fb=document.getElementById('occ-form-feedback');function fail(msg){if(!silent&&fb){fb.textContent=(soft?'⚠ Fiche enregistrée, mais NON comptabilisée dans la taxonomie — ':'')+msg;fb.style.color=soft?'#e3b341':'#f85149';}if(!silent)occHighlightEventBlock(soft);if(!silent&&typeof showToast==='function')showToast((soft?'⚠ Taxonomie à compléter : ':'⚠ ')+msg,'error');return null;}var mode=document.querySelector('input[name="occ-event-mode"]:checked')?.value||'existing';if(mode==='existing'){var id=document.getElementById('occ-catalog-event')?.value||'',item=EVENT_CATALOG.find(function(e){return e.id===id&&e.review_status==='approved';});if(!item)return fail('Select an approved catalogue event, or record a new candidate.');var riskLink=item.linked_risk_id||document.getElementById('occ-risk-link')?.value||'';return {catalog_event_id:item.id,catalog_event_mode:'existing',risk_link:riskLink,taxonomy_occurrence_category:item.occurrence_category,taxonomy_family_id:item.family_id};}var val=function(id){return (document.getElementById(id)?.value||'').trim();},title=val('occ-new-event-title'),source=val('occ-new-event-source'),family=val('occ-new-event-family'),dangers=val('occ-new-event-dangers'),prevention=val('occ-new-event-prevention'),initial=val('occ-new-event-initial'),residual=val('occ-new-event-residual'),occCat=val('occ-new-event-eccairs'),doc=val('occ-new-event-doc');if(!title||!source||!family||!dangers||!prevention||!initial||!residual||!occCat)return fail('Complete the event title, activity, proposed occurrence category, proposed SMS family, dangers, prevention measures and risk ratings.');var item=null;if(existingOcc&&existingOcc.catalog_event_id)item=EVENT_CATALOG.find(function(e){return e.id===existingOcc.catalog_event_id&&e.custom;});if(!item){item={id:eventAccountingNextCustomId(),custom:true,created_at:new Date().toISOString(),source:'Created from Helion-X Occurrence Log',review_status:'candidate_review'};EVENT_CATALOG.push(item);}Object.assign(item,{source_sheet:source,event:title,dangers:dangers,initial_risk:initial,prevention:prevention,residual_risk:residual,doc_ref:doc,eccairs_cat:occCat,occurrence_category:occCat,family_id:family,review_status:item.review_status==='approved'?'approved':'candidate_review',updated_at:new Date().toISOString()});eventAccountingSave(true);return {catalog_event_id:item.id,catalog_event_mode:'new',risk_link:item.linked_risk_id||'',taxonomy_occurrence_category:item.occurrence_category,taxonomy_family_id:item.family_id};}
 
 var _savedDB = null;
 var _DB_VERSION = '10.1-atomic-risk-register-nightff-35-102-164-20260901';
@@ -6777,7 +6777,27 @@ function closeEditModal() {
   _emEditingId = null;
 }
 
-function saveEditModal() {
+/* ═══ Identité de session — parité avec la suite SAF ════════════════════
+   safCurrentRole() / safCurrentUser() donnent au moteur d'autosave (et aux
+   estampilles d'édition) le rôle et l'adresse du compte connecté, sans
+   dépendre des variables privées de l'IIFE d'authentification. */
+function safCurrentRole(){
+  try {
+    if (typeof window !== 'undefined' && window.SAF_SESSION_ROLE) return String(window.SAF_SESSION_ROLE).toLowerCase();
+    var v = (localStorage.getItem('saf_role') || '').split('|')[0];
+    if (v) return String(v).toLowerCase();
+  } catch(e) {}
+  return 'unknown';
+}
+function safCurrentUser(){
+  try {
+    if (typeof window !== 'undefined' && window.SAF_SESSION_EMAIL) return window.SAF_SESSION_EMAIL;
+    var v = (localStorage.getItem('saf_role') || '').split('|')[1];
+    if (v) return v;
+  } catch(e) {}
+  return 'SMS User';
+}
+function saveEditModal(_silent) {
   const id       = document.getElementById('em-id').value.trim();
   const category = document.getElementById('em-category').value.trim();
   const occurrenceCategory = document.getElementById('em-occurrence-category').value.trim();
@@ -6788,12 +6808,12 @@ function saveEditModal() {
   const doc      = document.getElementById('em-doc-ref').value.trim();
 
   if(!category || !occurrenceCategory || !familyId || !event || !ir || !rr || !doc) {
-    showToast('Champs obligatoires manquants (Category, Event, Risks, Doc Ref)', 'error');
+    if(!_silent) showToast('Champs obligatoires manquants (Category, Event, Risks, Doc Ref)', 'error');
     return;
   }
 
   const idx = DB.findIndex(x => x.id === _emEditingId);
-  if(idx === -1) { showToast('Entry not found', 'error'); return; }
+  if(idx === -1) { if(!_silent) showToast('Entry not found', 'error'); return; }
 
   const prev = DB[idx];
   const prevention  = document.getElementById('em-prevention').value.trim();
@@ -6873,6 +6893,9 @@ function saveEditModal() {
 
   saveDB();
   filteredDB = [...DB];
+  // En autosave, on persiste sans fermer la modale ni reconstruire le tableau :
+  // l'utilisateur est encore en train de saisir.
+  if(_silent) return;
   renderTable();
   renderDashboard();
   closeEditModal();
@@ -7233,20 +7256,30 @@ function csRteFontSize(size){ if(!size) return; csRteExec('fontSize', size); }
 function csRteColor(hex){ csRteExec('foreColor', hex); }
 // collectChangeStudy defined below (full version)
 function saveChangeStudies() { localStorage.setItem('safChangeStudies', JSON.stringify(CHANGE_STUDIES)); updateCounts(); updateLastModified(); if(typeof window.safCloudScheduleSave==='function') window.safCloudScheduleSave(); }
-function saveChangeStudy() {
+function saveChangeStudy(_silent) {
   const required = [['title','Title'], ['ref','Internal reference'], ['assessment-type','Safety assessment type'], ['detailed-description','Change detailed description'], ['assessors','Assessors name'], ['conclusions','Assessment conclusions']];
   const missing = required.filter(([id]) => { var v=getChangeVal(id).trim(); if(id==='ref') v=v.replace(/^MOC-?$/,''); return !v; }).map(([,label]) => label);
-  if(missing.length) { showToast('Please fill required fields: ' + missing.join(', '), 'error'); return; }
+  if(missing.length && !_silent) { showToast('Please fill required fields: ' + missing.join(', '), 'error'); return; }
   const data = collectChangeStudy();
-  const idx = CHANGE_STUDIES.findIndex(x => x.ref === data.ref);
+  // En autosave, la référence suffit : le reste de l'étude se remplit au fil de l'eau.
+  if(_silent && (!data.ref || data.ref.replace(/^MOC-?/,'').trim()==='')) return;
+  var _autoOldRef = window.__safAutoMocRef || '';
+  var idx = CHANGE_STUDIES.findIndex(x => x.ref === data.ref);
+  // La référence peut être en cours de frappe : on retrouve l'étude déjà créée
+  // sous l'ancienne référence au lieu d'en empiler une nouvelle à chaque caractère.
+  if(_silent && idx<0 && _autoOldRef && _autoOldRef!==data.ref) idx = CHANGE_STUDIES.findIndex(x => x.ref === _autoOldRef);
   var prev = idx >= 0 ? CHANGE_STUDIES[idx] : null;
   if(prev && prev.workflow_status !== 'approved' && data.workflow_status === 'approved') {
     if(!data.version_history) data.version_history = [];
     data.version_history.push({version:data.version_num||'1.0',status:'approved',date:new Date().toISOString(),note:'Approved — '+(data.version_note||data.title||''),by:data.assessors||'SMS User'});
   }
+  data.user_edited_at = new Date().toISOString();
+  try { data.user_edited_by = safCurrentUser(); } catch(e) {}
   if(idx >= 0) CHANGE_STUDIES[idx] = data; else CHANGE_STUDIES.push(data);
+  window.__safAutoMocRef = data.ref;
   saveChangeStudies();
   csRenderWorkflowBar(data.workflow_status||'draft');
+  if(_silent) return;
   renderSavedCSList();
   hideChangeStudyForm();
   showToast('✓ Change study saved — ' + (data.workflow_status||'draft').toUpperCase(), 'success');
@@ -7445,6 +7478,8 @@ function resetChangeStudy() { clearAllChangeStudy(true); }
 // ── List-first UX (mirrors Occurrence Log): the form stays hidden until
 // the user explicitly opens it, either to create a new study or edit one.
 function showChangeStudyForm(ref){
+  // L'autosave suit l'étude ouverte : référence connue en édition, vide en création.
+  window.__safAutoMocRef = ref || '';
   if(ref){
     loadCSIntoForm(ref);
   } else {
@@ -11601,13 +11636,13 @@ function showOccurrenceForm(editId){
   occRefreshEccairsDeadlinePreview();
 }
 
-function saveOccurrence(){
+function saveOccurrence(_silent){
   var date=document.getElementById('occ-date')?.value;
   var desc=(document.getElementById('occ-desc')?.value||'').trim();
   var fb=document.getElementById('occ-form-feedback');
   var editId=document.getElementById('occ-edit-id')?.value||'';
 
-  if(!date||!desc){if(fb){fb.textContent='Please fill Date and Description.';fb.style.color='#f85149';}return;}
+  if(!date||!desc){if(!_silent&&fb){fb.textContent='Please fill Date and Description.';fb.style.color='#f85149';}return;}
 
   var cfs=[...document.querySelectorAll('input[name="occ-cf"]:checked')].map(function(c){return c.value;});
   var occs=getOccurrences();
@@ -11615,17 +11650,17 @@ function saveOccurrence(){
   if(editId) {
     // ── UPDATE existing occurrence ────────────────────────────────
     var idx=occs.findIndex(function(o){return o.id===editId;});
-    if(idx===-1){if(fb){fb.textContent='Occurrence not found.';fb.style.color='#f85149';}return;}
+    if(idx===-1){if(!_silent&&fb){fb.textContent='Occurrence not found.';fb.style.color='#f85149';}return;}
     var existing=occs[idx];
     var newId=(document.getElementById('occ-custom-id')?.value||'').trim()||existing.id;
     // Check uniqueness if the ID has changed
     if(newId!==editId && occs.find(function(o,i){return o.id===newId && i!==idx;})){
-      if(fb){fb.textContent='This ID already exists. Choose a unique identifier.';fb.style.color='#f85149';}return;
+      if(!_silent&&fb){fb.textContent='This ID already exists. Choose a unique identifier.';fb.style.color='#f85149';}return;
     }
     // La taxonomie n'est plus bloquante : on enregistre d'abord le travail
     // d'instruction (5 Whys, Just Culture, ARMS, ECCAIRS…), puis on exige
     // l'événement du catalogue pour clore la fiche.
-    var eventAccounting=occResolveEventAccounting(existing,{soft:true});
+    var eventAccounting=occResolveEventAccounting(existing,{soft:true,silent:!!_silent});
     var _taxoMissing=!eventAccounting;
     if(_taxoMissing) eventAccounting={
       catalog_event_id: existing.catalog_event_id||'',
@@ -11667,12 +11702,14 @@ function saveOccurrence(){
     };
     saveOccurrences(occs);
     occClearDirty();
+    if(_silent){ var _autoEf=document.getElementById('occ-edit-id'); if(_autoEf) _autoEf.value=newId; }
     if(_taxoMissing){
-      renderOccurrenceList();
+      if(!_silent) renderOccurrenceList();
       if(typeof updatePendingBadge==='function') updatePendingBadge();
-      showToast('✓ Saisie enregistrée — sélectionnez l\'événement du catalogue pour clore la fiche','success');
+      if(!_silent) showToast('✓ Saisie enregistrée — sélectionnez l\'événement du catalogue pour clore la fiche','success');
       return;
     }
+    if(_silent) return;
     document.getElementById('occ-form-wrap').style.display='none';
     renderOccurrenceList();
     if(typeof renderEventAccounting==='function' && document.getElementById('view-eventaccounting')?.classList.contains('active')) renderEventAccounting();
@@ -11681,11 +11718,11 @@ function saveOccurrence(){
   } else {
     // ── CREATE new occurrence ─────────────────────────────────────
     var customId=(document.getElementById('occ-custom-id')?.value||'').trim();
-    if(!customId){if(fb){fb.textContent='Veuillez saisir un ID pour l\'occurrence.';fb.style.color='#f85149';}return;}
+    if(!customId){if(!_silent&&fb){fb.textContent='Veuillez saisir un ID pour l\'occurrence.';fb.style.color='#f85149';}return;}
     if(occs.find(function(o){return o.id===customId;})){
-      if(fb){fb.textContent='This ID already exists. Choose a unique identifier.';fb.style.color='#f85149';}return;
+      if(!_silent&&fb){fb.textContent='This ID already exists. Choose a unique identifier.';fb.style.color='#f85149';}return;
     }
-    var eventAccounting=occResolveEventAccounting(null,{soft:true});
+    var eventAccounting=occResolveEventAccounting(null,{soft:true,silent:!!_silent});
     var _taxoMissing=!eventAccounting;
     if(_taxoMissing) eventAccounting={catalog_event_id:'',catalog_event_mode:'',risk_link:'',taxonomy_occurrence_category:'',taxonomy_family_id:''};
     var occ={
@@ -11715,13 +11752,16 @@ function saveOccurrence(){
     occs.push(occ);
     saveOccurrences(occs);
     occClearDirty();
+    // Dès la création automatique, le formulaire bascule en édition de CETTE
+    // fiche : sans cela l'autosave suivant recréerait une occurrence.
+    var _ef=document.getElementById('occ-edit-id'); if(_ef) _ef.value=occ.id;
     if(_taxoMissing){
-      var _ef=document.getElementById('occ-edit-id'); if(_ef) _ef.value=occ.id;
-      renderOccurrenceList();
+      if(!_silent) renderOccurrenceList();
       if(typeof updatePendingBadge==='function') updatePendingBadge();
-      showToast('✓ Occurrence '+occ.id+' enregistrée — sélectionnez l\'événement du catalogue pour la clore','success');
+      if(!_silent) showToast('✓ Occurrence '+occ.id+' enregistrée — sélectionnez l\'événement du catalogue pour la clore','success');
       return;
     }
+    if(_silent) return;
     document.getElementById('occ-form-wrap').style.display='none';
     renderOccurrenceList();
     if(typeof renderEventAccounting==='function' && document.getElementById('view-eventaccounting')?.classList.contains('active')) renderEventAccounting();
@@ -12367,7 +12407,9 @@ function showLessonForm(editId){
   var saveBtn=document.createElement('button');
   saveBtn.className='btn btn-primary';
   saveBtn.textContent=isEdit?'✓ Save':'✓ Sauvegarder & publier';
-  saveBtn.addEventListener('click',saveLesson);
+  // L'événement du clic ne doit PAS arriver dans _silent : sinon le bouton
+  // prendrait la branche autosave (ni message, ni fermeture du formulaire).
+  saveBtn.addEventListener('click',function(e){if(e&&e.preventDefault)e.preventDefault();saveLesson(false);});
   var cancelBtn=document.createElement('button');
   cancelBtn.className='btn btn-ghost';cancelBtn.textContent='Cancel';
   cancelBtn.addEventListener('click',function(){
@@ -12426,12 +12468,12 @@ function llParseExtraPages(id){
   if(!llStripHtml(raw))return [];
   return raw.split(/(?:<[^>]*>\s*)?---\s*PAGE\s*---(?:\s*<[^>]*>)?/i).map(function(p){return p.trim();}).filter(function(p){return llStripHtml(p);});
 }
-function saveLesson(){
+function saveLesson(_silent){
   var frTitle=((document.getElementById('ll-fr-title')||{}).value||'').trim();
   var enTitle=((document.getElementById('ll-en-title')||{}).value||'').trim();
   var date=((document.getElementById('ll-date')||{}).value||'');
   var fb=document.getElementById('ll-feedback');
-  if(!frTitle||!enTitle||!date){if(fb){fb.textContent='Veuillez remplir la Date, le Titre (FR) et le Title (EN).';fb.style.color='#f85149';}return;}
+  if(!frTitle||!enTitle||!date){if(!_silent&&fb){fb.textContent='Veuillez remplir la Date, le Titre (FR) et le Title (EN).';fb.style.color='#f85149';}return;}
   var type=((document.getElementById('ll-type')||{}).value)||'alert';
   var ref=(((document.getElementById('ll-ref')||{}).value)||'').trim()||llNextRef(type);
   var imgPosEl=document.querySelector('input[name="ll-img-pos"]:checked');
@@ -12458,12 +12500,16 @@ function saveLesson(){
     var idx=lessons.findIndex(function(l){return l.id===_llEditId;});
     if(idx!==-1)lessons[idx]=Object.assign(lessons[idx],data,{updated_at:new Date().toISOString()});
     saveLessons(lessons);
+    if(_silent) return;
     document.getElementById('lessons-form-wrap').style.display='none';
     _llEditId=null;_llImageData=null;renderLessonsList();
     showToast('✓ '+ref+' mis à jour','success');
   }else{
     var ll=Object.assign({id:'LL-'+Date.now(),created_at:new Date().toISOString()},data);
     lessons.push(ll);saveLessons(lessons);
+    // L'autosave passe en édition de la fiche qui vient d'être créée,
+    // sinon chaque frappe suivante publierait une nouvelle communication.
+    if(_silent){ _llEditId=ll.id; return; }
     document.getElementById('lessons-form-wrap').style.display='none';
     _llEditId=null;_llImageData=null;renderLessonsList();
     showToast('✓ '+ref+' publié','success');
@@ -12658,6 +12704,9 @@ function saveSRBMeetings(m) { localStorage.setItem('safSRBMeetings', JSON.string
 function showSRBForm(editId) {
   var w = document.getElementById('srb-form-wrap');
   if (!w) return;
+  // L'autosave suit le compte rendu ouvert : un nouveau formulaire repart à vide,
+  // sinon la saisie écraserait le compte rendu précédemment édité.
+  window.__safAutoSrbId = editId || '';
   w.style.display = '';
   var existing = editId ? (getSRBMeetings().find(function(m){return m.id===editId;})||{}) : {};
   w.innerHTML = '<div class="chart-card" style="padding:24px;margin-bottom:20px;">'
@@ -12708,12 +12757,12 @@ function srbAddAction(existing) {
   list.appendChild(row);
 }
 
-function saveSRBMeeting(editId) {
+function saveSRBMeeting(editId, _silent) {
   var fb = document.getElementById('srb-feedback');
   var date = document.getElementById('srb-date')?.value;
   var attendees = (document.getElementById('srb-attendees')?.value||'').trim();
   if (!date || !attendees) {
-    if (fb) { fb.textContent = 'Please fill Date and Attendees.'; fb.style.color = '#f85149'; }
+    if (!_silent && fb) { fb.textContent = 'Please fill Date and Attendees.'; fb.style.color = '#f85149'; }
     return;
   }
   // Collect action items
@@ -12752,6 +12801,10 @@ function saveSRBMeeting(editId) {
     meetings.push(meeting);
   }
   saveSRBMeetings(meetings);
+  // L'autosave conserve l'identifiant du compte rendu en cours pour ne pas
+  // en créer un nouveau à chaque frappe.
+  window.__safAutoSrbId = meeting.id;
+  if (_silent) return;
   document.getElementById('srb-form-wrap').style.display = 'none';
   renderSRBList();
   showToast('✓ SRB minutes saved — ' + meeting.id, 'success');
@@ -17185,6 +17238,7 @@ setTimeout(function(){
   // Avertissement uniquement si un conflit serveur est réellement non résolu
   // ou si le moteur d'autosave local a signalé une erreur d'écriture.
   window.addEventListener('beforeunload', function(e){
+    try{ if(typeof window.safAutosaveFlushLocal==='function') window.safAutosaveFlushLocal(); }catch(_e){}
     if(CC_CONFLICT || window.__helionAutosaveError){ e.preventDefault(); e.returnValue = ''; return ''; }
   });
 
@@ -17271,6 +17325,7 @@ setTimeout(function(){
       applyReadOnly();
     }
     try { localStorage.setItem('saf_role', SAF_ROLE + '|' + email); } catch(e){}
+    try { window.SAF_SESSION_EMAIL = email; window.SAF_SESSION_ROLE = SAF_ROLE; } catch(e){}
   }
 
   var WRITE_LABEL = /ajouter|enregistrer|sauvegarder|supprimer|modifier|valider|créer|générer|importer|\badd\b|\bsave\b|\bdelete\b|\bremove\b|\bsubmit\b|\bconfirm\b|\bedit\b|\bcopy\b|new entry|new event|new occurrence|new lesson|new review|new safety case|nouvelle?\b|nouveau\b/i;
@@ -17751,6 +17806,9 @@ setTimeout(function(){
   });
 
   document.getElementById('saf-logout-btn').addEventListener('click', async function(){
+    // Le rôle mémorisé ne doit pas survivre à la déconnexion : l'autosave le lit
+    // pour décider s'il a le droit d'écrire.
+    try { window.SAF_SESSION_ROLE = null; window.SAF_SESSION_EMAIL = null; localStorage.removeItem('saf_role'); } catch(e){}
     await db.auth.signOut(); location.reload();
   });
 
@@ -18508,6 +18566,79 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
   window.helionAutosaveRestoreDraft = function(){ restore(document); };
 })();
 </script>
+
+<!-- ═══ HELION-X SAFETY — AUTOSAVE / SYNCHRO CLOUD AUTOMATIQUE v1 | 2026-09-22 ═══
+     Portage du moteur d'autosave de SAF_International_Safety.html.
+     Le bloc « live draft » qui précède reste en place comme filet local :
+     il rejoue les champs saisis si la persistance applicative a échoué.
+     Ici, on appelle les VRAIES fonctions d'enregistrement en mode silencieux
+     (ni message, ni fermeture de formulaire), puis on pousse vers Supabase. -->
+<script id="helion-safety-autosave-v1">
+(function(){
+  'use strict';
+  var timers=Object.create(null), DELAY=900;
+  function later(key,fn){ clearTimeout(timers[key]); timers[key]=setTimeout(function(){try{fn();}catch(e){console.warn('HELION autosave '+key,e);}},DELAY); }
+  function visible(el){ if(!el)return false; var cs=window.getComputedStyle?getComputedStyle(el):null; return !cs || (cs.display!=='none' && cs.visibility!=='hidden'); }
+  function writingAllowed(){ try{var r=(typeof safCurrentRole==='function'?safCurrentRole():'').toLowerCase();return r==='admin'||r==='editor';}catch(e){return false;} }
+
+  function occReady(){
+    var w=document.getElementById('occ-form-wrap'); if(!visible(w))return false;
+    return !!((document.getElementById('occ-date')||{}).value && ((document.getElementById('occ-desc')||{}).value||'').trim() && ((document.getElementById('occ-custom-id')||{}).value||'').trim());
+  }
+  function syncCloudNow(){ try{ if(typeof window.safCloudSaveNow==='function') window.safCloudSaveNow(); }catch(e){} }
+
+  function autoOccurrence(){ if(writingAllowed()&&occReady()&&typeof saveOccurrence==='function'){ saveOccurrence(true); syncCloudNow(); } }
+  function autoMoc(){
+    var f=document.getElementById('change-form'); if(!visible(f)||!writingAllowed()||typeof saveChangeStudy!=='function')return;
+    var ref=((document.getElementById('c-ref')||{}).value||'').trim(); if(!ref||ref.replace(/^MOC-?/,'').trim()==='')return; saveChangeStudy(true); syncCloudNow();
+  }
+  function autoSrb(){ var f=document.getElementById('srb-form-wrap');if(!visible(f)||!writingAllowed()||typeof saveSRBMeeting!=='function')return;saveSRBMeeting(window.__safAutoSrbId||'',true);syncCloudNow(); }
+  function autoLesson(){ var f=document.getElementById('lessons-form-wrap');if(!visible(f)||!writingAllowed()||typeof saveLesson!=='function')return;saveLesson(true);syncCloudNow(); }
+  function autoRisk(){ var f=document.getElementById('edit-modal-overlay');if(!visible(f)||!writingAllowed()||typeof saveEditModal!=='function')return;saveEditModal(true);syncCloudNow(); }
+
+  function route(t){
+    if(!t||!t.closest||!writingAllowed())return;
+    if(t.closest('#occ-form-wrap')){ later('occ',autoOccurrence); return; }
+    if(t.closest('#change-form')){ later('moc',autoMoc); return; }
+    if(t.closest('#srb-form-wrap')){ later('srb',autoSrb); return; }
+    if(t.closest('#lessons-form-wrap')){ later('lesson',autoLesson); return; }
+    if(t.closest('#edit-modal-overlay')){ later('risk',autoRisk); return; }
+  }
+  document.addEventListener('input',function(e){route(e.target);},true);
+  document.addEventListener('change',function(e){route(e.target);},true);
+  document.addEventListener('blur',function(e){if(e.target&&e.target.isContentEditable)route(e.target);},true);
+
+  // Mention discrète : la saisie est persistée sans clic sur Enregistrer.
+  function mark(){
+    [['occ-form-wrap','Autosave on — saved automatically'],['change-form','Autosave on — draft synchronised'],['srb-form-wrap','Autosave on'],['lessons-form-wrap','Autosave on']].forEach(function(x){
+      var root=document.getElementById(x[0]);if(!root||root.querySelector('.helion-autosave-note'))return;var d=document.createElement('div');d.className='helion-autosave-note';d.style.cssText='margin:8px 0;font-family:var(--font-mono);font-size:9px;color:#3fb950;';d.textContent='✓ '+x[1];root.insertBefore(d,root.firstChild);
+    });
+  }
+  setInterval(mark,1200); setTimeout(mark,500);
+
+  // Sortie de page : on force d'abord la persistance applicative, puis le cloud.
+  window.safAutosaveFlushLocal=function(){
+    Object.keys(timers).forEach(function(k){ clearTimeout(timers[k]); delete timers[k]; });
+    try{autoOccurrence();}catch(e){}
+    try{autoMoc();}catch(e){}
+    try{autoSrb();}catch(e){}
+    try{autoLesson();}catch(e){}
+    try{autoRisk();}catch(e){}
+  };
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='hidden'){
+      try{window.safAutosaveFlushLocal();}catch(e){}
+      syncCloudNow();
+    }
+  });
+  window.addEventListener('pagehide',function(){
+    try{window.safAutosaveFlushLocal();}catch(e){}
+    syncCloudNow();
+  });
+})();
+</script>
+<!-- ═══ FIN AUTOSAVE HELION-X SAFETY ═══════════════════════════════════════ -->
+
 
 </body>
 </html>
