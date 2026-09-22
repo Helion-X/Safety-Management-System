@@ -2792,6 +2792,25 @@ function updateOaciDefinitionDropdown(sel) {
 </div>
 
 <div class="form-field">
+<label class="field-label">Origine du scénario <span class="field-code">ORIG</span></label>
+<div style="display:grid;grid-template-columns:1fr 1.4fr;gap:12px;">
+<select id="f-origin-type" style="width:100%;">
+<option value="" style="background:#0d1b2a;color:#f4f6f8;">— non précisée —</option>
+<option value="occurrence" style="background:#0d1b2a;color:#f4f6f8;">Signalement / occurrence</option>
+<option value="audit" style="background:#0d1b2a;color:#f4f6f8;">Constat d'audit ou d'inspection</option>
+<option value="moc" style="background:#0d1b2a;color:#f4f6f8;">Étude de changement (MOC)</option>
+<option value="regwatch" style="background:#0d1b2a;color:#f4f6f8;">Veille réglementaire</option>
+<option value="srb" style="background:#0d1b2a;color:#f4f6f8;">Safety Review Board</option>
+<option value="gap" style="background:#0d1b2a;color:#f4f6f8;">Analyse d'écart du référentiel</option>
+<option value="external" style="background:#0d1b2a;color:#f4f6f8;">Source externe (constructeur, autorité, retour de branche)</option>
+<option value="other" style="background:#0d1b2a;color:#f4f6f8;">Autre</option>
+</select>
+<input id="f-origin-ref" type="text" placeholder="Référence de la source : RPT-260722-9BDS, AUD-2026-03, AD/SB, § du règlement…"/>
+</div>
+<div style="margin-top:6px;font-family:var(--font-mono);font-size:10px;color:var(--grey-400);">Facultatif, mais c'est ce qui permet de dire à un auditeur d'où vient ce scénario.</div>
+</div>
+
+<div class="form-field">
 <label class="field-label">Risk Assessment <span class="field-code">(1068)</span></label>
 <textarea id="f-risk-assess" placeholder="Narrative risk assessment and justification…" rows="3"></textarea>
 </div>
@@ -7067,6 +7086,8 @@ function editEntry_LEGACY(id) {
   setVal('f-last-control-date', r.last_control_date);
   setVal('f-control-comment', r.control_comment);
   setVal('f-linked-change-study', r.linked_change_study || '');
+  setVal('f-origin-type', r.origin_type || '');
+  setVal('f-origin-ref', r.origin_ref || '');
   setVal('f-risk-owner', r.risk_owner);
   setVal('f-safety-indicator', r.safety_indicator);
   setVal('f-indicator-target', r.indicator_target);
@@ -7233,6 +7254,8 @@ function submitEntry() {
     description: getVal('f-description'),
     timestamp: new Date().toISOString(),
     linked_change_study: getVal('f-linked-change-study'),
+    origin_type: getVal('f-origin-type'),
+    origin_ref: (getVal('f-origin-ref')||'').trim(),
     risk_owner: getVal('f-risk-owner'),
     safety_indicator: getVal('f-safety-indicator'),
     indicator_target: getVal('f-indicator-target'),
@@ -7261,6 +7284,14 @@ function submitEntry() {
     if(!proceed) return;
   }
 
+  // Une origine deja renseignee n'est jamais effacee par un enregistrement
+  // ou le champ revient vide (formulaire rouvert sans le remplir).
+  if(!entry.origin_type && existingEntry && existingEntry.origin_type){
+    entry.origin_type   = existingEntry.origin_type;
+    entry.origin_ref    = existingEntry.origin_ref || '';
+    entry.origin_set_at = existingEntry.origin_set_at || '';
+    entry.origin_set_by = existingEntry.origin_set_by || '';
+  }
   if(editingEntryId) {
     const idx = DB.findIndex(r => r.id === editingEntryId);
     if(idx === -1) {
@@ -7295,7 +7326,11 @@ function submitEntry() {
     entry.created_at = new Date().toISOString();
     entry.updated_at  = new Date().toISOString();
     if (!entry.history) entry.history = [];
-    entry.history.push({ action: 'created', date: entry.created_at, by: 'SMS User' });
+    if(entry.origin_type){
+      entry.origin_set_at = entry.created_at;
+      entry.origin_set_by = (typeof safCurrentUser==='function'?safCurrentUser():'');
+    }
+    entry.history.push({ action: 'created', date: entry.created_at, by: (typeof safCurrentUser==='function'?safCurrentUser():'SMS User'), role: (typeof safCurrentRole==='function'?safCurrentRole():'') });
     DB.push(entry);
     showToast('✓ Entry successfully saved to database', 'success');
   }
@@ -19046,6 +19081,21 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
     imported:                  'Import de registre',
     created:                   'Saisie directe dans le registre'
   };
+  var DECLARED = {
+    occurrence:'Signalement / occurrence',
+    audit:'Constat d\'audit ou d\'inspection',
+    moc:'Étude de changement (MOC)',
+    regwatch:'Veille réglementaire',
+    srb:'Safety Review Board',
+    gap:'Analyse d\'écart du référentiel',
+    external:'Source externe (constructeur, autorité, retour de branche)',
+    other:'Autre'
+  };
+  var KIND_OF = {
+    created_by_moc:'moc', created_from_moc:'moc', inferred_moc:'moc',
+    created_by_composite_split:'split', added_after_gap_analysis:'gap',
+    created_from_occurrence:'occurrence'
+  };
 
   function esc(v){ return String(v==null?'':v).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
   function day(v){ var d=String(v||''); return d.slice(0,10) || '—'; }
@@ -19066,11 +19116,19 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
 
   function origin(r){
     r = r || {};
-    var out = { type:'', label:'', date:'', by:'', ref:'', moc:'', sources:[], occ:[], traced:true };
+    var out = { type:'', kind:'', label:'', date:'', by:'', ref:'', moc:'', sources:[], occ:[], traced:true };
     var h = Array.isArray(r.history) ? r.history : [];
     var c = null;
     for(var i=0;i<h.length;i++){ if(h[i] && CREATION[h[i].action]){ c=h[i]; break; } }
-    if(c){
+    // Origine declaree au formulaire : elle prime sur toute deduction.
+    if(r.origin_type && DECLARED[r.origin_type]){
+      out.type  = 'declared_' + r.origin_type;
+      out.kind  = r.origin_type;
+      out.label = DECLARED[r.origin_type];
+      out.date  = r.origin_set_at || (c && c.date) || r.created_at || r.timestamp || '';
+      out.by    = r.origin_set_by || (c && c.by) || '';
+      out.ref   = r.origin_ref || '';
+    } else if(c){
       out.type  = c.action;
       out.label = CREATION[c.action];
       out.date  = c.date || r.created_at || r.timestamp || '';
@@ -19086,6 +19144,7 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
       out.type='referentiel'; out.label='Référentiel embarqué — origine non tracée'; out.traced=false;
       out.date = r.created_at || r.timestamp || '';
     }
+    if(!out.kind) out.kind = KIND_OF[out.type] || '';
     out.moc = r.linked_change_study || '';
     out.sources = Array.isArray(r.source_risk_ids) ? r.source_risk_ids
                 : (r.source_risk_ids ? String(r.source_risk_ids).split(/[,;\s]+/).filter(Boolean) : []);
@@ -19131,7 +19190,7 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
         + '<div><div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);margin-bottom:5px;">SCÉNARIOS SOURCES</div><div>'+src+'</div></div>'
         + '<div><div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);margin-bottom:5px;">SIGNALEMENTS RATTACHÉS ('+o.occ.length+')</div><div>'+occ+'</div></div>'
         + '</div>'
-        + (o.occ.length ? '' : '<div style="margin-top:10px;font-family:var(--font-mono);font-size:9.5px;color:var(--grey-400);">Le rattachement se fait depuis la fiche d\'occurrence, champ « Risk Register link ».</div>')
+        + (o.occ.length ? '' : '<div style="margin-top:10px;font-family:var(--font-mono);font-size:9.5px;color:var(--grey-400);">Le rattachement se fait depuis la fiche d\'occurrence, champ « Linked risk ID » — 1re ligne du formulaire, ou panneau 5 Whys.</div>')
         + '</div>';
     }catch(e){ return ''; }
   };
@@ -19140,7 +19199,7 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
   window.safRiskOriginCSV = function(r){
     try{
       var o=origin(r);
-      return [ o.label + (o.traced?'':' (déduite)'), day(o.date)+(o.by?' / '+o.by:''),
+      return [ o.label + (o.ref?' — '+o.ref:'') + (o.traced?'':' (déduite)'), day(o.date)+(o.by?' / '+o.by:''),
                o.sources.join(' '), o.occ.map(function(x){ return x.id; }).join(' ') ];
     }catch(e){ return ['','','','']; }
   };
@@ -19166,8 +19225,46 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
       box.appendChild(host);
     }
     var r=(typeof DB!=='undefined'&&Array.isArray(DB))?DB.find(function(x){ return x && x.id===id; }):null;
-    host.innerHTML = r ? '<div class="detail-grid">'+window.safRiskOriginHTML(r)+'</div>' : '';
+    if(!r){ host.innerHTML=''; return; }
+    var role=''; try{ role=(typeof safCurrentRole==='function'?safCurrentRole():'').toLowerCase(); }catch(e){}
+    var editable=(role==='admin'||role==='editor');
+    var opts=Object.keys(DECLARED).map(function(k){
+      return '<option value="'+k+'"'+(r.origin_type===k?' selected':'')+' style="background:#0d1b2a;color:#f4f6f8;">'+esc(DECLARED[k])+'</option>';
+    }).join('');
+    host.innerHTML = '<div class="detail-grid">'+window.safRiskOriginHTML(r)+'</div>'
+      + (editable ? '<div style="margin-top:10px;padding:12px 14px;background:rgba(74,159,224,.06);border:1px solid rgba(74,159,224,.25);border-radius:8px;">'
+        + '<div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);letter-spacing:.06em;margin-bottom:8px;">DÉCLARER OU CORRIGER L\'ORIGINE</div>'
+        + '<div style="display:grid;grid-template-columns:1fr 1.4fr auto;gap:10px;align-items:center;">'
+        + '<select id="saf-origin-type" style="width:100%;"><option value="" style="background:#0d1b2a;color:#f4f6f8;">— non précisée —</option>'+opts+'</select>'
+        + '<input id="saf-origin-ref" type="text" value="'+esc(r.origin_ref||'')+'" placeholder="Référence de la source (RPT-…, AUD-…, § règlement)"/>'
+        + '<button class="btn btn-ghost" onclick="safOriginSave(\''+esc(id)+'\')">Enregistrer l\'origine</button>'
+        + '</div>'
+        + '<div id="saf-origin-fb" style="margin-top:7px;font-family:var(--font-mono);font-size:10px;color:var(--grey-400);"></div>'
+        + '</div>' : '');
   }
+
+  /* Ecrit l'origine directement sur la fiche, sans passer par le formulaire :
+     c'est ce qui permet de renseigner apres coup les scenarios anciens. */
+  window.safOriginSave=function(id){
+    var fb=document.getElementById('saf-origin-fb');
+    var role=''; try{ role=(typeof safCurrentRole==='function'?safCurrentRole():'').toLowerCase(); }catch(e){}
+    if(role!=='admin'&&role!=='editor'){ if(fb){ fb.textContent='Lecture seule.'; fb.style.color='#f85149'; } return; }
+    var r=(typeof DB!=='undefined'&&Array.isArray(DB))?DB.find(function(x){ return x && x.id===id; }):null;
+    if(!r) return;
+    var t=(document.getElementById('saf-origin-type')||{}).value||'';
+    var ref=((document.getElementById('saf-origin-ref')||{}).value||'').trim();
+    var by=''; try{ by=(typeof safCurrentUser==='function'?safCurrentUser():''); }catch(e){}
+    r.origin_type=t; r.origin_ref=ref;
+    r.origin_set_at=new Date().toISOString(); r.origin_set_by=by;
+    if(!Array.isArray(r.history)) r.history=[];
+    r.history.push({action:'origin_set', date:r.origin_set_at, by:by, value:(t||'—')+(ref?' / '+ref:'')});
+    try{ if(typeof saveDB==='function') saveDB(); }catch(e){}
+    try{ if(typeof renderTable==='function') renderTable(); }catch(e){}
+    try{ if(typeof window.safCloudSaveNow==='function') window.safCloudSaveNow(); }catch(e){}
+    mountModalOrigin(id);
+    var fb2=document.getElementById('saf-origin-fb');
+    if(fb2){ fb2.textContent='✓ Origine enregistrée.'; fb2.style.color='#3fb950'; }
+  };
   if(typeof window.editEntry==='function'){
     var _edit=window.editEntry;
     window.editEntry=function(id){
@@ -19183,10 +19280,13 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
   function matches(r,v){
     if(!v) return true;
     var o=origin(r);
-    if(v==='moc')        return o.type==='created_by_moc'||o.type==='created_from_moc'||o.type==='inferred_moc'||!!o.moc;
-    if(v==='occurrence') return o.occ.length>0 || o.type==='created_from_occurrence';
+    if(v==='moc')        return o.kind==='moc' || !!o.moc;
+    if(v==='occurrence') return o.kind==='occurrence' || o.occ.length>0;
+    if(v==='audit')      return o.kind==='audit';
+    if(v==='regwatch')   return o.kind==='regwatch';
+    if(v==='srb')        return o.kind==='srb';
     if(v==='split')      return o.type==='created_by_composite_split';
-    if(v==='gap')        return o.type==='added_after_gap_analysis';
+    if(v==='gap')        return o.kind==='gap';
     if(v==='untraced')   return !o.traced;
     return true;
   }
@@ -19200,6 +19300,9 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
     sel.innerHTML='<option value="">Toutes origines</option>'
       +'<option value="moc">Issus d\'une MOC</option>'
       +'<option value="occurrence">Avec signalement rattaché</option>'
+      +'<option value="audit">Constat d\'audit</option>'
+      +'<option value="regwatch">Veille réglementaire</option>'
+      +'<option value="srb">Safety Review Board</option>'
       +'<option value="split">Scission de scénario</option>'
       +'<option value="gap">Analyse d\'écart</option>'
       +'<option value="untraced">Origine non tracée</option>';
