@@ -3094,7 +3094,7 @@ function updateOaciDefinitionDropdown(sel) {
 <div class="dash-header"><div><div class="dash-title">OCCURRENCE LOG</div><div style="font-family:var(--font-mono);font-size:11px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin:4px 0 2px;">APP12-OMM</div><div class="dash-subtitle">Reg. (EU) 376/2014 Art. 4 — Occurrence tracking with 5 Whys root cause analysis</div></div>
 <div style="display:flex;gap:8px;align-items:center;">
 <button class="btn" style="background:rgba(248,81,73,.15);border:1px solid rgba(248,81,73,.4);color:#f85149;font-family:var(--font-mono);font-size:11px;padding:7px 14px;border-radius:6px;cursor:pointer;" onclick="if(typeof safImportMobileReports==='function') safImportMobileReports().then(function(){ showToast('Verification completed','success'); })" title="Check Mobile Reports Awaiting Review in helion_reports">Mobile Reports</button>
-<button class="btn" style="background:rgba(232,160,32,.15);border:1px solid rgba(232,160,32,.45);color:#e3b341;font-family:var(--font-mono);font-size:11px;padding:7px 14px;border-radius:6px;cursor:pointer;" onclick="occBulkTaxoOpen()">∑ Assign taxonomy <span id="obt-badge"></span></button>
+<button class="btn" style="background:rgba(232,160,32,.15);border:1px solid rgba(232,160,32,.45);color:#e3b341;font-family:var(--font-mono);font-size:11px;padding:7px 14px;border-radius:6px;cursor:pointer;" onclick="occBulkTaxoOpen()">∑ Assign taxonomy &amp; risk <span id="obt-badge"></span></button>
 <button class="btn btn-primary" onclick="showOccurrenceForm()">＋ New Occurrence</button>
 </div></div>
 <div id="mobile-reports-banner" style="display:none;margin:0 28px 16px;padding:14px 18px;background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.35);border-left:3px solid #f85149;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:space-between;gap:16px;">
@@ -3108,10 +3108,10 @@ function updateOaciDefinitionDropdown(sel) {
 <div id="occ-form-wrap" style="display:none;padding:0 28px 24px;"></div>
 <div id="occ-list-wrap" style="padding:0 28px 28px;"></div>
 <div id="occ-bulk-taxo-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:305;background:rgba(13,27,42,.97);overflow-y:auto;padding:32px;">
-<div style="max-width:1100px;margin:0 auto;">
+<div style="max-width:1320px;margin:0 auto;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap;">
     <div>
-      <div style="font-size:20px;font-weight:700;color:#fff;">&#8721; Bulk taxonomy assignment</div>
+      <div style="font-size:20px;font-weight:700;color:#fff;">&#8721; Bulk assignment &mdash; taxonomy and risk register</div>
       <div id="obt-meta" style="font-size:11px;color:var(--grey-400);font-family:var(--font-mono);margin-top:4px;"></div>
     </div>
     <div style="display:flex;gap:10px;">
@@ -4613,7 +4613,7 @@ window.__SAF_E5X_RIT_PATCH='V2_2026-07-03';
     'safOccurrences','safLessons','safSRBMeetings','safAudits',
     'safSAR','safALoS','safCAMOSignals','lastModified',
     'ejsPublicKey','ejsServiceId','ejsTemplateId',
-    'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921',
+    'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921','safArchivedRisks',
     'saf_international_safety_management_header_v1',
     'saf-seeds-done','helion_live_draft_v1'
   ];
@@ -4884,7 +4884,9 @@ function occCancelForm(){
 function occBulkTaxoPending(){
   var occs = [];
   try{ occs = getOccurrences(); }catch(e){}
-  return occs.filter(function(o){ return o && !o.catalog_event_id; });
+  // 22.09.2026 — l'ecran couvre aussi le rattachement au registre des risques :
+  // une occurrence deja taxonomisee mais sans risk_link reste a traiter.
+  return occs.filter(function(o){ return o && (!o.catalog_event_id || !occBulkRiskOf(o)); });
 }
 function occBulkTaxoBadge(){
   var el = document.getElementById('obt-badge');
@@ -4919,6 +4921,20 @@ function occBulkTaxoClose(){
   if(modal) modal.style.display = 'none';
   document.body.style.overflow = '';
 }
+function occBulkRiskOf(o){
+  if(!o) return '';
+  return String(o.risk_link || (o.five_whys && o.five_whys.risk_link) || '');
+}
+function occBulkRiskOptions(cur){
+  var list = (typeof DB!=='undefined' && Array.isArray(DB)) ? DB : [];
+  cur = String(cur||'');
+  return '<option value="">— no scenario —</option>' + list.map(function(r){
+    if(!r || !r.id) return '';
+    return '<option value="' + esc(r.id) + '"' + (cur===String(r.id)?' selected':'') +
+           ' style="background:#0d1b2a;color:#f4f6f8;">' + esc(r.id) + ' — ' +
+           esc(String(r.event||'').slice(0,70)) + '</option>';
+  }).join('');
+}
 function occBulkTaxoRender(){
   var body = document.getElementById('obt-body');
   var meta = document.getElementById('obt-meta');
@@ -4926,50 +4942,59 @@ function occBulkTaxoRender(){
   var pending = occBulkTaxoPending();
   var total = 0;
   try{ total = getOccurrences().length; }catch(e){}
-  if(meta) meta.textContent = pending.length + ' occurrence(s) with no event out of ' + total + ' · ' +
-    occBulkTaxoApproved().length + ' approved catalogue events';
+  var noEvent = pending.filter(function(o){ return !o.catalog_event_id; }).length;
+  var noRisk  = pending.filter(function(o){ return !occBulkRiskOf(o); }).length;
+  if(meta) meta.textContent = '{noEvent} with no event · {noRisk} with no risk scenario · out of {total} occurrence(s) · {cat} approved catalogue events'
+    .replace('{total}', total).replace('{noEvent}', noEvent).replace('{noRisk}', noRisk)
+    .replace('{cat}', occBulkTaxoApproved().length);
   if(!pending.length){
     body.innerHTML = '<div class="chart-card" style="padding:24px;text-align:center;color:#4DB848;font-family:var(--font-mono);font-size:12px;">' +
-      '✓ All occurrences are assigned to a catalogue event.</div>';
+      '✓ All occurrences are assigned to a catalogue event and to a register scenario.</div>';
     return;
   }
   var filter = (document.getElementById('obt-sheet-filter')||{}).value || '';
   var events = occBulkTaxoApproved().filter(function(e){ return !filter || e.source_sheet === filter; });
-  var opts = '<option value="">— not assigned —</option>' + events.map(function(e){
-    return '<option value="' + esc(e.id) + '" style="background:#0d1b2a;color:#f4f6f8;">' +
-           esc(e.id) + ' · ' + esc(String(e.event||'').slice(0,80)) + '</option>';
-  }).join('');
-  body.innerHTML = '<div class="chart-card" style="padding:0;overflow:hidden;">' +
-    '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
+  function eventOptions(cur){
+    cur = String(cur||'');
+    return '<option value="">— not assigned —</option>' + events.map(function(e){
+      return '<option value="' + esc(e.id) + '"' + (cur===String(e.id)?' selected':'') +
+             ' style="background:#0d1b2a;color:#f4f6f8;">' +
+             esc(e.id) + ' · ' + esc(String(e.event||'').slice(0,80)) + '</option>';
+    }).join('');
+  }
+  var th = 'style="text-align:left;padding:10px 12px;font-family:var(--font-mono);font-size:10px;color:var(--grey-400);"';
+  body.innerHTML = '<div class="chart-card" style="padding:0;overflow-x:auto;">' +
+    '<table style="width:100%;border-collapse:collapse;font-size:12px;min-width:980px;">' +
     '<thead><tr style="background:rgba(255,255,255,.04);">' +
-    '<th style="text-align:left;padding:10px 12px;font-family:var(--font-mono);font-size:10px;color:var(--grey-400);white-space:nowrap;">OCCURRENCE</th>' +
-    '<th style="text-align:left;padding:10px 12px;font-family:var(--font-mono);font-size:10px;color:var(--grey-400);white-space:nowrap;">DATE</th>' +
-    '<th style="text-align:left;padding:10px 12px;font-family:var(--font-mono);font-size:10px;color:var(--grey-400);">DESCRIPTION</th>' +
-    '<th style="text-align:left;padding:10px 12px;font-family:var(--font-mono);font-size:10px;color:var(--grey-400);width:340px;">CATALOGUE EVENT</th>' +
+    '<th ' + th + '>OCCURRENCE</th>' +
+    '<th ' + th + '>DATE</th>' +
+    '<th ' + th + '>DESCRIPTION</th>' +
+    '<th ' + th + ' width="300">CATALOGUE EVENT</th>' +
+    '<th ' + th + ' width="300">RISK REGISTER SCENARIO</th>' +
     '</tr></thead><tbody>' +
     pending.map(function(o){
       return '<tr style="border-top:1px solid rgba(255,255,255,.06);">' +
         '<td style="padding:8px 12px;font-family:var(--font-mono);font-size:10px;color:#e3b341;vertical-align:top;">' + esc(String(o.id||'').slice(0,42)) + '</td>' +
         '<td style="padding:8px 12px;font-family:var(--font-mono);font-size:10px;color:var(--grey-400);white-space:nowrap;vertical-align:top;">' + esc(o.date||'—') + '</td>' +
         '<td style="padding:8px 12px;color:var(--grey-300);vertical-align:top;">' + esc(String(o.description||'—').slice(0,150)) + '</td>' +
-        '<td style="padding:8px 12px;vertical-align:top;"><select class="obt-row" data-occ-id="' + esc(o.id) + '" style="width:100%;">' + opts + '</select></td>' +
+        '<td style="padding:8px 12px;vertical-align:top;"><select class="obt-row" data-occ-id="' + esc(o.id) + '" style="width:100%;">' + eventOptions(o.catalog_event_id) + '</select></td>' +
+        '<td style="padding:8px 12px;vertical-align:top;"><select class="obt-risk" data-occ-id="' + esc(o.id) + '" style="width:100%;">' + occBulkRiskOptions(occBulkRiskOf(o)) + '</select></td>' +
       '</tr>';
     }).join('') + '</tbody></table></div>';
 }
 async function occBulkTaxoApply(){
   var fb = document.getElementById('obt-feedback');
-  var rows = [].slice.call(document.querySelectorAll('.obt-row'));
-  var picks = rows.filter(function(r){ return r.value; });
-  if(!picks.length){
-    if(fb){ fb.textContent = 'No event selected.'; fb.style.color = '#e3b341'; }
-    return;
-  }
+  var evRows   = [].slice.call(document.querySelectorAll('.obt-row'));
+  var riskRows = [].slice.call(document.querySelectorAll('.obt-risk'));
   eventAccountingEnsure();
-  var occs = getOccurrences(), n = 0;
-  picks.forEach(function(r){
+  var occs = getOccurrences(), n = 0, nr = 0;
+
+  evRows.forEach(function(r){
+    if(!r.value) return;
     var occ = occs.find(function(o){ return o.id === r.getAttribute('data-occ-id'); });
     var item = EVENT_CATALOG.find(function(e){ return e.id === r.value && e.review_status === 'approved'; });
     if(!occ || !item) return;
+    if(occ.catalog_event_id === item.id) return;   // deja rattachee : rien a faire
     occ.catalog_event_id = item.id;
     occ.catalog_event_mode = 'existing';
     occ.risk_link = occ.risk_link || item.linked_risk_id || '';
@@ -4980,22 +5005,44 @@ async function occBulkTaxoApply(){
     // pas instruire une occurrence. Les deux restent des actes distincts.
     n++;
   });
+
+  // Rattachement au registre des risques : c'est ce lien, et lui seul, qui
+  // alimente occurrencesForRisk() et donc les frequences observees des SPI.
+  riskRows.forEach(function(r){
+    var occ = occs.find(function(o){ return o.id === r.getAttribute('data-occ-id'); });
+    if(!occ) return;
+    var cur = occBulkRiskOf(occ);
+    var val = String(r.value||'');
+    if(val === cur) return;
+    if(val && (typeof DB==='undefined' || !DB.some(function(x){ return x && x.id===val; }))) return;
+    occ.risk_link = val;
+    if(occ.five_whys && typeof occ.five_whys==='object') occ.five_whys.risk_link = val;
+    nr++;
+  });
+
+  if(!n && !nr){
+    if(fb){ fb.textContent = 'No assignment selected.'; fb.style.color = '#e3b341'; }
+    return;
+  }
+
   saveOccurrences(occs);
   if(fb){ fb.textContent = 'Saving…'; fb.style.color = '#e3b341'; }
   if(typeof renderOccurrenceList === 'function') renderOccurrenceList();
   if(typeof renderEventAccounting === 'function'){ try{ renderEventAccounting(); }catch(e){} }
+  if(typeof renderTable === 'function'){ try{ renderTable(); }catch(e){} }
   occBulkTaxoBadge();
+  var summary = '{n} event(s) and {nr} risk scenario(s) assigned'.replace('{n}', n).replace('{nr}', nr);
   if(typeof window.safCloudSaveNow === 'function'){
     var res = await window.safCloudSaveNow();
     if(res && res.ok){
-      if(fb){ fb.textContent = '✓ ' + n + ' occurrence(s) assigned and synchronised.'; fb.style.color = '#3fb950'; }
+      if(fb){ fb.textContent = '✓ ' + summary + ' and synchronised.'; fb.style.color = '#3fb950'; }
       occBulkTaxoRender();
     } else {
       var m = (res && res.conflict) ? 'version conflict' : ((res && res.error) || 'unknown error');
-      if(fb){ fb.textContent = '⚠ ' + n + ' assignment(s) saved locally but NOT synchronised (' + m + ').'; fb.style.color = '#f85149'; }
+      if(fb){ fb.textContent = '⚠ ' + summary + ' saved locally but NOT synchronised (' + m + ').'; fb.style.color = '#f85149'; }
     }
   } else {
-    if(fb){ fb.textContent = '✓ ' + n + ' occurrence(s) assigned.'; fb.style.color = '#3fb950'; }
+    if(fb){ fb.textContent = '✓ ' + summary + '.'; fb.style.color = '#3fb950'; }
     occBulkTaxoRender();
   }
 }
@@ -5374,6 +5421,7 @@ window.safExportAllData_object = function(){
     safWorkOrders:    _getLS('safWorkOrders'),
     safOccActionEmailMap: _getLS('safOccActionEmailMap'),
     safRemovedRiskIds: _getLS('safRemovedRiskIds'),
+    safArchivedRisks: _getLS('safArchivedRisks'),
     saf_removed_mig_20260921: _getLS('saf_removed_mig_20260921'),
     helion_live_draft_v1: _getLS('helion_live_draft_v1'),
   };
@@ -5466,7 +5514,7 @@ function safImportAllData(evt){
       var keys = ['safRiskDB','safRiskDBVersion','safEventCatalog','safEventCatalogVersion','safChangeStudies','safSPITargets','safFlightHours','safOccurrences',
                   'safLessons','safSRBMeetings','safAudits','safSAR','safALoS','safCAMOSignals','lastModified',
                   'ejsPublicKey','ejsServiceId','ejsTemplateId',
-                  'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921',
+                  'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921','safArchivedRisks',
                   'helion_live_draft_v1'];
       var count = 0;
       keys.forEach(function(k){
@@ -6564,6 +6612,8 @@ function renderTable() {
             </div>
             <div style="margin-top:12px;padding:9px 11px;background:rgba(227,179,65,.06);border:1px solid rgba(227,179,65,.18);border-radius:6px;font-size:10px;color:var(--grey-200);line-height:1.5;"><strong style="color:#e3b341;">Acceptance basis:</strong> ${r.acceptance_basis||'—'}</div>
           </div>
+
+          ${(typeof safRiskOriginHTML==='function' ? safRiskOriginHTML(r) : '')}
 
         </div>
       </td>
@@ -7753,7 +7803,7 @@ function _dbToCSV(rows) {
     'Doc Reference','ECCAIRS Category','Event Type','Flight Phase','Risk Owner','Safety Indicator','Indicator Target',
     'Acceptance Required','Acceptance Status','Acceptance Basis','Acceptance Decision','Accepted By','Acceptance Date',
     'Effectiveness Verification Method','Effectiveness Due Date','Effectiveness Result','Effectiveness Evidence','Effectiveness Assessed By','Effectiveness Assessed Date',
-    'Control Status','Last Control Date','Control Comment','Linked Change Study','Barrier Failure Suspected','Created At'];
+    'Control Status','Last Control Date','Control Comment','Linked Change Study','Barrier Failure Suspected','Created At','Origin','Origin Date / By','Source Risk IDs','Linked Occurrences'];
   const esc = v => '"' + String(v||'').replace(/"/g,'""') + '"';
   return [headers.map(esc).join(','),
     ...rows.map(r => [
@@ -7763,7 +7813,8 @@ function _dbToCSV(rows) {
       r.acceptance_required ? 'Yes' : 'No', r.acceptance_status, r.acceptance_basis, r.risk_acceptance, r.risk_acceptance_by, r.risk_acceptance_date,
       r.effectiveness_verification, r.effectiveness_due_date, r.control_effectiveness, r.effectiveness_evidence, r.effectiveness_assessed_by, r.effectiveness_assessed_date,
       r.control_status, r.last_control_date, r.control_comment, r.linked_change_study||'',
-      r.barrier_failure_suspected ? 'Yes' : 'No', r.created_at||r.timestamp||''
+      r.barrier_failure_suspected ? 'Yes' : 'No', r.created_at||r.timestamp||'',
+      ...(typeof safRiskOriginCSV==='function' ? safRiskOriginCSV(r) : ['','','',''])
     ].map(esc).join(','))
   ].join('\r\n');
 }
@@ -8118,7 +8169,7 @@ function importJSON(event) {
         const allKeys = ['safRiskDB','safChangeStudies','safSPITargets','safFlightHours','safOccurrences',
                          'safLessons','safSRBMeetings','safAudits','safSAR','safALoS','safCAMOSignals','lastModified',
                          'ejsPublicKey','ejsServiceId','ejsTemplateId',
-                         'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921',
+                         'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921','safArchivedRisks',
                          'helion_live_draft_v1'];
         allKeys.forEach(function(k){ if(data[k]!=null){ localStorage.setItem(k,data[k]); imported.push(k); } });
         if(data['saf_header']!=null) localStorage.setItem('saf_international_safety_management_header_v1', data['saf_header']);
@@ -17028,7 +17079,7 @@ setTimeout(function(){
   var KEYS = ['safRiskDB','safRiskDBVersion','safEventCatalog','safEventCatalogVersion','safChangeStudies','safSPITargets','safFlightHours','safOccurrences',
               'safLessons','safSRBMeetings','safAudits','safSAR','safALoS','safCAMOSignals','lastModified',
               'ejsPublicKey','ejsServiceId','ejsTemplateId',
-              'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921',
+              'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921','safArchivedRisks',
               'helion_live_draft_v1'];
 
   /* ══════════════════════════════════════════════════════════════════════
@@ -18782,6 +18833,401 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
 </script>
 <!-- ═══ FIN AUTOSAVE HELION-X SAFETY ═══════════════════════════════════════ -->
 
+
+
+<!-- ═══ ARCHIVAGE DES SCENARIOS DE RISQUE v1 | 2026-09-22 ═══════════════════
+     Un scenario retire du registre actif n'est plus efface : il part dans une
+     archive datee, signee et motivee, et peut etre restaure. Le registre actif
+     reste lisible, et l'ecart entre deux versions du registre s'explique.
+     S'appuie sur la liste safRemovedRiskIds, seule trace qui survit a la
+     fusion d'ouverture ; l'archive est sauvegardee dans Supabase (safArchivedRisks). -->
+<script id="saf-risk-archive-v1">
+(function(){
+  'use strict';
+  var KEY='safArchivedRisks';
+
+  function load(){ try{ var v=JSON.parse(localStorage.getItem(KEY)||'[]'); return Array.isArray(v)?v:[]; }catch(e){ return []; } }
+  function store(list){
+    try{ localStorage.setItem(KEY, JSON.stringify(list||[])); }catch(e){}
+    try{ if(typeof window.safCloudScheduleSave==='function') window.safCloudScheduleSave(); }catch(e){}
+  }
+  function role(){ try{ return (typeof safCurrentRole==='function'? safCurrentRole():'').toLowerCase(); }catch(e){ return ''; } }
+  function canWrite(){ var r=role(); return r==='admin'||r==='editor'; }
+  function who(){ try{ return (typeof safCurrentUser==='function'? safCurrentUser():'') || 'SMS User'; }catch(e){ return 'SMS User'; } }
+  function esc(v){ return String(v==null?'':v).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function toast(m,t){ try{ if(typeof showToast==='function') showToast(m,t||'success'); }catch(e){} }
+
+  window.safArchivedRisks=load;
+
+  /* ── Archivage ──────────────────────────────────────────────────────── */
+  window.safArchiveRisk=function(id){
+    if(!canWrite()){ toast('Lecture seule — archivage impossible','error'); return; }
+    var rec=(typeof DB!=='undefined'&&Array.isArray(DB))?DB.find(function(r){ return r && r.id===id; }):null;
+    if(!rec){ toast('Scenario introuvable','error'); return; }
+    var label=rec.id+' – '+(rec.event||'');
+    var reason=window.prompt('ARCHIVER '+label+'\n\nMotif du retrait du registre actif (obligatoire).\nExemples : activite arretee, scenario fusionne avec un autre, hors perimetre.\n\nCe motif reste consultable dans l\'archive.','');
+    if(reason===null) return;
+    reason=String(reason).trim();
+    if(reason.length<5){ toast('Motif trop court — archivage annule','error'); return; }
+
+    var entry={
+      id: rec.id,
+      event: rec.event||'',
+      family_id: rec.family_id||'',
+      category: rec.category||'',
+      residual_risk: rec.residual_risk||'',
+      archived_at: new Date().toISOString(),
+      archived_by: who(),
+      reason: reason,
+      record: JSON.parse(JSON.stringify(rec))
+    };
+    try{
+      if(!Array.isArray(entry.record.history)) entry.record.history=[];
+      entry.record.history.push({action:'archived', date:entry.archived_at, by:entry.archived_by, reason:reason});
+    }catch(e){}
+
+    var list=load().filter(function(a){ return a && a.id!==rec.id; });
+    list.push(entry);
+    store(list);
+    try{ safMarkRiskRemoved(rec.id); }catch(e){}
+
+    try{
+      DB=DB.filter(function(r){ return r.id!==rec.id; });
+      if(typeof filteredDB!=='undefined') filteredDB=filteredDB.filter(function(r){ return r.id!==rec.id; });
+      if(typeof saveDB==='function') saveDB();
+      if(typeof renderTable==='function') renderTable();
+      if(typeof updateCounts==='function') updateCounts();
+    }catch(e){}
+    refreshButton();
+    toast('✓ '+rec.id+' archive — consultable dans l\'archive du registre');
+  };
+
+  /* ── Restauration ───────────────────────────────────────────────────── */
+  window.safRestoreArchivedRisk=function(id){
+    if(!canWrite()){ toast('Lecture seule — restauration impossible','error'); return; }
+    var list=load(); var entry=list.find(function(a){ return a && a.id===id; });
+    if(!entry){ toast('Entree d\'archive introuvable','error'); return; }
+    if(!window.confirm('Restaurer '+entry.id+' dans le registre actif ?')) return;
+
+    try{ safUnmarkRiskRemoved(entry.id); }catch(e){}
+    try{
+      var rec=JSON.parse(JSON.stringify(entry.record||{}));
+      if(!Array.isArray(rec.history)) rec.history=[];
+      rec.history.push({action:'restored_from_archive', date:new Date().toISOString(), by:who()});
+      if(typeof DB!=='undefined' && Array.isArray(DB) && !DB.some(function(r){ return r && r.id===rec.id; })){
+        DB.push(rec);
+        DB.sort(function(a,b){ return String(a.id).localeCompare(String(b.id),undefined,{numeric:true}); });
+      }
+      if(typeof filteredDB!=='undefined') filteredDB=DB.slice();
+      if(typeof saveDB==='function') saveDB();
+      if(typeof renderTable==='function') renderTable();
+      if(typeof updateCounts==='function') updateCounts();
+    }catch(e){}
+    store(list.filter(function(a){ return a && a.id!==id; }));
+    render(); refreshButton();
+    toast('✓ '+id+' restaure dans le registre actif');
+  };
+
+  /* ── Export CSV de l'archive ────────────────────────────────────────── */
+  window.safArchiveExportCSV=function(){
+    var rows=[['ID','Evenement','Famille','Risque residuel','Archive le','Par','Motif']];
+    load().forEach(function(a){
+      rows.push([a.id, a.event, a.family_id, a.residual_risk,
+                 String(a.archived_at||'').slice(0,10), a.archived_by, a.reason]);
+    });
+    var csv='\uFEFF'+rows.map(function(r){
+      return r.map(function(c){ return '"'+String(c==null?'':c).replace(/"/g,'""')+'"'; }).join(';');
+    }).join('\n');
+    var el=document.createElement('a');
+    el.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+    el.download='RiskRegister_Archive_'+new Date().toISOString().slice(0,10)+'.csv';
+    document.body.appendChild(el); el.click(); document.body.removeChild(el);
+  };
+
+  /* ── Fenetre de consultation ────────────────────────────────────────── */
+  function modal(){
+    var m=document.getElementById('saf-rr-archive-modal');
+    if(m) return m;
+    m=document.createElement('div');
+    m.id='saf-rr-archive-modal';
+    m.style.cssText='display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9200;overflow-y:auto;padding:24px 16px;';
+    m.addEventListener('click',function(e){ if(e.target===m) close(); });
+    m.innerHTML='<div style="max-width:980px;margin:0 auto;background:var(--navy-mid,#16263a);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:22px 24px;">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;">'
+      +'<div style="font-size:15px;font-weight:700;color:var(--white,#fff);">🗄 Archive du registre des risques</div>'
+      +'<div style="display:flex;gap:8px;">'
+      +'<button class="btn btn-ghost" onclick="safArchiveExportCSV()">⤓ CSV</button>'
+      +'<button class="btn btn-ghost" onclick="safArchiveClose()">✕ Fermer</button>'
+      +'</div></div>'
+      +'<div style="font-family:var(--font-mono,monospace);font-size:10px;color:var(--grey-400,#8fa8c0);margin-bottom:16px;">'
+      +'Scenarios retires du registre actif. Ils ne sont pas supprimes : motif, date et auteur sont conserves, et la restauration est possible.</div>'
+      +'<div id="saf-rr-archive-body"></div></div>';
+    document.body.appendChild(m);
+    return m;
+  }
+  function close(){ var m=document.getElementById('saf-rr-archive-modal'); if(m) m.style.display='none'; }
+  window.safArchiveClose=close;
+
+  function render(){
+    var body=document.getElementById('saf-rr-archive-body'); if(!body) return;
+    var list=load().slice().sort(function(a,b){ return String(b.archived_at||'').localeCompare(String(a.archived_at||'')); });
+    if(!list.length){
+      body.innerHTML='<div style="text-align:center;padding:34px;color:var(--grey-400,#8fa8c0);font-family:var(--font-mono,monospace);font-size:12px;border:1px dashed rgba(255,255,255,.12);border-radius:8px;">Aucun scenario archive.</div>';
+      return;
+    }
+    var w=canWrite();
+    body.innerHTML='<div style="display:flex;flex-direction:column;gap:10px;">'+list.map(function(a){
+      var d=String(a.archived_at||'').slice(0,10);
+      return '<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-left:4px solid var(--gold,#C98000);border-radius:8px;padding:13px 16px;">'
+        +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">'
+        +'<div style="flex:1;min-width:0;">'
+        +'<div style="font-weight:700;color:var(--white,#fff);font-size:13px;margin-bottom:3px;">'+esc(a.id)+' — '+esc(a.event)+'</div>'
+        +'<div style="font-family:var(--font-mono,monospace);font-size:10px;color:var(--grey-400,#8fa8c0);margin-bottom:7px;">'
+        + esc(a.family_id||'—')+' · residuel '+esc(a.residual_risk||'—')+' · archive le '+esc(d)+' par '+esc(a.archived_by||'—')+'</div>'
+        +'<div style="font-size:11.5px;color:var(--grey-200,#c9d4de);white-space:pre-wrap;"><strong style="color:var(--gold-light,#E0A030);">Motif :</strong> '+esc(a.reason)+'</div>'
+        +'</div>'
+        +(w?'<button class="btn btn-ghost" style="flex-shrink:0;" onclick="safRestoreArchivedRisk(\''+esc(a.id)+'\')">↺ Restaurer</button>':'')
+        +'</div></div>';
+    }).join('')+'</div>';
+  }
+
+  window.safArchiveOpen=function(){ modal().style.display='block'; render(); };
+
+  /* ── Bouton dans l'en-tete du registre ──────────────────────────────── */
+  function refreshButton(){
+    var b=document.getElementById('saf-rr-archive-btn');
+    if(!b) return;
+    var n=load().length;
+    b.textContent='🗄 Archive'+(n?' ('+n+')':'');
+    b.style.display = n ? '' : '';
+  }
+  function mountButton(){
+    if(document.getElementById('saf-rr-archive-btn')) { refreshButton(); return; }
+    var head=document.querySelector('#view-database .dash-header');
+    if(!head) return;
+    var b=document.createElement('button');
+    b.id='saf-rr-archive-btn';
+    b.className='btn btn-ghost';
+    b.style.marginLeft='10px';
+    b.title='Scenarios retires du registre actif';
+    b.onclick=window.safArchiveOpen;
+    var newBtn=head.querySelector('button');
+    if(newBtn && newBtn.parentNode===head) head.insertBefore(b, newBtn.nextSibling); else head.appendChild(b);
+    refreshButton();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mountButton);
+  else mountButton();
+  setInterval(refreshButton, 4000);
+
+  /* ── La suppression devient un archivage ────────────────────────────── */
+  window.deleteEntry=function(id){ window.safArchiveRisk(id); };
+})();
+</script>
+<!-- ═══ FIN ARCHIVAGE DES SCENARIOS ════════════════════════════════════════ -->
+
+
+<!-- ═══ ORIGINE DES SCENARIOS DE RISQUE v1 | 2026-09-22 ═══════════════════
+     Rassemble les quatre sources deja presentes dans les donnees mais
+     invisibles a l'ecran : l'entree de creation de history, source_risk_ids,
+     l'etude de changement liee, et l'index inverse des occurrences dont le
+     champ risk_link pointe vers ce scenario.
+     Lecture seule : ce module n'ecrit rien. -->
+<script id="saf-risk-origin-v1">
+(function(){
+  'use strict';
+
+  var CREATION = {
+    created_by_moc:            'Étude de changement (MOC)',
+    created_from_moc:          'Étude de changement (MOC)',
+    created_by_composite_split:'Scission d\'un scénario composite',
+    added_after_gap_analysis:  'Analyse d\'écart du référentiel',
+    created_from_occurrence:   'Signalement / occurrence',
+    copied_from:               'Duplication d\'un scénario existant',
+    imported:                  'Import de registre',
+    created:                   'Saisie directe dans le registre'
+  };
+
+  function esc(v){ return String(v==null?'':v).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function day(v){ var d=String(v||''); return d.slice(0,10) || '—'; }
+
+  function occurrences(){
+    try{ return (typeof getOccurrences==='function') ? (getOccurrences()||[]) : []; }catch(e){ return []; }
+  }
+
+  /* Index inverse : une occurrence porte risk_link, jamais l'inverse. */
+  function linkedOccurrences(id){
+    if(!id) return [];
+    return occurrences().filter(function(o){
+      if(!o) return false;
+      var l = o.risk_link || (o.five_whys && o.five_whys.risk_link) || '';
+      return String(l)===String(id);
+    }).sort(function(a,b){ return String(b.date||'').localeCompare(String(a.date||'')); });
+  }
+
+  function origin(r){
+    r = r || {};
+    var out = { type:'', label:'', date:'', by:'', ref:'', moc:'', sources:[], occ:[], traced:true };
+    var h = Array.isArray(r.history) ? r.history : [];
+    var c = null;
+    for(var i=0;i<h.length;i++){ if(h[i] && CREATION[h[i].action]){ c=h[i]; break; } }
+    if(c){
+      out.type  = c.action;
+      out.label = CREATION[c.action];
+      out.date  = c.date || r.created_at || r.timestamp || '';
+      out.by    = c.by || '';
+      out.ref   = c.moc_ref || c.source_id || c.ref || c.reason || '';
+    } else if(r.linked_change_study){
+      out.type='inferred_moc'; out.label='Étude de changement (MOC)'; out.traced=false;
+      out.date = r.created_at || r.timestamp || '';
+    } else if(r.is_custom_event){
+      out.type='event_accounting'; out.label='Créé depuis l\'Event Accounting'; out.traced=false;
+      out.date = r.created_at || r.timestamp || '';
+    } else {
+      out.type='referentiel'; out.label='Référentiel embarqué — origine non tracée'; out.traced=false;
+      out.date = r.created_at || r.timestamp || '';
+    }
+    out.moc = r.linked_change_study || '';
+    out.sources = Array.isArray(r.source_risk_ids) ? r.source_risk_ids
+                : (r.source_risk_ids ? String(r.source_risk_ids).split(/[,;\s]+/).filter(Boolean) : []);
+    out.occ = linkedOccurrences(r.id);
+    return out;
+  }
+  window.safRiskOrigin = origin;
+
+  /* ── Bloc affiche dans la fiche depliee ──────────────────────────────── */
+  window.safRiskOriginHTML = function(r){
+    try{
+      var o = origin(r);
+      var chip = o.traced
+        ? '<span style="background:rgba(63,185,80,.14);border:1px solid rgba(63,185,80,.4);color:#3fb950;border-radius:4px;padding:2px 8px;font-family:var(--font-mono);font-size:9px;">TRACÉE</span>'
+        : '<span style="background:rgba(227,179,65,.14);border:1px solid rgba(227,179,65,.4);color:#e3b341;border-radius:4px;padding:2px 8px;font-family:var(--font-mono);font-size:9px;">DÉDUITE</span>';
+
+      var moc = o.moc
+        ? '<span style="font-family:var(--font-mono);color:var(--gold-light);cursor:pointer;" onclick="showView(\'change\')" title="Ouvrir les études de changement">'+esc(o.moc)+'</span>'
+        : '<span style="color:var(--grey-400);font-style:italic;">—</span>';
+
+      var src = o.sources.length
+        ? o.sources.map(function(s){ return '<span style="font-family:var(--font-mono);font-size:10px;background:rgba(255,255,255,.06);border-radius:3px;padding:1px 6px;margin:0 4px 4px 0;display:inline-block;">'+esc(s)+'</span>'; }).join('')
+        : '<span style="color:var(--grey-400);font-style:italic;">—</span>';
+
+      var occ = o.occ.length
+        ? o.occ.map(function(x){
+            return '<div style="font-family:var(--font-mono);font-size:10px;margin-bottom:3px;">'
+                 + '<span style="color:var(--steel-bright);cursor:pointer;" onclick="showView(\'occurrences\')" title="Ouvrir l\'Occurrence Log">'+esc(x.id)+'</span>'
+                 + '<span style="color:var(--grey-400);"> · '+esc(day(x.date))+(x.status?' · '+esc(x.status):'')+'</span></div>';
+          }).join('')
+        : '<span style="color:var(--grey-400);font-style:italic;">Aucun signalement rattaché</span>';
+
+      return '<div class="detail-block full-width" style="grid-column:1/-1;border-color:rgba(74,159,224,.35);">'
+        + '<span class="detail-label">⛓ ORIGINE DU SCÉNARIO</span>'
+        + '<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;">'
+        + '<div><div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);margin-bottom:5px;">PROVENANCE</div>'
+        + '<div style="font-size:11px;color:var(--white);font-weight:700;margin-bottom:5px;">'+esc(o.label)+'</div>'
+        + chip
+        + '<div style="font-family:var(--font-mono);font-size:10px;color:var(--grey-400);margin-top:5px;">'+esc(day(o.date))+(o.by?' · '+esc(o.by):'')+'</div>'
+        + (o.ref?'<div style="font-family:var(--font-mono);font-size:10px;color:var(--grey-300);margin-top:3px;">'+esc(o.ref)+'</div>':'')
+        + '</div>'
+        + '<div><div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);margin-bottom:5px;">ÉTUDE DE CHANGEMENT</div><div style="font-size:11px;">'+moc+'</div></div>'
+        + '<div><div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);margin-bottom:5px;">SCÉNARIOS SOURCES</div><div>'+src+'</div></div>'
+        + '<div><div style="font-family:var(--font-mono);font-size:9px;color:var(--grey-400);margin-bottom:5px;">SIGNALEMENTS RATTACHÉS ('+o.occ.length+')</div><div>'+occ+'</div></div>'
+        + '</div>'
+        + (o.occ.length ? '' : '<div style="margin-top:10px;font-family:var(--font-mono);font-size:9.5px;color:var(--grey-400);">Le rattachement se fait depuis la fiche d\'occurrence, champ « Risk Register link ».</div>')
+        + '</div>';
+    }catch(e){ return ''; }
+  };
+
+  /* ── Colonnes ajoutees a l'export CSV ────────────────────────────────── */
+  window.safRiskOriginCSV = function(r){
+    try{
+      var o=origin(r);
+      return [ o.label + (o.traced?'':' (déduite)'), day(o.date)+(o.by?' / '+o.by:''),
+               o.sources.join(' '), o.occ.map(function(x){ return x.id; }).join(' ') ];
+    }catch(e){ return ['','','','']; }
+  };
+
+  /* ── Greffe sur la fiche depliee (fichier SAF : fonction dediee) ─────── */
+  if(typeof window._rrDetailHTML === 'function'){
+    var _prev = window._rrDetailHTML;
+    window._rrDetailHTML = function(r){
+      var html = _prev.apply(this, arguments);
+      try{ return html + window.safRiskOriginHTML(r); }catch(e){ return html; }
+    };
+  }
+
+  /* ── Panneau dans la modale d'edition ────────────────────────────────── */
+  function mountModalOrigin(id){
+    var ov=document.getElementById('edit-modal-overlay'); if(!ov) return;
+    var box=ov.firstElementChild || ov;
+    var host=document.getElementById('saf-em-origin');
+    if(!host){
+      host=document.createElement('div');
+      host.id='saf-em-origin';
+      host.style.cssText='margin-top:14px;';
+      box.appendChild(host);
+    }
+    var r=(typeof DB!=='undefined'&&Array.isArray(DB))?DB.find(function(x){ return x && x.id===id; }):null;
+    host.innerHTML = r ? '<div class="detail-grid">'+window.safRiskOriginHTML(r)+'</div>' : '';
+  }
+  if(typeof window.editEntry==='function'){
+    var _edit=window.editEntry;
+    window.editEntry=function(id){
+      var res=_edit.apply(this,arguments);
+      try{ mountModalOrigin(id); }catch(e){}
+      return res;
+    };
+  }
+
+  /* ── Filtre par origine dans la barre du registre ────────────────────── */
+  var FILTER_ID='rr-filter-origin';
+  function currentFilter(){ var el=document.getElementById(FILTER_ID); return el?el.value:''; }
+  function matches(r,v){
+    if(!v) return true;
+    var o=origin(r);
+    if(v==='moc')        return o.type==='created_by_moc'||o.type==='created_from_moc'||o.type==='inferred_moc'||!!o.moc;
+    if(v==='occurrence') return o.occ.length>0 || o.type==='created_from_occurrence';
+    if(v==='split')      return o.type==='created_by_composite_split';
+    if(v==='gap')        return o.type==='added_after_gap_analysis';
+    if(v==='untraced')   return !o.traced;
+    return true;
+  }
+  function mountFilter(){
+    if(document.getElementById(FILTER_ID)) return;
+    var bar=document.querySelector('#rr-filter-bar .rr-filter-main') || document.getElementById('rr-filter-bar');
+    if(!bar) return;
+    var sel=document.createElement('select');
+    sel.id=FILTER_ID;
+    sel.title='Filtrer par origine du scénario';
+    sel.innerHTML='<option value="">Toutes origines</option>'
+      +'<option value="moc">Issus d\'une MOC</option>'
+      +'<option value="occurrence">Avec signalement rattaché</option>'
+      +'<option value="split">Scission de scénario</option>'
+      +'<option value="gap">Analyse d\'écart</option>'
+      +'<option value="untraced">Origine non tracée</option>';
+    sel.onchange=function(){ try{ applyFilters(); }catch(e){} };
+    var clear=bar.querySelector('button'); 
+    if(clear) bar.insertBefore(sel, clear); else bar.appendChild(sel);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mountFilter);
+  else mountFilter();
+
+  if(typeof window.applyFilters==='function'){
+    var _apply=window.applyFilters;
+    window.applyFilters=function(){
+      var res=_apply.apply(this,arguments);
+      try{
+        var v=currentFilter();
+        if(v && typeof filteredDB!=='undefined' && Array.isArray(filteredDB)){
+          filteredDB=filteredDB.filter(function(r){ return matches(r,v); });
+          if(typeof currentPage!=='undefined') currentPage=1;
+          if(typeof renderTable==='function') renderTable();
+        }
+      }catch(e){}
+      return res;
+    };
+  }
+})();
+</script>
+<!-- ═══ FIN ORIGINE DES SCENARIOS ══════════════════════════════════════════ -->
 
 </body>
 </html>
