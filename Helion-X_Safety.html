@@ -1630,6 +1630,198 @@ nav { top: 118px !important; }
 .helion-guide-fab{position:fixed;right:22px;bottom:22px;z-index:99990;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;background:#C9A227;color:#0D1B2A;border:2px solid #F0C040;box-shadow:0 8px 24px rgba(0,0,0,.38);font-family:'IBM Plex Mono',monospace;font-size:21px;font-weight:800;transition:transform .15s,filter .15s}.helion-guide-fab:hover{transform:translateY(-2px);filter:brightness(1.08)}.helion-guide-fab:focus{outline:2px solid #fff;outline-offset:3px}@media print{.helion-guide-fab{display:none!important}}
 </style>
 
+
+<style id="hx-srb-port-style">
+/* SRB + SRB Checklist — portés depuis le Compliance Monitoring System (23.09.2026), styles cloisonnés sous .hx-cms-srb */
+.hx-cms-srb{--bg:#080d14;
+  --panel:#0b1120;
+  --panel2:#0e1628;
+  --line:#1a2840;
+  --text:#e8f0fe;
+  --muted:#6a82a5;
+  --cyan:#00d4ff;
+  --blue:#1a56db;
+  --green:#00c48c;
+  --amber:#f5a623;
+  --red:#ff4444;
+  --purple:#8b5cf6;
+  --gold:#ffd700;
+  --font:'IBM Plex Sans',sans-serif;
+  --mono:'IBM Plex Mono',monospace;font-family:var(--font);color:var(--text);}
+.hx-cms-srb *{box-sizing:border-box}
+.hx-cms-srb .btn{text-transform:none;letter-spacing:normal;outline:none}
+#view-srbboard,#view-srbchecklist{padding:1.5rem 2rem}
+.hx-cms-srb .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:20px}
+.hx-cms-srb .card.note{border-left:4px solid var(--cyan)}
+.hx-cms-srb .card.notice{border-left:4px solid var(--amber)}
+.hx-cms-srb .card.srb{border-left:4px solid var(--gold)}
+.hx-cms-srb .card h2{font-size:20px;font-weight:700;margin-bottom:8px;color:#fff}
+.hx-cms-srb .muted{color:var(--muted);font-size:12px;line-height:1.6}
+.hx-cms-srb .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.hx-cms-srb .btn{background:#0f1e35;color:#e0ecff;border:1px solid #253d5e;border-radius:8px;padding:9px 16px;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:.2s}
+.hx-cms-srb .btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.hx-cms-srb .btn.primary{background:linear-gradient(135deg,#1a56db,#0047ab);border-color:#1a56db;color:#fff}
+.hx-cms-srb .btn.primary:hover{filter:brightness(1.1)}
+.hx-cms-srb .btn.gold{background:linear-gradient(135deg,#7a6000,#4a3a00);border-color:var(--gold);color:var(--gold)}
+.hx-cms-srb .btn.gold:hover{filter:brightness(1.15)}
+.hx-cms-srb table{width:100%;border-collapse:collapse;background:var(--panel2);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:18px 0 28px;font-size:12px}
+.hx-cms-srb th{background:#070e1a;color:var(--muted);font-size:10px;text-align:left;text-transform:uppercase;letter-spacing:.07em;padding:11px 10px;font-weight:600}
+.hx-cms-srb td{border-bottom:1px solid #0e1c30;padding:11px 10px;vertical-align:top;line-height:1.5}
+.hx-cms-srb tr:last-child td{border-bottom:none}
+.hx-cms-srb .spi-table{width:100%;border-collapse:collapse;background:var(--panel2);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:24px}
+.hx-cms-srb .spi-table th{background:#050c18;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.07em;padding:10px 12px;text-align:left;font-weight:600}
+.hx-cms-srb .spi-table td{border-bottom:1px solid #0b1628;padding:11px 12px;font-size:12px;vertical-align:middle}
+.hx-cms-srb .spi-table tr:last-child td{border-bottom:none}
+.hx-cms-srb .spi-table tr:hover td{background:rgba(0,212,255,.03)}
+.hx-cms-srb .srb-header{background:linear-gradient(135deg,#1a1200,#2a1f00);border:1px solid #6a4800;border-radius:14px;padding:22px;margin-bottom:22px;display:flex;align-items:flex-start;gap:18px}
+.hx-cms-srb .srb-title{font-size:22px;font-weight:800;color:var(--gold);margin-bottom:6px}
+.hx-cms-srb .srb-sub{font-size:12px;color:#a08030;line-height:1.6}
+.hx-cms-srb .srb-section{background:var(--panel2);border:1px solid var(--line);border-radius:14px;margin-bottom:18px;overflow:hidden}
+.hx-cms-srb .srb-section-head{background:linear-gradient(90deg,#070e1a,#0d1a2d);padding:14px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.hx-cms-srb .srb-section-head:hover{background:#0d1a2d}
+.hx-cms-srb .srb-section-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#1a3a6a,#0047ab);display:grid;place-items:center;font-size:13px;font-weight:800;font-family:var(--mono);color:var(--cyan);flex-shrink:0}
+.hx-cms-srb .srb-section-title{font-size:14px;font-weight:700;color:#fff;flex:1}
+.hx-cms-srb .srb-section-easa{font-family:var(--mono);font-size:10px;color:#a78bfa}
+.hx-cms-srb .srb-toggle{color:var(--muted);transition:.2s}
+.hx-cms-srb .srb-body{padding:18px;display:block}
+.hx-cms-srb .srb-body.collapsed{display:none}
+.hx-cms-srb .srb-field{margin-bottom:16px}
+.hx-cms-srb .srb-field label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600;margin-bottom:6px;font-family:var(--mono)}
+.hx-cms-srb .srb-field textarea,
+.hx-cms-srb .srb-field input,
+.hx-cms-srb .srb-field select{width:100%;background:#050c18;border:1px solid #1a2840;border-radius:8px;
+  color:var(--text);font-family:var(--font);font-size:13px;padding:10px 12px;
+  resize:vertical;min-height:80px;transition:.2s}
+.hx-cms-srb .srb-field textarea:focus,
+.hx-cms-srb .srb-field input:focus,
+.hx-cms-srb .srb-field select:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 2px rgba(0,212,255,.1)}
+.hx-cms-srb .srb-field input{min-height:auto;height:40px;resize:none}
+.hx-cms-srb .srb-field select{min-height:auto;height:40px;resize:none;cursor:pointer}
+.hx-cms-srb .srb-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.hx-cms-srb .srb-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.hx-cms-srb .finding-row{display:grid;grid-template-columns:120px 1fr 100px 120px 80px;gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid #0b1628}
+.hx-cms-srb .finding-row:last-child{border-bottom:none}
+.hx-cms-srb .finding-row input,
+.hx-cms-srb .finding-row select,
+.hx-cms-srb .finding-row textarea{width:100%;background:#050c18;border:1px solid #1a2840;border-radius:6px;
+  color:var(--text);font-family:var(--font);font-size:11px;padding:6px 8px}
+.hx-cms-srb .finding-row textarea{min-height:60px;resize:vertical}
+.hx-cms-srb .btn-add-row{background:#071220;border:1px dashed #1a3050;border-radius:8px;color:var(--muted);padding:8px;width:100%;cursor:pointer;font-size:12px;margin-top:8px;transition:.2s}
+.hx-cms-srb .btn-add-row:hover{border-color:var(--cyan);color:var(--cyan)}
+.hx-cms-srb .btn-del{background:#1a0808;border:1px solid #3a1010;border-radius:6px;color:#ff6666;padding:4px 8px;cursor:pointer;font-size:11px}
+.hx-cms-srb .btn-del:hover{background:#2a0a0a;border-color:#ff4444}
+.hx-cms-srb .sig-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:10px}
+.hx-cms-srb .sig-box{background:#050c18;border:1px solid #1a2840;border-radius:10px;padding:14px;text-align:center}
+.hx-cms-srb .sig-box label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:8px}
+.hx-cms-srb .sig-date{font-size:10px;color:var(--muted);margin-top:6px;font-family:var(--mono)}
+.hx-cms-srb .sig-date input{background:transparent;border:none;border-bottom:1px solid #1a2840;color:var(--muted);font-family:var(--mono);font-size:10px;padding:2px 4px;width:90px;text-align:center;}
+.hx-cms-srb .sig-date input:focus{outline:none;border-bottom-color:var(--cyan);}
+.hx-cms-srb .srb-sig-wrap{position:relative;border:1px solid rgba(255,255,255,.15);border-radius:6px;overflow:hidden;background:rgba(0,0,0,.25);margin-bottom:6px;}
+.hx-cms-srb .srb-sig-ph{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,.2);font-size:11px;font-family:var(--mono);pointer-events:none;white-space:nowrap;}
+.hx-cms-srb .srb-sig-clear{position:absolute;top:4px;right:5px;padding:2px 7px;font-size:10px;background:rgba(255,60,60,.22);border:1px solid rgba(255,80,80,.35);border-radius:4px;color:#ff9090;cursor:pointer;font-family:var(--mono);}
+.hx-cms-srb .srb-sig-clear:hover{background:rgba(255,60,60,.38);}
+@media print{body.hx-printing .hx-cms-srb .actions,
+body.hx-printing .hx-cms-srb .btn,
+body.hx-printing .hx-cms-srb .btn-add-row,
+body.hx-printing .hx-cms-srb .btn-del,
+body.hx-printing .hx-cms-srb .srb-toggle{display:none!important}
+body.hx-printing .hx-cms-srb .card,
+body.hx-printing .hx-cms-srb .srb-section,
+body.hx-printing .hx-cms-srb .spi-table,
+body.hx-printing .hx-cms-srb .srb-header{background:#fff!important;color:#000!important;border:1px solid #999!important}
+body.hx-printing .hx-cms-srb .srb-section-title,
+body.hx-printing .hx-cms-srb .srb-title{color:#000!important}
+body.hx-printing .hx-cms-srb .srb-body.collapsed{display:block!important}
+body.hx-printing .hx-cms-srb .srb-field textarea,
+body.hx-printing .hx-cms-srb .srb-field input,
+body.hx-printing .hx-cms-srb .srb-field select,
+body.hx-printing .hx-cms-srb .finding-row input,
+body.hx-printing .hx-cms-srb .finding-row select,
+body.hx-printing .hx-cms-srb .finding-row textarea{background:#f9f9f9!important;border:1px solid #ccc!important;color:#000!important}}
+.hx-cms-srb .btn{display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'IBM Plex Sans', sans-serif;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+  text-decoration: none;}
+.hx-cms-srb .srb-full-header{background:linear-gradient(135deg,#0a1628,#0d2040);border:1px solid #1e3a5a;border-radius:14px;padding:24px;margin-bottom:20px;display:flex;align-items:center;gap:20px;}
+.hx-cms-srb .srb-full-badge{width:56px;height:56px;background:linear-gradient(135deg,#7a6000,#b8900a);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.hx-cms-srb .srb-full-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:4px;}
+.hx-cms-srb .srb-full-sub{font-size:12px;color:#6a82a5;}
+.hx-cms-srb .srb-section-card{background:#0b1628;border:1px solid #1a2840;border-radius:12px;margin-bottom:16px;overflow:hidden;}
+.hx-cms-srb .srb-section-hdr{background:#080f1c;padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;}
+.hx-cms-srb .srb-section-hdr:hover{background:#0a1220;}
+.hx-cms-srb .srb-section-num{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;flex-shrink:0;}
+.hx-cms-srb .srb-section-hdr h3{font-size:13px;font-weight:700;color:#e8f0fe;flex:1;}
+.hx-cms-srb .srb-toggle-icon{color:#3a5070;font-size:14px;transition:transform .2s;}
+.hx-cms-srb .srb-section-body{padding:16px 18px;border-top:1px solid #1a2840;}
+.hx-cms-srb .srb-checklist{display:flex;flex-direction:column;gap:8px;}
+.hx-cms-srb .srb-item{display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:#0e1c30;border-radius:8px;border:1px solid #1a2840;}
+.hx-cms-srb .srb-item:hover{border-color:#2a4060;}
+.hx-cms-srb .srb-item-check{flex-shrink:0;margin-top:1px;}
+.hx-cms-srb .srb-item-check input[type=checkbox]{width:16px;height:16px;accent-color:#00d4ff;cursor:pointer;}
+.hx-cms-srb .srb-item-content{flex:1;}
+.hx-cms-srb .srb-item-title{font-size:12px;font-weight:600;color:#e8f0fe;margin-bottom:3px;}
+.hx-cms-srb .srb-item-desc{font-size:11px;color:#6a82a5;line-height:1.5;}
+.hx-cms-srb .srb-item-ref{font-size:10px;font-family:'IBM Plex Mono',monospace;color:#00d4ff;margin-top:4px;display:inline-block;}
+.hx-cms-srb .srb-item-status{flex-shrink:0;}
+.hx-cms-srb .srb-stat-sel{background:#060e1a;border:1px solid #1a2840;border-radius:6px;color:#c8d8f0;font-size:11px;padding:4px 8px;cursor:pointer;outline:none;}
+.hx-cms-srb .srb-progress-bar{background:#060e1a;border-radius:4px;height:6px;overflow:hidden;margin-top:12px;}
+.hx-cms-srb .srb-progress-fill{height:100%;background:linear-gradient(90deg,#00d4ff,#00c48c);border-radius:4px;transition:width .4s ease;}
+.hx-cms-srb .srb-summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.hx-cms-srb .srb-sum-card{background:#0b1628;border:1px solid #1a2840;border-radius:10px;padding:16px;text-align:center;}
+.hx-cms-srb .srb-sum-val{font-size:28px;font-weight:700;font-family:'IBM Plex Mono',monospace;}
+.hx-cms-srb .srb-sum-lbl{font-size:11px;color:#6a82a5;margin-top:4px;}
+.hx-cms-srb .srb-field{background:#060e1a;border:1px solid #1a2840;border-radius:6px;padding:10px 12px;width:100%;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c8d8f0;resize:vertical;min-height:60px;outline:none;}
+.hx-cms-srb .srb-field:focus{border-color:#00d4ff;}
+.hx-cms-srb .srb-field-label{font-size:11px;color:#6a82a5;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;margin-top:14px;display:block;}
+.hx-cms-srb .srb-meta-large{margin-bottom:22px;}
+.hx-cms-srb .srb-meta-grid{display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:18px;}
+.hx-cms-srb .srb-meta-item-large{display:flex;
+  flex-direction:column;}
+.hx-cms-srb .srb-meta-item-large label{font-size:14px !important;
+  font-weight:700 !important;
+  color:#ffd54a !important;
+  margin-bottom:8px !important;
+  text-transform:uppercase;
+  letter-spacing:.05em;}
+.hx-cms-srb .srb-meta-item-large input,
+.hx-cms-srb .srb-meta-item-large select{height:52px !important;
+  padding:10px 14px !important;
+  font-size:18px !important;
+  font-weight:600 !important;
+  border-radius:10px !important;
+  background:#09111d !important;
+  color:#ffffff !important;
+  border:1px solid #355070 !important;
+  font-family:'IBM Plex Sans',sans-serif !important;}
+.hx-cms-srb .srb-meta-item-large input:focus,
+.hx-cms-srb .srb-meta-item-large select:focus{outline:none;
+  border-color:#00d4ff !important;
+  box-shadow:0 0 0 2px rgba(0,212,255,.2);}
+.hx-cms-srb .srb-status-select{cursor:pointer;}
+.hx-cms-srb .card{background:var(--navy-mid);border:1px solid var(--border);border-radius:12px;padding:22px;}
+.hx-cms-srb .cmsx-btn.primary{background:#00d4ff;color:#001018;font-weight:700;border-color:#00d4ff;}
+.hx-cms-srb .cmsx-btn.primary:hover{background:#33ddff;}
+/* Impression : seule la vue SRB ciblée sort */
+@media print{
+  body.hx-printing *{visibility:hidden!important}
+  body.hx-printing .hx-print-target,body.hx-printing .hx-print-target *{visibility:visible!important}
+  body.hx-printing .hx-print-target{position:absolute;left:0;top:0;width:100%;display:block!important;padding:0!important}
+  body.hx-printing{background:#fff!important}
+  body.hx-printing .hx-cms-srb{color:#000}
+  body.hx-printing .hx-cms-srb .srb-section-body{display:block!important}
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -1875,6 +2067,8 @@ nav { top: 118px !important; }
 <div class="nav-section saf-guest-hide">
 <div class="nav-label">SMS Modules</div>
 <div class="nav-item" onclick="showView('safetypolicy')"><span class="icon">🔒</span> Safety Policy &amp; Objectives</div>
+<div class="nav-item" onclick="showView('srbchecklist')"><span class="icon">☑</span> SRB Checklist</div>
+<div class="nav-item" onclick="showView('srbboard')"><span class="icon">🛡</span> SRB</div>
 <div class="nav-item" onclick="showView('controls')"><span class="icon">⏱</span> Controls Review</div>
 <div class="nav-item" onclick="showView('barrierreg')"><span class="icon">📑</span> Barrier Register</div>
 <div class="nav-item" onclick="showView('bowtie')"><span class="icon">🎯</span> Bow-Tie Analysis</div>
@@ -3078,6 +3272,667 @@ function updateOaciDefinitionDropdown(sel) {
     <div id="sp-history-list" style="display:flex;flex-direction:column;gap:8px;"></div>
   </div>
 
+</div>
+</div>
+<div class="view" id="view-srbchecklist" data-autosave-off="true">
+<div class="hx-cms-srb" id="hx-srb-checklist">
+<div style="max-width:1400px;margin:0 auto;">
+<div class="srb-full-header">
+<div class="srb-full-badge">🛡</div>
+<div>
+<div class="srb-full-title">Safety Review Board (SRB) — Complete Checklist</div>
+<div class="srb-full-sub">All points required by EASA for a compliant SRB · ORO.GEN.200 · AMC1 ORO.GEN.200(a)(6) · GM1 ORO.GEN.200(a)(6)</div>
+</div>
+<div style="margin-left:auto;display:flex;gap:10px;">
+<button class="btn gold" onclick="srbPrintChecklist()">🖨 Print</button>
+<button class="btn" onclick="srbResetChecklist()">↺ Reset</button>
+</div>
+</div>
+<!-- En-tête SRB -->
+<div class="card" style="margin-bottom:16px;">
+<h2 style="font-size:14px;margin-bottom:14px;color:#90b4d8;">📌 General SRB intraining</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;">
+<div><label class="srb-field-label">SRB date</label><input class="srb-field" id="srbc-date" style="min-height:auto;resize:none;" type="date"/></div>
+<div><label class="srb-field-label">Location</label><input class="srb-field" id="srb-lieu" placeholder="E.g.: Helion Helicopters headquarters" style="min-height:auto;resize:none;" type="text"/></div>
+<div><label class="srb-field-label">Chaired by</label><input class="srb-field" id="srb-president" placeholder="Accountable manager" style="min-height:auto;resize:none;" type="text"/></div>
+<div><label class="srb-field-label">Participants</label><input class="srb-field" id="srb-part" placeholder="CM, DFO, HoT, Safety Mgr..." style="min-height:auto;resize:none;" type="text"/></div>
+<div><label class="srb-field-label">Minutes reference</label><input class="srb-field" id="srbc-ref" placeholder="SRB-2026-001" style="min-height:auto;resize:none;" type="text"/></div>
+<div><label class="srb-field-label">Covered period</label><input class="srb-field" id="srb-period" placeholder="E.g.: Jan–Dec 2026" style="min-height:auto;resize:none;" type="text"/></div>
+</div>
+</div>
+<!-- Résumé de progression -->
+<div class="srb-summary-grid" id="srb-summary">
+<div class="srb-sum-card"><div class="srb-sum-val" id="ss-total" style="color:#00d4ff">0</div><div class="srb-sum-lbl">Total points</div></div>
+<div class="srb-sum-card"><div class="srb-sum-val" id="ss-ok" style="color:#00c48c">0</div><div class="srb-sum-lbl">Addresseds</div></div>
+<div class="srb-sum-card"><div class="srb-sum-val" id="ss-partial" style="color:#f5a623">0</div><div class="srb-sum-lbl">In progress</div></div>
+<div class="srb-sum-card"><div class="srb-sum-val" id="ss-nok" style="color:#ff4444">0</div><div class="srb-sum-lbl">Not addressed</div></div>
+</div>
+<div class="srb-progress-bar" style="margin-bottom:24px;"><div class="srb-progress-fill" id="srb-prog-fill" style="width:0%"></div></div>
+<!-- SECTION 1 : Bilan du programme d'audit -->
+<div class="srb-section-card">
+<div class="srb-section-hdr" onclick="toggleSrbSection(this)">
+<div class="srb-section-num" style="background:rgba(0,212,255,.15);color:#00d4ff;">1</div>
+<h3>📋 Review of the audit programme for the past year</h3>
+<span class="srb-toggle-icon">▼</span>
+</div>
+<div class="srb-section-body">
+<div class="srb-checklist">
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Presentation of the annual audit programme</div><div class="srb-item-desc">Summary of planned vs completed audits, execution rate and reasons for any schedule changes</div><span class="srb-item-ref">AMC1 ORO.GEN.200(a)(6)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Summary of findings and observations</div><div class="srb-item-desc">Total number of findings by level (Level 1, Level 2, observations), broken down by regulatory domain</div><span class="srb-item-ref">ORO.GEN.200(a)(3)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Corrective action closure status</div><div class="srb-item-desc">CAP follow-up (Corrective Action Plans): closed, in progress, overdue. Identification of recurring actions</div><span class="srb-item-ref">AMC1 ORO.GEN.200(a)(6)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Analysis of corrective action effectiveness</div><div class="srb-item-desc">Verification that corrective actions have eliminated root causes. Finding recurrence rate</div><span class="srb-item-ref">ORO.GEN.200(a)(3)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Contractor audit review</div><div class="srb-item-desc">Results of audits completed at contractors and external providers (CAMO, MRO, handling, etc.)</div><span class="srb-item-ref">ORO.GEN.205</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+</div>
+</div>
+</div>
+<!-- SECTION 2 : Performance de sécurité & KPI -->
+<div class="srb-section-card">
+<div class="srb-section-hdr" onclick="toggleSrbSection(this)">
+<div class="srb-section-num" style="background:rgba(0,196,140,.15);color:#00c48c;">2</div>
+<h3>KPI) / Safety performance &amp; indicators (SPIs / KPIs)</h3>
+<span class="srb-toggle-icon">▼</span>
+</div>
+<div class="srb-section-body">
+<div class="srb-checklist">
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Safety Performance Indicator review (SPI)</div><div class="srb-item-desc">Analysis of each defined SPI: current value vs target, 12-month trend and explanation of deviations</div><span class="srb-item-ref">AMC1 ORO.GEN.200(a)(3)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Safety report analysis (ASR / SFRMS)</div><div class="srb-item-desc">Volume of voluntary reports, categorization, top 5 themes, Y-1 comparison, feedback to reporters</div><span class="srb-item-ref">ORO.GEN.200(a)(3)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Review of safety events &amp; incidents</div><div class="srb-item-desc">Incidents notified to the authority, internal investigations conducted, lessons learned and preventive measures taken</div><span class="srb-item-ref">ORO.GEN.160 / Reg. EU 376/2014</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Trend analysis &amp; monitoring data</div><div class="srb-item-desc">FDM/FOQA data (if applicable), LOSA trends, recurring exceedances, crew fatigue reporting</div><span class="srb-item-ref">AMC2 ORO.GEN.200</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Comparison with sector data (benchmarking)</div><div class="srb-item-desc">Positioning versus EASA, IATA and IOSA data, and external safety bulletins relevant to the fleet</div><span class="srb-item-ref">GM1 ORO.GEN.200(a)(3)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+</div>
+</div>
+</div>
+<!-- SECTION 3 : Gestion des risques -->
+<div class="srb-section-card">
+<div class="srb-section-hdr" onclick="toggleSrbSection(this)">
+<div class="srb-section-num" style="background:rgba(245,166,35,.15);color:#f5a623;">3</div>
+<h3>⚠️ Risk management review</h3>
+<span class="srb-toggle-icon">▼</span>
+</div>
+<div class="srb-section-body">
+<div class="srb-checklist">
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Review of the risk register</div><div class="srb-item-desc">Risk register update, changes in risk levels, new risks identified and closed risks</div><span class="srb-item-ref">ORO.GEN.200(a)(3)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Effectiveness of safety barriers</div><div class="srb-item-desc">Verification that the mitigation measures in place remain effective and appropriate for the identified risks</div><span class="srb-item-ref">AMC1 ORO.GEN.200(a)(3)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Risks related to organizational changes</div><div class="srb-item-desc">Risk assessment of changes that occurred (new types, new routes, restructurings, new contracts)</div><span class="srb-item-ref">ORO.GEN.200(a)(7)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Critical operational risks (Top 5)</div><div class="srb-item-desc">Presentation of the 5 most critical operational risks, action status and validation by the accountable manager</div><span class="srb-item-ref">GM1 ORO.GEN.200(a)(3)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+</div>
+</div>
+</div>
+<!-- SECTION 4 : Organisation, compétences, ressources -->
+<div class="srb-section-card">
+<div class="srb-section-hdr" onclick="toggleSrbSection(this)">
+<div class="srb-section-num" style="background:rgba(139,92,246,.15);color:#8b5cf6;">4</div>
+<h3>Organization, competencies &amp; resources</h3>
+<span class="srb-toggle-icon">▼</span>
+</div>
+<div class="srb-section-body">
+<div class="srb-checklist">
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Review of key positions and nominations</div><div class="srb-item-desc">Key positions filled, deputies in place and nominations notified to the competent authority</div><span class="srb-item-ref">ORO.GEN.200(a)(1) / ORO.GEN.210</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Adequacy of human resources</div><div class="srb-item-desc">Sufficient staffing for the activity volume, recruitment plan if necessary</div><span class="srb-item-ref">ORO.GEN.210</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">SMS/CMS training review</div><div class="srb-item-desc">SMS/CMS training coverage rate, training completed versus planned, Y+1 plan</div><span class="srb-item-ref">ORO.GEN.200(a)(4)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Financial resources allocated to CMS/SMS</div><div class="srb-item-desc">Budget dedicated to compliance and safety, adequacy with operational needs</div><span class="srb-item-ref">ORO.GEN.200</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Compliance Manager independence</div><div class="srb-item-desc">Verification that the CM has direct access to the accountable manager and functional independence</div><span class="srb-item-ref">AMC1 ORO.GEN.200(a)(1)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+</div>
+</div>
+</div>
+<!-- SECTION 5 : Politique de sécurité & objectifs -->
+<div class="srb-section-card">
+<div class="srb-section-hdr" onclick="toggleSrbSection(this)">
+<div class="srb-section-num" style="background:rgba(255,68,68,.15);color:#ff4444;">5</div>
+<h3>Safety policy &amp; annual objectives</h3>
+<span class="srb-toggle-icon">▼</span>
+</div>
+<div class="srb-section-body">
+<div class="srb-checklist">
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Review and validation of the safety policy</div><div class="srb-item-desc">Confirmation that the policy remains relevant, up to date, signed and communicated to all personnel</div><span class="srb-item-ref">ORO.GEN.200(a)(2)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Review of Y-1 safety objectives</div><div class="srb-item-desc">Assessment of the achievement rate for each objective set the previous year and analysis of deviations</div><span class="srb-item-ref">AMC1 ORO.GEN.200(a)(2)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Definition of Y+1 safety objectives</div><div class="srb-item-desc">Setting new SMART objectives for the following year, with measurement indicators and owners</div><span class="srb-item-ref">ORO.GEN.200(a)(2)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Just Culture</div><div class="srb-item-desc">Assessment of the application of Just Culture, feedback on reports and anonymization</div><span class="srb-item-ref">ORO.GEN.200 / Reg. EU 376/2014</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+</div>
+</div>
+</div>
+<!-- SECTION 6 : Programme d'audit N+1 -->
+<div class="srb-section-card">
+<div class="srb-section-hdr" onclick="toggleSrbSection(this)">
+<div class="srb-section-num" style="background:rgba(26,86,219,.15);color:#4a90e2;">6</div>
+<h3>📅 Approval of Y+1 audit programme</h3>
+<span class="srb-toggle-icon">▼</span>
+</div>
+<div class="srb-section-body">
+<div class="srb-checklist">
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Presentation of the Y+1 audit programme</div><div class="srb-item-desc">Audit schedule, covered domains, frequency, designated auditors, prioritization criteria</div><span class="srb-item-ref">AMC1 ORO.GEN.200(a)(6)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Full coverage of activities within ≤ 24 months</div><div class="srb-item-desc">Verification that all regulated activities are covered in the audit cycle (12 to 24 months maximum)</div><span class="srb-item-ref">AMC2 ORO.GEN.200</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Formal approval by the accountable manager</div><div class="srb-item-desc">Signature of the Y+1 audit programme by the accountable manager during the SRB meeting</div><span class="srb-item-ref">ORO.GEN.200(a)(6)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Auditor resources verified</div><div class="srb-item-desc">Qualified and independent auditors available for each planned audit, use of external auditors if necessary</div><span class="srb-item-ref">AMC1 ORO.GEN.200(a)(4)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+</div>
+</div>
+</div>
+<!-- SECTION 7 : Interfaces réglementaires & autorité -->
+<div class="srb-section-card">
+<div class="srb-section-hdr" onclick="toggleSrbSection(this)">
+<div class="srb-section-num" style="background:rgba(255,215,0,.12);color:#ffd700;">7</div>
+<h3>Regulatory interfaces &amp; relations with the authority</h3>
+<span class="srb-toggle-icon">▼</span>
+</div>
+<div class="srb-section-body">
+<div class="srb-checklist">
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Report on contacts with the competent authority</div><div class="srb-item-desc">Summary of exchanges with DGAC/EASA: inspections, authority audits, regulatory letters and responses</div><span class="srb-item-ref">ORO.GEN.130</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Impactful regulatory developments</div><div class="srb-item-desc">New regulations or amendments in force or upcoming, impact on operations, action plan</div><span class="srb-item-ref">ORO.GEN.110</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Status of open authority findings</div><div class="srb-item-desc">Findings from DGAC/EASA audits, status of submitted CAPs, response deadlines met</div><span class="srb-item-ref">ORO.GEN.130</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Pending notifications and approvals</div><div class="srb-item-desc">List of approval or notification requests submitted to the authority: MEL, OM, training programmes, etc.</div><span class="srb-item-ref">ORO.MLR.101 / ORO.GEN.130</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+</div>
+</div>
+</div>
+<!-- SECTION 8 : Décisions & actions de la SRB -->
+<div class="srb-section-card">
+<div class="srb-section-hdr" onclick="toggleSrbSection(this)">
+<div class="srb-section-num" style="background:rgba(0,196,140,.15);color:#00c48c;">8</div>
+<h3>Decisions &amp; actions arising from the SRB</h3>
+<span class="srb-toggle-icon">▼</span>
+</div>
+<div class="srb-section-body">
+<div class="srb-checklist">
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Formal management decisions</div><div class="srb-item-desc">Commitments made by the accountable manager during the meeting: allocated resources, priorities set and validated deadlines</div><span class="srb-item-ref">ORO.GEN.200</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Action plan arising from the SRB</div><div class="srb-item-desc">List of actions decided in the SRB with designated owner, deadline and closure criterion for each action</div><span class="srb-item-ref">AMC1 ORO.GEN.200(a)(6)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Minutes signed by the accountable manager</div><div class="srb-item-desc">The SRB report must be signed by the accountable manager and retained for ≥ 5 years, available to the authority</div><span class="srb-item-ref">AMC1 ORO.GEN.200(a)(6)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Communication of SRB results to personnel</div><div class="srb-item-desc">Summary communicated to all relevant departments within 30 days after the SRB</div><span class="srb-item-ref">GM1 ORO.GEN.200(a)(6)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+<div class="srb-item"><div class="srb-item-check"><input onchange="updateSrbProgress()" type="checkbox"/></div><div class="srb-item-content"><div class="srb-item-title">Next SRB date set</div><div class="srb-item-desc">The next SRB is planned within 12 months. The date and planned participants are recorded during the meeting.</div><span class="srb-item-ref">AMC1 ORO.GEN.200(a)(6)</span></div><div class="srb-item-status"><select class="srb-stat-sel" onchange="updateSrbProgress()"><option value="">—</option><option value="ok">✅ Addressed</option><option value="partial">🟡 Partial</option><option value="nok">❌ Not addressed</option></select></div></div>
+</div>
+</div>
+</div>
+<!-- Notes libres -->
+<div class="card" style="margin-top:20px;">
+<h2 style="font-size:14px;color:#90b4d8;margin-bottom:10px;">Notes &amp; additional points</h2>
+<textarea class="srb-field" placeholder="Free notes, points raised outside the agenda, additional actions..." style="min-height:120px;"></textarea>
+</div>
+</div>
+</div>
+</div>
+<div class="view" id="view-srbboard" data-autosave-off="true">
+<div class="hx-cms-srb" id="hx-srb-board">
+<div class="srb-header">
+<div style="display:flex;align-items:center;gap:20px;width:100%;">
+<div style="
+      width:190px;
+      min-width:190px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-right:2px solid rgba(255,215,0,.35);
+      padding-right:18px;
+    ">
+<img alt="Helion Helicopters" src="data:image/png;base64,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" style="max-width:170px;max-height:100px;object-fit:contain;"/>
+</div>
+<div style="flex:1;">
+<div class="srb-title" style="
+        font-size:44px;
+        line-height:1;
+        letter-spacing:.03em;
+      ">
+        Safety Review Board (SRB)
+      </div>
+<div class="srb-sub" style="
+        margin-top:10px;
+        font-size:14px;
+        line-height:1.7;
+      ">
+        Periodic safety &amp; compliance review — Analysis of KPIs/SPIs, safety occurrences, corrective actions, trends and operational risk control.
+      </div>
+</div>
+</div>
+</div>
+<div class="card srb">
+<div class="actions">
+<button class="btn gold" onclick="srbPrintBoard()">📄 Export SRB as PDF (print)</button>
+<button class="btn primary" onclick="srbExportJSON()">⬇ Export JSON</button>
+<button class="btn" onclick="srbImportJSON()">📂 Import JSON</button>
+<button class="btn" onclick="srbExpandAll()">⊞ Expand all</button>
+<button class="btn" onclick="srbCollapseAll()">⊟ Collapse all</button>
+</div>
+</div>
+<!-- Section 0 : Données SMS (safSRBMeetings) -->
+<div class="srb-section" id="srb-sms-panel" style="border-left:4px solid #4a9fe0;">
+<div class="srb-section-head" onclick="toggleSRB(this)" style="background:linear-gradient(90deg,#050d1e,#0a1a30);">
+<div class="srb-section-num" style="background:linear-gradient(135deg,#1a3a6a,#4a9fe0);">📋</div>
+<div class="srb-section-title" style="color:#4a9fe0;">Safety Management System — Meetings imported from SMS module</div>
+<div class="srb-section-easa" style="color:#4a9fe0;">Data from the Safety module</div>
+<div class="srb-toggle">▼</div>
+</div>
+<div class="srb-body" id="srb-sms-body">
+<p class="muted" style="margin-bottom:14px;">
+  This section automatically reads SRB meeting records saved in the <strong style="color:#4a9fe0;">Safety (SMS)</strong> module on this device.
+  These data supplement the SRB report and allow continuity of information between tools.
+</p>
+<div id="srb-sms-content">
+<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:20px;text-align:center;border:1px dashed rgba(74,159,224,.3);border-radius:8px;">
+    Loading SMS data…
+  </div>
+</div>
+<div style="margin-top:14px;">
+<button class="btn" onclick="loadSMSMeetings()" style="font-size:11px;">🔄 Refresh SMS data</button>
+</div>
+</div>
+</div>
+<!-- Section 1 : Participants -->
+<div class="srb-section">
+<div class="srb-section-head" onclick="toggleSRB(this)">
+<div class="srb-section-num">1</div>
+<div class="srb-section-title">Participants &amp; attendance</div>
+<div class="srb-section-easa">ORO.GEN.200(a) · AMC1 ORO.AOC.130(a)(1)</div>
+<div class="srb-toggle">▼</div>
+</div>
+<div class="srb-body">
+<div class="srb-field srb-meta-large">
+<div class="srb-meta-grid">
+<div class="srb-meta-item-large">
+<label>Organization</label>
+<input type="text" value="Helion Helicopters"/>
+</div>
+<div class="srb-meta-item-large">
+<label>SRB reference no.</label>
+<input type="text" value="SRB-2026-001"/>
+</div>
+<div class="srb-meta-item-large">
+<label>SRB date</label>
+<input style="color-scheme:dark;" type="date" value="2026-05-21"/>
+</div>
+<div class="srb-meta-item-large">
+<label>Covered period</label>
+<input type="text" value="Juillet 2026 - Jun 2027"/>
+</div>
+<div class="srb-meta-item-large">
+<label>Status</label>
+<select class="srb-status-select">
+<option value="Brouillon">Draft</option>
+<option value="En cours">In progress</option>
+<option value="Finalized">Finalized</option>
+</select>
+</div>
+</div>
+</div>
+<p class="muted" style="margin-bottom:14px">List of SRB participants with attendance, excused absence and possible substitute. Guests may be added with their function and name.</p>
+<table class="spi-table" id="srb-participants-table">
+<thead>
+<tr>
+<th>Function</th>
+<th>Last name / First name</th>
+<th>Present</th>
+<th>Excused</th>
+<th>Substitute</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="srb-participants-body">
+<tr><td>Accountable Manager (SRB Chair)</td><td><input placeholder="Name..." type="text"/></td><td><input style="width:auto" type="checkbox"/></td><td><input style="width:auto" type="checkbox"/></td><td><input placeholder="Substitute..." type="text"/></td><td></td></tr>
+<tr><td>Safety Manager (SM)</td><td><input placeholder="Name..." type="text"/></td><td><input style="width:auto" type="checkbox"/></td><td><input style="width:auto" type="checkbox"/></td><td><input placeholder="Substitute..." type="text"/></td><td></td></tr>
+<tr><td>Nameinated Person Flight Operation (NPFO)</td><td><input placeholder="Name..." type="text"/></td><td><input style="width:auto" type="checkbox"/></td><td><input style="width:auto" type="checkbox"/></td><td><input placeholder="Substitute..." type="text"/></td><td></td></tr>
+<tr><td>Nameinated Person Crew Training (NPCT)</td><td><input placeholder="Name..." type="text"/></td><td><input style="width:auto" type="checkbox"/></td><td><input style="width:auto" type="checkbox"/></td><td><input placeholder="Substitute..." type="text"/></td><td></td></tr>
+<tr><td>Nameinated Person Ground Operation (NPGO)</td><td><input placeholder="Name..." type="text"/></td><td><input style="width:auto" type="checkbox"/></td><td><input style="width:auto" type="checkbox"/></td><td><input placeholder="Substitute..." type="text"/></td><td></td></tr>
+<tr><td>Nameinated Person Continuing Airworthiness (NPCA)</td><td><input placeholder="Name..." type="text"/></td><td><input style="width:auto" type="checkbox"/></td><td><input style="width:auto" type="checkbox"/></td><td><input placeholder="Substitute..." type="text"/></td><td></td></tr>
+<tr><td>Compliance Monitoring Manager (CMM)</td><td><input placeholder="Name..." type="text"/></td><td><input style="width:auto" type="checkbox"/></td><td><input style="width:auto" type="checkbox"/></td><td><input placeholder="Substitute..." type="text"/></td><td></td></tr>
+</tbody>
+</table>
+<button class="btn-add-row" onclick="addSRBGuestRow()" type="button">+ Add a guest</button>
+</div>
+</div>
+<!-- Section 2 : Revue KPI / SPI -->
+<div class="srb-section">
+<div class="srb-section-head" onclick="toggleSRB(this)">
+<div class="srb-section-num">2</div>
+<div class="srb-section-title">SPI indicator review</div>
+<div class="srb-section-easa">ORO.GEN.200(a)(3) · AMC1 ORO.GEN.200(a)(3) · GM1 ORO.AOC.130(a)</div>
+<div class="srb-toggle">▼</div>
+</div>
+<div class="srb-body">
+<p class="muted" style="margin-bottom:14px">EASA requires an analysis of SPI trends, alert thresholds and targets. Each indicator in alert must be discussed and decided upon during the SRB.</p>
+<div class="srb-3col">
+<div class="srb-field"><label>Number of SPIs in red alert</label><input min="0" type="number" value="2"/></div>
+<div class="srb-field"><label>Number of SPIs on watch (amber)</label><input min="0" type="number" value="3"/></div>
+<div class="srb-field"><label>Number of compliant SPIs (green)</label><input min="0" type="number" value="9"/></div>
+</div>
+<div class="srb-field"><label>KPI/SPI trend analysis — Review comments</label>
+<textarea placeholder="Describe the trends observed over the period, significant changes, SPIs that crossed an alert threshold and the related explanations..."></textarea>
+</div>
+<div class="srb-field"><label>SPI-06 TAWS/GPWS — Detailed analysis (ALERT)</label>
+<textarea placeholder="3 TAWS activations this quarter (alert threshold: &gt;2). Describe the context of each activation, ongoing investigations and preventive measures decided..."></textarea>
+</div>
+<div class="srb-field"><label>KPI-04 Repeat findings — Analysis (ALERT)</label>
+<textarea placeholder="15% repeat findings (target: ≤5%). Analyze root causes, corrective action plan effectiveness and the measures decided during the meeting..."></textarea>
+</div>
+<div class="srb-field"><label>SPI-04 SOP deviations — Analysis (WATCH)</label>
+<textarea placeholder="12 SOP deviations detected via LOSA/FOQA (target: ≤8). Analyze causes, affected sectors and planned training or procedural actions..."></textarea>
+</div>
+<div class="srb-field"><label>SRB decisions recorded on indicators</label>
+<textarea placeholder="List the formal decisions made by the SRB on KPIs/SPIs in alert or watch status, with owners and deadlines..."></textarea>
+</div>
+</div>
+</div>
+<!-- Section 3 : Résultats des audits -->
+<div class="srb-section">
+<div class="srb-section-head" onclick="toggleSRB(this)">
+<div class="srb-section-num">3</div>
+<div class="srb-section-title">Audit programme results</div>
+<div class="srb-section-easa">ORO.AOC.130(a) · GM1 ORO.AOC.130(a)(2)(i)</div>
+<div class="srb-toggle">▼</div>
+</div>
+<div class="srb-body">
+<p class="muted" style="margin-bottom:14px">Summary presentation of the results of all audits completed since the last SRB. Each Level 1 finding must be discussed individually.</p>
+<div class="srb-3col">
+<div class="srb-field"><label>Audits completed since last SRB</label><input min="0" placeholder="E.g.: 5" type="number"/></div>
+<div class="srb-field"><label>Level 1 findings (critical)</label><input min="0" placeholder="0" type="number"/></div>
+<div class="srb-field"><label>Level 2 findings (major)</label><input min="0" placeholder="0" type="number"/></div>
+</div>
+<div class="srb-3col">
+<div class="srb-field"><label>Observations</label><input min="0" placeholder="0" type="number"/></div>
+<div class="srb-field"><label>Closed Level 1 findings</label><input min="0" placeholder="0" type="number"/></div>
+<div class="srb-field"><label>Open Level 1 findings</label><input min="0" placeholder="0" type="number"/></div>
+</div>
+<div class="srb-field"><label>Findings table — Audit by audit</label></div>
+<div id="findings-container">
+<div class="finding-row">
+<input placeholder="Audit ID (AI-01...)" type="text"/>
+<textarea placeholder="Finding description..."></textarea>
+<select><option>Level 1</option><option>Level 2</option><option>Observation</option></select>
+<input placeholder="Regulatory reference" type="text"/>
+<select><option>Open</option><option>Closed</option><option>In progress</option></select>
+<button class="btn-del" onclick="this.closest('.finding-row').remove()">✕</button>
+</div>
+</div>
+<button class="btn-add-row" onclick="addFindingRow()">+ Add a finding</button>
+<div class="srb-field" style="margin-top:16px"><label>Overall audit summary — Comments</label>
+<textarea placeholder="Summary of main results, general trends, areas of concern and strengths identified during period audits..."></textarea>
+</div>
+</div>
+</div>
+<!-- Section 4 : Analyse des occurrences de sécurité -->
+<div class="srb-section">
+<div class="srb-section-head" onclick="toggleSRB(this)">
+<div class="srb-section-num">4</div>
+<div class="srb-section-title">Analysis of safety occurrences &amp; events</div>
+<div class="srb-section-easa">Reg. (EU) 376/2014 · ORO.GEN.200(a)(4) · AMC1 ORO.GEN.200(a)(6)</div>
+<div class="srb-toggle">▼</div>
+</div>
+<div class="srb-body">
+<p class="muted" style="margin-bottom:14px">Review of all reported occurrences (MOR, voluntary ASRs, AIRPROX, incidents techniques). Root-cause analysis and actions decided.</p>
+<div class="srb-3col">
+<div class="srb-field"><label>Total ASR / MOR received (period)</label><input min="0" type="number"/></div>
+<div class="srb-field"><label>Incidents with internal investigation</label><input min="0" type="number"/></div>
+<div class="srb-field"><label>Incidents reported to DGAC / BEA</label><input min="0" type="number"/></div>
+</div>
+<div class="srb-field"><label>Significant events to discuss — Description and analysis</label>
+<textarea placeholder="List the significant safety events for the period, investigations conducted, identified root causes and contributing factors (human, organizational, technical)..." style="min-height:120px"></textarea>
+</div>
+<div class="srb-field"><label>Trend analysis — Identification of hazard precursors</label>
+<textarea placeholder="Analyze emerging reporting trends, identified precursors, weak signals detected by the SMS and lessons learned from sector accidents/incidents (REX)..."></textarea>
+</div>
+<div class="srb-field"><label>preventive actions decided</label>
+<textarea placeholder="Actions decided by the SRB with owners, deadlines and follow-up indicators..."></textarea>
+</div>
+</div>
+</div>
+<!-- Section 5 : Gestion des risques -->
+<div class="srb-section">
+<div class="srb-section-head" onclick="toggleSRB(this)">
+<div class="srb-section-num">5</div>
+<div class="srb-section-title">Operational risk management review</div>
+<div class="srb-section-easa">ORO.GEN.200(a)(3) · AMC1 ORO.GEN.200(a)(3)</div>
+<div class="srb-toggle">▼</div>
+</div>
+<div class="srb-body">
+<p class="muted" style="margin-bottom:14px">Review of identified risks, rating, control measures and barrier effectiveness. EASA requiert a risk matrix documented and periodic reviewment.</p>
+<div class="srb-2col">
+<div>
+<div class="srb-field"><label>Mayn operational risks identified</label>
+<textarea placeholder="List the main operational risks identified in the risk register: CFIT, BLEVE, terrain incursion, engine failure in mountainous areas, crew fatigue, icing conditions, misdeclared hazardous goods..."></textarea>
+</div>
+<div class="srb-field"><label>Effectiveness of safety barriers</label>
+<textarea placeholder="Assessment of barrier effectiveness: SOP procedures, TAWS/GPWS, FRMS, operational supervision, CRM training..."></textarea>
+</div>
+</div>
+<div>
+<div class="srb-field"><label>Risk matrix — Select overall residual risk level</label></div>
+<div style="overflow-x:auto;margin-top:8px;">
+<table id="riskMatrix" style="border-collapse:collapse;width:100%;font-family:var(--mono);font-size:11px;">
+<tr>
+<th colspan="2" style="background:#FFFF00;color:#000;border:1px solid #555;padding:5px 8px;text-align:center;font-weight:700;">Safety Risk</th>
+<th colspan="5" style="background:#000;color:#fff;border:1px solid #555;padding:5px 8px;text-align:left;font-weight:700;letter-spacing:.04em;">Severity</th>
+</tr>
+<tr>
+<th style="background:#1a1a1a;color:#fff;border:1px solid #555;padding:5px 8px;"></th>
+<th style="background:#1a1a1a;color:#fff;border:1px solid #555;padding:5px 8px;"></th>
+<th style="background:#1a1a1a;color:#fff;border:1px solid #555;padding:5px 8px;text-align:center;">Catastrophic</th>
+<th style="background:#1a1a1a;color:#fff;border:1px solid #555;padding:5px 8px;text-align:center;">Hazardous</th>
+<th style="background:#1a1a1a;color:#fff;border:1px solid #555;padding:5px 8px;text-align:center;">Major</th>
+<th style="background:#1a1a1a;color:#fff;border:1px solid #555;padding:5px 8px;text-align:center;">Minor</th>
+<th style="background:#1a1a1a;color:#fff;border:1px solid #555;padding:5px 8px;text-align:center;">Negligible</th>
+</tr>
+<tr>
+<th style="background:#1a1a1a;color:#fff;border:1px solid #555;padding:5px 8px;text-align:left;">Probability</th>
+<th style="background:#1a1a1a;color:#fff;border:1px solid #555;padding:5px 8px;text-align:center;"></th>
+<th style="background:#1a1a1a;color:#fff;border:1px solid #555;padding:5px 8px;text-align:center;">A</th>
+<th style="background:#1a1a1a;color:#fff;border:1px solid #555;padding:5px 8px;text-align:center;">B</th>
+<th style="background:#1a1a1a;color:#fff;border:1px solid #555;padding:5px 8px;text-align:center;">C</th>
+<th style="background:#1a1a1a;color:#fff;border:1px solid #555;padding:5px 8px;text-align:center;">D</th>
+<th style="background:#1a1a1a;color:#fff;border:1px solid #555;padding:5px 8px;text-align:center;">E</th>
+</tr>
+<tr>
+<td style="background:#e8e8e8;color:#000;border:1px solid #555;padding:5px 10px;font-weight:600;white-space:nowrap;">Frequent</td>
+<td style="background:#e8e8e8;color:#000;border:1px solid #555;padding:5px 8px;text-align:center;font-weight:700;">5</td>
+<td onclick="srbSelectRisk(this,'E5')" style="background:#FF0000;color:#fff;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">5A</td>
+<td onclick="srbSelectRisk(this,'E4')" style="background:#FF0000;color:#fff;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">5B</td>
+<td onclick="srbSelectRisk(this,'H3')" style="background:#FFFF00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">5C</td>
+<td onclick="srbSelectRisk(this,'M2')" style="background:#FFFF00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">5D</td>
+<td onclick="srbSelectRisk(this,'L1')" style="background:#FFFF00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">5E</td>
+</tr>
+<tr>
+<td style="background:#e8e8e8;color:#000;border:1px solid #555;padding:5px 10px;font-weight:600;white-space:nowrap;">Occasional</td>
+<td style="background:#e8e8e8;color:#000;border:1px solid #555;padding:5px 8px;text-align:center;font-weight:700;">4</td>
+<td onclick="srbSelectRisk(this,'E10')" style="background:#FF0000;color:#fff;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">4A</td>
+<td onclick="srbSelectRisk(this,'H8')" style="background:#FF0000;color:#fff;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">4B</td>
+<td onclick="srbSelectRisk(this,'H6')" style="background:#FFFF00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">4C</td>
+<td onclick="srbSelectRisk(this,'M4')" style="background:#FFFF00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">4D</td>
+<td onclick="srbSelectRisk(this,'L2')" style="background:#FFFF00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">4E</td>
+</tr>
+<tr>
+<td style="background:#e8e8e8;color:#000;border:1px solid #555;padding:5px 10px;font-weight:600;white-space:nowrap;">Remote</td>
+<td style="background:#e8e8e8;color:#000;border:1px solid #555;padding:5px 8px;text-align:center;font-weight:700;">3</td>
+<td onclick="srbSelectRisk(this,'H15')" style="background:#FF0000;color:#fff;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">3A</td>
+<td onclick="srbSelectRisk(this,'H12')" style="background:#FFFF00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">3B</td>
+<td onclick="srbSelectRisk(this,'M9')" style="background:#FFFF00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">3C</td>
+<td onclick="srbSelectRisk(this,'M6')" style="background:#00CC00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">3D</td>
+<td onclick="srbSelectRisk(this,'L3')" style="background:#00CC00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">3E</td>
+</tr>
+<tr>
+<td style="background:#e8e8e8;color:#000;border:1px solid #555;padding:5px 10px;font-weight:600;white-space:nowrap;">Improbable</td>
+<td style="background:#e8e8e8;color:#000;border:1px solid #555;padding:5px 8px;text-align:center;font-weight:700;">2</td>
+<td onclick="srbSelectRisk(this,'H20')" style="background:#FFFF00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">2A</td>
+<td onclick="srbSelectRisk(this,'M16')" style="background:#FFFF00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">2B</td>
+<td onclick="srbSelectRisk(this,'M12')" style="background:#00CC00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">2C</td>
+<td onclick="srbSelectRisk(this,'L8')" style="background:#00CC00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">2D</td>
+<td onclick="srbSelectRisk(this,'L4')" style="background:#00CC00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">2E</td>
+</tr>
+<tr>
+<td style="background:#e8e8e8;color:#000;border:1px solid #555;padding:5px 10px;font-weight:600;white-space:nowrap;">Extremely improbable</td>
+<td style="background:#e8e8e8;color:#000;border:1px solid #555;padding:5px 8px;text-align:center;font-weight:700;">1</td>
+<td onclick="srbSelectRisk(this,'H25')" style="background:#00CC00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">1A</td>
+<td onclick="srbSelectRisk(this,'M20')" style="background:#00CC00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">1B</td>
+<td onclick="srbSelectRisk(this,'M15')" style="background:#00CC00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">1C</td>
+<td onclick="srbSelectRisk(this,'L10')" style="background:#00CC00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">1D</td>
+<td onclick="srbSelectRisk(this,'L5')" style="background:#00CC00;color:#000;border:1px solid #555;padding:6px 8px;text-align:center;font-weight:800;cursor:pointer;font-size:13px;">1E</td>
+</tr>
+</table>
+</div>
+<input id="selectedRisk" type="hidden" value=""/>
+<div id="riskDisplay" style="margin-top:8px;font-size:11px;color:var(--muted)">No level selected</div>
+<div class="srb-field" style="margin-top:12px"><label>Comment on residual risk level</label>
+<textarea placeholder="Justification of the selected residual risk level, compensating measures and reassessment deadline..." style="min-height:70px"></textarea>
+</div>
+</div>
+</div>
+<div class="srb-field"><label>New risks identified since the last SRB</label>
+<textarea placeholder="List new or emerging risks detected during the period, with their initial rating and proposed barriers..."></textarea>
+</div>
+</div>
+</div>
+<!-- Section 6 : Revue SMS -->
+<div class="srb-section">
+<div class="srb-section-head" onclick="toggleSRB(this)">
+<div class="srb-section-num">6</div>
+<div class="srb-section-title">Safety Management System (SMS) Review</div>
+<div class="srb-section-easa">ORO.GEN.200 · AMC1 ORO.GEN.200 · Annex II Reg. (EU) 965/2012</div>
+<div class="srb-toggle">▼</div>
+</div>
+<div class="srb-body">
+<p class="muted" style="margin-bottom:14px">Assessment of overall SMS effectiveness. EASA requires the SRB to assess the four SMS components: policy/objectives, risk management, assurance and safety promotion.</p>
+<div class="srb-2col">
+<div class="srb-field"><label>Safety policy &amp; objectives</label>
+<textarea placeholder="Status of annual safety objectives, review of the safety policy if necessary and management commitment..."></textarea>
+</div>
+<div class="srb-field"><label>2. Safety risk management</label>
+<textarea placeholder="Effectiveness of the hazard identification process (HAZID), quality of risk assessments and relevance of barriers..."></textarea>
+</div>
+<div class="srb-field"><label>3. Safety assurance (Safety Assurance)</label>
+<textarea placeholder="Results of safety performance monitoring and measurement (SPI), audit programme effectiveness and change management..."></textarea>
+</div>
+<div class="srb-field"><label>4. Safety promotion</label>
+<textarea placeholder="Just Culture, completed safety training, safety communications, sharing of lessons learned and safety bulletins issued..."></textarea>
+</div>
+</div>
+<div class="srb-field"><label>Overall SMS maturity assessment</label>
+<select style="height:auto;padding:10px 12px;min-height:auto">
+<option value="">-- Select maturity level --</option>
+<option>Level 1 — Initial (reactive)</option>
+<option>Level 2 — Proactive (defined processes)</option>
+<option>Level 3 — Systemic (performing)</option>
+<option>Level 4 — Predictive (optimized)</option>
+</select>
+</div>
+<div class="srb-field"><label>SMS improvement areas decided during the meeting</label>
+<textarea placeholder="SMS improvement actions decided by the SRB, with owners and deadlines..."></textarea>
+</div>
+</div>
+</div>
+<!-- Section 7 : Actions du SRB précédent -->
+<div class="srb-section">
+<div class="srb-section-head" onclick="toggleSRB(this)">
+<div class="srb-section-num">7</div>
+<div class="srb-section-title">Follow-up of previous SRB actions</div>
+<div class="srb-section-easa">AMC1 ORO.AOC.130(a)(2)(ii)</div>
+<div class="srb-toggle">▼</div>
+</div>
+<div class="srb-body">
+<p class="muted" style="margin-bottom:14px">Systematic review of the status of all actions decided during the previous SRB. Any action not closed within the deadlines must be justified and assigned a new deadline.</p>
+<div class="srb-field"><label>Previous SRB reference</label><input placeholder="E.g.: SRB-2025-002 of the 15/12/2025" type="text"/></div>
+<div class="srb-field"><label>Action follow-up table — Status</label></div>
+<div id="actions-container">
+<div class="finding-row" style="grid-template-columns:80px 1fr 100px 120px 80px">
+<input placeholder="Action no." type="text"/>
+<textarea placeholder="Action description..."></textarea>
+<input placeholder="Owner" type="text"/>
+<input type="date"/>
+<select><option>Closed</option><option>In progress</option><option>Deferred</option><option>Cancelled</option></select>
+<button class="btn-del" onclick="this.closest('.finding-row').remove()">✕</button>
+</div>
+</div>
+<button class="btn-add-row" onclick="addActionRow()">+ Add an action</button>
+<div class="srb-field" style="margin-top:14px"><label>Comments on overall follow-up</label>
+<textarea placeholder="Overall closure rate, justification for deferred actions and trends..."></textarea>
+</div>
+</div>
+</div>
+<!-- Section 8 : Nouvelles décisions & actions -->
+<div class="srb-section">
+<div class="srb-section-head" onclick="toggleSRB(this)">
+<div class="srb-section-num">8</div>
+<div class="srb-section-title">New SRB decisions &amp; action plan</div>
+<div class="srb-section-easa">ORO.GEN.200(a)(5) · AMC1 ORO.AOC.130(a)(2)(iii)</div>
+<div class="srb-toggle">▼</div>
+</div>
+<div class="srb-body">
+<p class="muted" style="margin-bottom:14px">Formal recording of all decisions made during the SRB. Each decision must have a designated owner, a deadline and a verification indicator.</p>
+<div id="decisions-container">
+<div class="finding-row" style="grid-template-columns:60px 1fr 120px 120px 120px">
+<input placeholder="No." type="text"/>
+<textarea placeholder="action description..."></textarea>
+<input placeholder="Owner" type="text"/>
+<input type="date"/>
+<input placeholder="Verification indicator" type="text"/>
+<button class="btn-del" onclick="this.closest('.finding-row').remove()">✕</button>
+</div>
+</div>
+<button class="btn-add-row" onclick="addDecisionRow()">+ Add a decision</button>
+<div class="srb-field" style="margin-top:14px"><label>Safety objectives for the next period</label>
+<textarea placeholder="Set measurable safety objectives for the next period, linked to EASA SPI targets..."></textarea>
+</div>
+<div class="srb-field"><label>Next SRB date</label><input style="min-height:auto;height:40px;resize:none" type="date"/></div>
+</div>
+</div>
+<!-- Section 9 : Conformité réglementaire & changements -->
+<div class="srb-section">
+<div class="srb-section-head" onclick="toggleSRB(this)">
+<div class="srb-section-num">9</div>
+<div class="srb-section-title">Regulatory compliance &amp; change management</div>
+<div class="srb-section-easa">ORO.GEN.130 · AMC1 ORO.GEN.200(a)(7)</div>
+<div class="srb-toggle">▼</div>
+</div>
+<div class="srb-body">
+<p class="muted" style="margin-bottom:14px">DGAC regulatory developments affecting the organization. Change management is an explicit SMS requirement (ORO.GEN.130).</p>
+<div class="srb-field"><label>DGAC regulatory developments during the period</label>
+<textarea placeholder="List regulatory NPAs, IRs, AMC/GM, CS and NOTAMs published by EASA or DGAC during the period and affecting Part-ORO, Part-CAT, Part-SPA and Part-SPO. Include significant MMEL, AD and SB changes..."></textarea>
+</div>
+<div class="srb-field"><label>Organizational &amp; operational changes (SMS change management)</label>
+<textarea placeholder="Key personnel changes, new routes, new bases, new aircraft types, new specialized operations and major procedural changes. Analyze their safety impact in accordance with ORO.GEN.130..."></textarea>
+</div>
+<div class="srb-field"><label>Actions decided for regulatory adaptation</label>
+<textarea placeholder="Compliance implementation plans, document revisions and training planned for identified regulatory developments..."></textarea>
+</div>
+</div>
+</div>
+<!-- Section 10 : Signatures -->
+<div class="srb-section">
+<div class="srb-section-head" onclick="toggleSRB(this)">
+<div class="srb-section-num">10</div>
+<div class="srb-section-title">Approval &amp; signatures</div>
+<div class="srb-section-easa">ORO.GEN.200(a) · AMC1 ORO.AOC.130</div>
+<div class="srb-toggle">▼</div>
+</div>
+<div class="srb-body">
+<p class="muted" style="margin-bottom:14px">The SRB minutes must be signed by the Accountable Manager and archived. EASA may request access to these records during an inspection.</p>
+<div class="srb-field"><label>Accountable Manager declaration</label>
+<textarea placeholder="I, the undersigned Accountable Manager, certify that this Safety Review Board was conducted in accordance with EASA requirements and that the recorded decisions faithfully reflect the discussions held during the meeting." style="min-height:60px"></textarea>
+</div>
+<div class="sig-grid">
+<div class="sig-box">
+<label>Accountable Manager</label>
+<div class="srb-sig-wrap"><canvas height="70" id="srb-sig-acm" style="display:block;width:100%;cursor:crosshair;touch-action:none;" width="280"></canvas><div class="srb-sig-ph" id="srb-sig-ph-acm">Sign here…</div><button class="srb-sig-clear" onclick="srbClearSig('acm')" type="button">✕</button></div>
+<div class="sig-date">Date: <input id="srb-date-acm" style="color-scheme:dark;" type="date"/></div>
+</div>
+<div class="sig-box">
+<label>Safety Manager</label>
+<div class="srb-sig-wrap"><canvas height="70" id="srb-sig-sm" style="display:block;width:100%;cursor:crosshair;touch-action:none;" width="280"></canvas><div class="srb-sig-ph" id="srb-sig-ph-sm">Sign here…</div><button class="srb-sig-clear" onclick="srbClearSig('sm')" type="button">✕</button></div>
+<div class="sig-date">Date: <input id="srb-date-sm" style="color-scheme:dark;" type="date"/></div>
+</div>
+<div class="sig-box">
+<label>Compliance Manager</label>
+<div class="srb-sig-wrap"><canvas height="70" id="srb-sig-cmm" style="display:block;width:100%;cursor:crosshair;touch-action:none;" width="280"></canvas><div class="srb-sig-ph" id="srb-sig-ph-cmm">Sign here…</div><button class="srb-sig-clear" onclick="srbClearSig('cmm')" type="button">✕</button></div>
+<div class="sig-date">Date: <input id="srb-date-cmm" style="color-scheme:dark;" type="date"/></div>
+</div>
+<div class="sig-box">
+<label>Head of Operations</label>
+<div class="srb-sig-wrap"><canvas height="70" id="srb-sig-npfo" style="display:block;width:100%;cursor:crosshair;touch-action:none;" width="280"></canvas><div class="srb-sig-ph" id="srb-sig-ph-npfo">Sign here…</div><button class="srb-sig-clear" onclick="srbClearSig('npfo')" type="button">✕</button></div>
+<div class="sig-date">Date: <input id="srb-date-npfo" style="color-scheme:dark;" type="date"/></div>
+</div>
+</div>
+<!-- Hidden inputs to store base64 sig data for save/load -->
+<input id="srb-sig-data-acm" type="hidden"/><input id="srb-sig-data-sm" type="hidden"/><input id="srb-sig-data-cmm" type="hidden"/><input id="srb-sig-data-npfo" type="hidden"/>
+<div class="srb-field" style="margin-top:16px"><label>Next SRB — Planned date &amp; location</label>
+<input placeholder="E.g.: 15 December 2026 — Mayn meeting room" type="text"/>
+</div>
+<div class="srb-field"><label>Archive — Filing no.</label>
+<input placeholder="E.g.: SMS/SRB/2026/001 — Dossier : D:\SMS\SRB\2026\" type="text"/>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="view" id="view-controls">
@@ -4653,7 +5508,7 @@ window.__SAF_E5X_RIT_PATCH='V2_2026-07-03';
     'ejsPublicKey','ejsServiceId','ejsTemplateId',
     'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921','safArchivedRisks',
     'saf_international_safety_management_header_v1',
-    'saf-seeds-done','helion_live_draft_v1'
+    'saf-seeds-done','helion_live_draft_v1','helionSRBData'
   ];
 
   // ── Restauration SYNCHRONE depuis le vrai localStorage (v4) ──
@@ -5462,6 +6317,7 @@ window.safExportAllData_object = function(){
     safArchivedRisks: _getLS('safArchivedRisks'),
     saf_removed_mig_20260921: _getLS('saf_removed_mig_20260921'),
     helion_live_draft_v1: _getLS('helion_live_draft_v1'),
+    helionSRBData: _getLS('helionSRBData'),
   };
   Object.keys(allData).forEach(function(k){
     if(allData[k]===null || allData[k]===undefined) delete allData[k];
@@ -5553,7 +6409,7 @@ function safImportAllData(evt){
                   'safLessons','safSRBMeetings','safAudits','safSAR','safALoS','safCAMOSignals','lastModified',
                   'ejsPublicKey','ejsServiceId','ejsTemplateId',
                   'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921','safArchivedRisks',
-                  'helion_live_draft_v1'];
+                  'helion_live_draft_v1','helionSRBData'];
       var count = 0;
       keys.forEach(function(k){
         if(k === 'safRiskDB') return;
@@ -7730,6 +8586,8 @@ function showView(name) {
   if(name==='alos')        renderALoSView();
   if(name==='camointerface')  { renderCAMOSignals(); }
   if(name==='safetypolicy')   { renderSafetyPolicy(); }
+  if(name==='srbchecklist')   { srbOnShow('checklist'); }
+  if(name==='srbboard')       { srbOnShow('board'); }
 }
 
 // ── Utility: download file ─────────────────────────────────────────
@@ -8137,7 +8995,7 @@ function importJSON(event) {
                          'safLessons','safSRBMeetings','safAudits','safSAR','safALoS','safCAMOSignals','lastModified',
                          'ejsPublicKey','ejsServiceId','ejsTemplateId',
                          'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921','safArchivedRisks',
-                         'helion_live_draft_v1'];
+                         'helion_live_draft_v1','helionSRBData'];
         allKeys.forEach(function(k){ if(data[k]!=null){ localStorage.setItem(k,data[k]); imported.push(k); } });
         if(data['saf_header']!=null) localStorage.setItem('saf_international_safety_management_header_v1', data['saf_header']);
 
@@ -15148,7 +16006,7 @@ setTimeout(function(){
               'safLessons','safSRBMeetings','safAudits','safSAR','safALoS','safCAMOSignals','lastModified',
               'ejsPublicKey','ejsServiceId','ejsTemplateId',
               'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921','safArchivedRisks',
-              'helion_live_draft_v1'];
+              'helion_live_draft_v1','helionSRBData'];
 
   /* ══════════════════════════════════════════════════════════════════════
      ÉDITION CONCURRENTE — verrouillage optimiste (porté de la suite SAF)
@@ -15618,7 +16476,7 @@ setTimeout(function(){
       'saveOccurrence','saveAndExportE5X','saveLesson','saveSAR','saveALoS',
       'saveCAMOSignal','saveChangeStudy','saveSRBMeeting','saveSARRecord','saveALoSRecord',
       'saveEditModal','importJSON','saveAudit','ejsSaveConfig','csSaveNewRisk',
-      'saveSafetyPolicy'
+      'saveSafetyPolicy','srbImportJSON','srbResetChecklist','srbClearSig','addFindingRow','addActionRow','addDecisionRow','addSRBGuestRow'
     ];
     WRITE_FN_NAMES.forEach(function(name){
       var orig = window[name];
@@ -17512,5 +18370,393 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
 
 
 <a class="helion-guide-fab" href="Helion-X_User_Guide.html#sms" title="User Guide / Οδηγός Χρήστη" aria-label="User Guide / Οδηγός Χρήστη">?</a>
+<script id="hx-srb-port-js">
+/* ══ SRB + SRB CHECKLIST — portés depuis Helion-X_Compliance_Monitoring_System.html (23.09.2026)
+   Persistance : clé 'helionSRBData' (module cloud sms_data), instantané par index
+   des champs des deux vues + nombre de lignes dynamiques. Reprise unique des
+   saisies faites dans le CMS (brouillon helion_live_draft_v1 du module cms_data). */
+function toggleSRB(head){
+  const body=head.nextElementSibling;
+  const tog=head.querySelector('.srb-toggle');
+  const collapsed=body.classList.toggle('collapsed');
+  tog.textContent=collapsed?'▶':'▼';
+}
+function srbExpandAll(){document.querySelectorAll('#hx-srb-board .srb-body').forEach(b=>{b.classList.remove('collapsed');b.previousElementSibling.querySelector('.srb-toggle').textContent='▼'})}
+function srbCollapseAll(){document.querySelectorAll('#hx-srb-board .srb-body').forEach(b=>{b.classList.add('collapsed');b.previousElementSibling.querySelector('.srb-toggle').textContent='▶'})}
+function loadSMSMeetings(){
+  var container=document.getElementById('srb-sms-content');
+  var raw=localStorage.getItem('safSRBMeetings');
+  if(!raw){
+    container.innerHTML='<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:20px;text-align:center;border:1px dashed rgba(255,255,255,.1);border-radius:8px;">No SRB meeting found in SMS module on this device.<br><span style="font-size:10px;opacity:.6;">Save meetings in the Safety tool first.</span></div>';
+    return;
+  }
+  var meetings;
+  try{ meetings=JSON.parse(raw); }catch(e){
+    container.innerHTML='<div style="color:#f85149;font-family:var(--mono);font-size:12px;padding:14px;">Error reading SMS data: '+e.message+'</div>';
+    return;
+  }
+  if(!meetings||!meetings.length){
+    container.innerHTML='<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:20px;text-align:center;border:1px dashed rgba(255,255,255,.1);border-radius:8px;">SMS module contains no SRB meetings.</div>';
+    return;
+  }
+  // Sort by date desc
+  meetings=meetings.slice().sort(function(a,b){return new Date(b.date)-new Date(a.date);});
+  var last=meetings[0];
+  var next=meetings.find(function(m){return m.next_date&&new Date(m.next_date)>=new Date();});
+  var openActions=[];
+  meetings.forEach(function(m){
+    if(m.actions&&m.actions.length){
+      m.actions.forEach(function(a){
+        if(a.status!=='done'&&a.status!=='closed'&&a.what){
+          openActions.push({meeting:m.id,mDate:m.date,...a});
+        }
+      });
+    }
+  });
+
+  var fmt=function(d){if(!d)return '—';var p=d.split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:d;};
+  var statusColor=function(s){return s==='open'?'#f85149':s==='in_progress'||s==='in progress'?'#e3b341':'#3fb950';};
+  var statusLabel=function(s){return s==='open'?'Open':s==='in_progress'||s==='in progress'?'In progress':s==='done'||s==='closed'?'Closed':s||'—';};
+
+  var html='';
+
+  // Summary bar
+  html+='<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px;">';
+  html+='<div style="background:#0a1628;border:1px solid #1a2840;border-radius:8px;padding:10px 16px;min-width:120px;text-align:center;">';
+  html+='<div style="font-size:22px;font-weight:700;font-family:var(--mono);color:#4a9fe0;">'+meetings.length+'</div>';
+  html+='<div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:2px;">Meeting(s) in SMS</div></div>';
+  html+='<div style="background:#0a1628;border:1px solid #1a2840;border-radius:8px;padding:10px 16px;min-width:120px;text-align:center;">';
+  html+='<div style="font-size:22px;font-weight:700;font-family:var(--mono);color:'+(openActions.length>0?'#f85149':'#3fb950')+';">'+openActions.length+'</div>';
+  html+='<div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:2px;">Open action(s)</div></div>';
+  html+='<div style="background:#0a1628;border:1px solid #1a2840;border-radius:8px;padding:10px 16px;min-width:140px;text-align:center;">';
+  html+='<div style="font-size:15px;font-weight:700;font-family:var(--mono);color:#c9d1d9;line-height:1.3;">'+fmt(last.date)+'</div>';
+  html+='<div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:2px;">Last meeting</div></div>';
+  html+='<div style="background:#0a1628;border:1px solid '+(next?'#3fb950':'#444')+';border-radius:8px;padding:10px 16px;min-width:140px;text-align:center;">';
+  html+='<div style="font-size:15px;font-weight:700;font-family:var(--mono);color:'+(next?'#3fb950':'#888')+';line-height:1.3;">'+(next?fmt(next.next_date):'Not scheduled')+'</div>';
+  html+='<div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:2px;">Next SRB</div></div>';
+  html+='</div>';
+
+  // Last meeting detail
+  html+='<div style="background:#08111f;border:1px solid #1a2840;border-radius:10px;padding:14px 18px;margin-bottom:14px;">';
+  html+='<div style="font-family:var(--mono);font-size:10px;color:#4a9fe0;letter-spacing:.07em;margin-bottom:10px;">LAST MEETING RECORDED IN SMS</div>';
+  html+='<div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:10px;">';
+  html+='<div><span style="font-size:9px;color:var(--muted);font-family:var(--mono);display:block;">ID</span><span style="font-size:12px;font-family:var(--mono);color:#c9d1d9;">'+last.id+'</span></div>';
+  html+='<div><span style="font-size:9px;color:var(--muted);font-family:var(--mono);display:block;">Date</span><span style="font-size:12px;font-family:var(--mono);color:#c9d1d9;">'+fmt(last.date)+'</span></div>';
+  html+='<div><span style="font-size:9px;color:var(--muted);font-family:var(--mono);display:block;">Type</span><span style="font-size:12px;font-family:var(--mono);color:#c9d1d9;">'+(last.type||'SRB')+'</span></div>';
+  if(last.ref) html+='<div><span style="font-size:9px;color:var(--muted);font-family:var(--mono);display:block;">Reference</span><span style="font-size:12px;font-family:var(--mono);color:#c9d1d9;">'+last.ref+'</span></div>';
+  if(last.chair) html+='<div><span style="font-size:9px;color:var(--muted);font-family:var(--mono);display:block;">Chairperson</span><span style="font-size:12px;font-family:var(--mono);color:#c9d1d9;">'+last.chair+'</span></div>';
+  html+='</div>';
+  if(last.attendees) html+='<div style="margin-bottom:8px;"><span style="font-size:9px;color:var(--muted);font-family:var(--mono);display:block;margin-bottom:3px;">ATTENDEES</span><span style="font-size:12px;color:#c9d1d9;">'+last.attendees+'</span></div>';
+  if(last.agenda) html+='<div style="margin-bottom:8px;"><span style="font-size:9px;color:var(--muted);font-family:var(--mono);display:block;margin-bottom:3px;">AGENDA</span><span style="font-size:12px;color:#c9d1d9;white-space:pre-wrap;">'+last.agenda+'</span></div>';
+  if(last.issues) html+='<div style="margin-bottom:8px;"><span style="font-size:9px;color:var(--muted);font-family:var(--mono);display:block;margin-bottom:3px;">SAFETY ISSUES RAISED</span><span style="font-size:12px;color:#e3b341;white-space:pre-wrap;">'+last.issues+'</span></div>';
+  if(last.decisions) html+='<div style="margin-bottom:4px;"><span style="font-size:9px;color:var(--muted);font-family:var(--mono);display:block;margin-bottom:3px;">DECISIONS MADE</span><span style="font-size:12px;color:#3fb950;white-space:pre-wrap;">'+last.decisions+'</span></div>';
+  html+='</div>';
+
+  // Open actions table
+  if(openActions.length>0){
+    html+='<div style="background:#08111f;border:1px solid #1a2840;border-radius:10px;padding:14px 18px;margin-bottom:14px;">';
+    html+='<div style="font-family:var(--mono);font-size:10px;color:#e3b341;letter-spacing:.07em;margin-bottom:10px;">OPEN ACTION ITEMS (all meetings)</div>';
+    html+='<table style="width:100%;border-collapse:collapse;font-size:11px;">';
+    html+='<thead><tr style="border-bottom:1px solid #1a2840;">';
+    html+='<th style="text-align:left;padding:5px 8px;font-family:var(--mono);font-size:9px;color:var(--muted);">MEETING</th>';
+    html+='<th style="text-align:left;padding:5px 8px;font-family:var(--mono);font-size:9px;color:var(--muted);">RESPONSIBLE</th>';
+    html+='<th style="text-align:left;padding:5px 8px;font-family:var(--mono);font-size:9px;color:var(--muted);">ACTION</th>';
+    html+='<th style="text-align:left;padding:5px 8px;font-family:var(--mono);font-size:9px;color:var(--muted);">DUE</th>';
+    html+='<th style="text-align:left;padding:5px 8px;font-family:var(--mono);font-size:9px;color:var(--muted);">STATUS</th>';
+    html+='</tr></thead><tbody>';
+    openActions.forEach(function(a){
+      var overdue=a.due&&new Date(a.due)<new Date()&&a.status!=='done'&&a.status!=='closed';
+      html+='<tr style="border-bottom:1px solid rgba(255,255,255,.05);">';
+      html+='<td style="padding:5px 8px;font-family:var(--mono);font-size:10px;color:#4a9fe0;">'+a.meeting+'</td>';
+      html+='<td style="padding:5px 8px;color:#c9d1d9;">'+( a.who||'—')+'</td>';
+      html+='<td style="padding:5px 8px;color:#c9d1d9;">'+( a.what||'—')+'</td>';
+      html+='<td style="padding:5px 8px;font-family:var(--mono);color:'+(overdue?'#f85149':'#c9d1d9')+';">'+fmt(a.due||'')+'</td>';
+      html+='<td style="padding:5px 8px;"><span style="background:rgba(0,0,0,.3);border:1px solid '+statusColor(a.status||'open')+';border-radius:4px;padding:2px 7px;font-size:10px;font-family:var(--mono);color:'+statusColor(a.status||'open')+';">'+statusLabel(a.status||'open')+'</span></td>';
+      html+='</tr>';
+    });
+    html+='</tbody></table></div>';
+  }
+
+  // All meetings list
+  html+='<div style="background:#08111f;border:1px solid #1a2840;border-radius:10px;padding:14px 18px;">';
+  html+='<div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.07em;margin-bottom:10px;">ALL MEETINGS IN SMS ('+meetings.length+')</div>';
+  meetings.forEach(function(m){
+    var acts=m.actions?m.actions.length:0;
+    var openActs=m.actions?m.actions.filter(function(a){return a.status!=='done'&&a.status!=='closed';}).length:0;
+    html+='<div style="display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);">';
+    html+='<span style="font-family:var(--mono);font-size:11px;color:#4a9fe0;min-width:140px;">'+m.id+'</span>';
+    html+='<span style="font-family:var(--mono);font-size:11px;color:#c9d1d9;min-width:90px;">'+fmt(m.date)+'</span>';
+    html+='<span style="font-size:11px;color:var(--muted);flex:1;">'+(m.type||'SRB')+'</span>';
+    html+='<span style="font-family:var(--mono);font-size:10px;color:'+(openActs>0?'#e3b341':'#3fb950')+';">'+openActs+'/'+acts+' actions</span>';
+    if(m.next_date) html+='<span style="font-family:var(--mono);font-size:10px;color:#3fb950;">Next: '+fmt(m.next_date)+'</span>';
+    html+='</div>';
+  });
+  html+='</div>';
+
+  container.innerHTML=html;
+}
+function srbSelectRisk(el,val){
+  document.querySelectorAll('#hx-srb-board #riskMatrix td[onclick]').forEach(c=>{c.style.outline='none';});
+  el.style.outline='3px solid #00d4ff';
+  el.style.outlineOffset='-2px';
+  document.getElementById('selectedRisk').value=val;
+  const labels={L:'LOW',M:'MODERATE',H:'HIGH',E:'EXTREME'};
+  const lvl=val[0];
+  document.getElementById('riskDisplay').textContent='Selected level: '+val+' — Risk '+labels[lvl];
+  document.getElementById('riskDisplay').style.color=lvl==='L'?'#00CC00':lvl==='M'?'#CCCC00':lvl==='H'?'#FFFF00':'#FF0000';
+}
+function addFindingRow(){
+  const c=document.getElementById('findings-container');
+  const d=document.createElement('div');d.className='finding-row';
+  d.innerHTML=`<input type="text" placeholder="Audit ID (AI-01...)"><textarea placeholder="Finding description..."></textarea><select><option>Level 1</option><option>Level 2</option><option>Observation</option></select><input type="text" placeholder="Regulatory reference"><select><option>Open</option><option>Closed</option><option>In progress</option></select><button class="btn-del" onclick="this.closest('.finding-row').remove()">✕</button>`;
+  c.appendChild(d);
+}
+function addActionRow(){
+  const c=document.getElementById('actions-container');
+  const d=document.createElement('div');d.className='finding-row';d.style.gridTemplateColumns='80px 1fr 100px 120px 80px';
+  d.innerHTML=`<input type="text" placeholder="Action no."><textarea placeholder="Action description..."></textarea><input type="text" placeholder="Owner"><input type="date"><select><option>Closed</option><option>In progress</option><option>Deferred</option><option>Cancelled</option></select><button class="btn-del" onclick="this.closest('.finding-row').remove()">✕</button>`;
+  c.appendChild(d);
+}
+function addDecisionRow(){
+  const c=document.getElementById('decisions-container');
+  const d=document.createElement('div');d.className='finding-row';d.style.gridTemplateColumns='60px 1fr 120px 120px 120px';
+  d.innerHTML=`<input type="text" placeholder="No."><textarea placeholder="Decision / action description..."></textarea><input type="text" placeholder="Owner"><input type="date"><input type="text" placeholder="Verification indicator"><button class="btn-del" onclick="this.closest('.finding-row').remove()">✕</button>`;
+  c.appendChild(d);
+}
+function addSRBGuestRow() {
+  const tbody = document.getElementById('srb-participants-body');
+  if (!tbody) return;
+  const tr = document.createElement('tr');
+  tr.className = 'srb-guest-table-row';
+  tr.innerHTML = `
+    <td><input type="text" placeholder="Guest role..."></td>
+    <td><input type="text" placeholder="Name..."></td>
+    <td><input type="checkbox" style="width:auto"></td>
+    <td><input type="checkbox" style="width:auto"></td>
+    <td><input type="text" placeholder="Substitute..."></td>
+    <td><button type="button" class="btn-del" onclick="this.closest('tr').remove()">Delete</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+function toggleSrbSection(hdr){
+  var body=hdr.nextElementSibling;
+  var icon=hdr.querySelector('.srb-toggle-icon');
+  var open=body.style.display!=='none';
+  body.style.display=open?'none':'block';
+  icon.style.transform=open?'rotate(-90deg)':'';
+}
+function updateSrbProgress(){
+  var items=document.querySelectorAll('#hx-srb-checklist .srb-section-body .srb-item');
+  var total=items.length, ok=0, partial=0, nok=0;
+  items.forEach(function(item){
+    var chk=item.querySelector('input[type=checkbox]');
+    var sel=item.querySelector('.srb-stat-sel');
+    if(sel&&sel.value==='ok') ok++;
+    else if(sel&&sel.value==='partial') partial++;
+    else if(sel&&sel.value==='nok') nok++;
+  });
+  document.getElementById('ss-total').textContent=total;
+  document.getElementById('ss-ok').textContent=ok;
+  document.getElementById('ss-partial').textContent=partial;
+  document.getElementById('ss-nok').textContent=nok;
+  var pct=total>0?Math.round(ok/total*100):0;
+  document.getElementById('srb-prog-fill').style.width=pct+'%';
+}
+
+function srbWritable(){ var r=String(window.SAF_SESSION_ROLE||'').toLowerCase(); return r==='admin'||r==='editor'; }
+
+function srbResetChecklist(){
+  if(!srbWritable()){ if(typeof showToast==='function') showToast('Read-only','error'); return; }
+  if(!confirm('Reset the entire SRB checklist?')) return;
+  document.querySelectorAll('#hx-srb-checklist input[type=checkbox]').forEach(function(c){c.checked=false;});
+  document.querySelectorAll('#hx-srb-checklist .srb-stat-sel').forEach(function(s){s.value='';});
+  document.querySelectorAll('#hx-srb-checklist .srb-field').forEach(function(f){f.value='';f.textContent='';});
+  updateSrbProgress();
+  srbPersistNow();
+}
+
+/* Impression : n'imprime que la vue demandée */
+function srbPrintView(viewId){
+  var v=document.getElementById(viewId); if(!v) return;
+  if(viewId==='view-srbboard') srbExpandAll();
+  document.body.classList.add('hx-printing'); v.classList.add('hx-print-target');
+  var done=function(){ document.body.classList.remove('hx-printing'); v.classList.remove('hx-print-target'); window.removeEventListener('afterprint',done); };
+  window.addEventListener('afterprint',done);
+  setTimeout(function(){ window.print(); setTimeout(done,1500); },200);
+}
+function srbPrintBoard(){ srbPrintView('view-srbboard'); }
+function srbPrintChecklist(){ srbPrintView('view-srbchecklist'); }
+
+/* ── Signatures ── */
+(function(){
+
+  class SrbSigPad {
+    constructor(canvas, onDraw){
+      this.canvas = canvas; this.ctx = canvas.getContext('2d');
+      this.drawing = false; this.onDraw = onDraw || (()=>{});
+      this._setup();
+    }
+    _pt(e){ const r=this.canvas.getBoundingClientRect(); const s=e.touches?e.touches[0]:e; return {x:(s.clientX-r.left)*(this.canvas.width/r.width),y:(s.clientY-r.top)*(this.canvas.height/r.height)}; }
+    _setup(){
+      const down=e=>{e.preventDefault();this.drawing=true;const p=this._pt(e);this.ctx.beginPath();this.ctx.moveTo(p.x,p.y);};
+      const move=e=>{e.preventDefault();if(!this.drawing)return;const p=this._pt(e);this.ctx.lineWidth=1.8;this.ctx.lineCap='round';this.ctx.strokeStyle='rgba(255,255,255,.92)';this.ctx.lineTo(p.x,p.y);this.ctx.stroke();this.onDraw();};
+      const up=()=>{this.drawing=false;this.onDraw();};
+      this.canvas.addEventListener('mousedown',down);this.canvas.addEventListener('mousemove',move);
+      this.canvas.addEventListener('mouseup',up);this.canvas.addEventListener('mouseleave',up);
+      this.canvas.addEventListener('touchstart',down,{passive:false});this.canvas.addEventListener('touchmove',move,{passive:false});this.canvas.addEventListener('touchend',up);
+    }
+    clear(){ this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height); this.onDraw(); }
+    isEmpty(){ return !this.ctx.getImageData(0,0,this.canvas.width,this.canvas.height).data.some(v=>v!==0); }
+    toDataURL(){ return this.isEmpty()?'':this.canvas.toDataURL('image/png'); }
+    fromDataURL(url){ if(!url)return; const img=new Image(); img.onload=()=>this.ctx.drawImage(img,0,0,this.canvas.width,this.canvas.height); img.src=url; }
+  }
+
+
+
+  var SIGS=['acm','sm','cmm','npfo'], pads={};
+  function init(key){
+    var canvas=document.getElementById('srb-sig-'+key);
+    if(!canvas||pads[key]) return pads[key];
+    var pad=new SrbSigPad(canvas,function(){
+      var ph=document.getElementById('srb-sig-ph-'+key); if(ph) ph.style.display=pad.isEmpty()?'':'none';
+      var hid=document.getElementById('srb-sig-data-'+key); if(hid) hid.value=pad.toDataURL();
+      srbPersistSoon();
+    });
+    pads[key]=pad; return pad;
+  }
+  window.srbSigInitAll=function(){ SIGS.forEach(init); };
+  window.srbSigRedraw=function(){
+    SIGS.forEach(function(k){
+      var p=init(k), hid=document.getElementById('srb-sig-data-'+k), ph=document.getElementById('srb-sig-ph-'+k);
+      if(!p) return;
+      p.ctx.clearRect(0,0,p.canvas.width,p.canvas.height);
+      if(hid&&hid.value){ p.fromDataURL(hid.value); if(ph) ph.style.display='none'; }
+      else if(ph) ph.style.display='';
+    });
+  };
+  window.srbClearSig=function(key){
+    if(!srbWritable()) return;
+    var p=pads[key]; if(p) p.clear();
+    var hid=document.getElementById('srb-sig-data-'+key); if(hid) hid.value='';
+    var ph=document.getElementById('srb-sig-ph-'+key); if(ph) ph.style.display='';
+    srbPersistSoon();
+  };
+})();
+
+/* ── Persistance ── */
+var SRB_KEY='helionSRBData';
+var SRB_ROWS={
+  findings:{c:'findings-container', sel:':scope > .finding-row', add:function(){addFindingRow();}},
+  actions:{c:'actions-container', sel:':scope > .finding-row', add:function(){addActionRow();}},
+  decisions:{c:'decisions-container', sel:':scope > .finding-row', add:function(){addDecisionRow();}},
+  guests:{c:'srb-participants-body', sel:':scope > tr.srb-guest-table-row', add:function(){addSRBGuestRow();}}
+};
+function srbFields(rootId){ var r=document.getElementById(rootId); return r?Array.prototype.slice.call(r.querySelectorAll('input:not([type=file]),textarea,select')):[]; }
+function srbSnapshot(rootId){ return srbFields(rootId).map(function(el){ return el.type==='checkbox'||el.type==='radio'?!!el.checked:el.value; }); }
+function srbApply(rootId,vals){
+  if(!Array.isArray(vals)) return;
+  srbFields(rootId).forEach(function(el,i){
+    if(vals[i]===undefined) return;
+    if(el.type==='checkbox'||el.type==='radio') el.checked=!!vals[i]; else el.value=vals[i]==null?'':vals[i];
+  });
+}
+function srbRowCounts(){
+  var o={}; Object.keys(SRB_ROWS).forEach(function(k){ var c=document.getElementById(SRB_ROWS[k].c); o[k]=c?c.querySelectorAll(SRB_ROWS[k].sel).length:0; }); return o;
+}
+function srbSetRowCounts(want){
+  if(!want) return;
+  Object.keys(SRB_ROWS).forEach(function(k){
+    var d=SRB_ROWS[k], c=document.getElementById(d.c); if(!c||typeof want[k]!=='number') return;
+    var rows=c.querySelectorAll(d.sel), guard=0;
+    while(rows.length<want[k] && guard++<500){ d.add(); rows=c.querySelectorAll(d.sel); }
+    for(var i=rows.length-1;i>=want[k];i--) rows[i].remove();
+  });
+}
+var _srbTimer=null, _srbRestoring=false;
+function srbPersistNow(){
+  clearTimeout(_srbTimer); _srbTimer=null;
+  if(_srbRestoring||!srbWritable()) return;
+  var data={v:1, updated_at:new Date().toISOString(), updated_by:window.SAF_SESSION_EMAIL||'',
+            board:{rows:srbRowCounts(), fields:srbSnapshot('hx-srb-board')},
+            checklist:{fields:srbSnapshot('hx-srb-checklist')}};
+  try{ localStorage.setItem(SRB_KEY, JSON.stringify(data)); }catch(e){ console.warn('SRB save:',e); return; }
+  try{ if(typeof updateLastModified==='function') updateLastModified(); }catch(e){}
+  try{ if(typeof window.safCloudScheduleSave==='function') window.safCloudScheduleSave(); }catch(e){}
+}
+function srbPersistSoon(){ if(_srbRestoring||!srbWritable()) return; clearTimeout(_srbTimer); _srbTimer=setTimeout(srbPersistNow,600); }
+function srbRestore(){
+  if(_srbTimer) srbPersistNow();
+  var raw=null; try{ raw=localStorage.getItem(SRB_KEY); }catch(e){}
+  if(!raw) return false;
+  var d; try{ d=JSON.parse(raw); }catch(e){ return false; }
+  _srbRestoring=true;
+  try{
+    if(d.board){ srbSetRowCounts(d.board.rows); srbApply('hx-srb-board', d.board.fields); }
+    if(d.checklist) srbApply('hx-srb-checklist', d.checklist.fields);
+  }finally{ _srbRestoring=false; }
+  return true;
+}
+/* Reprise unique des saisies faites dans le CMS (brouillon par id de champ) */
+var _srbMigrTried=false;
+async function srbMigrateFromCMS(){
+  if(_srbMigrTried||!srbWritable()) return false; _srbMigrTried=true;
+  try{ if(localStorage.getItem(SRB_KEY)) return false; }catch(e){}
+  if(typeof window.safCloudReadModule!=='function') return false;
+  var cms=await window.safCloudReadModule('cms_data'); if(!cms||!cms.helion_live_draft_v1) return false;
+  var dr; try{ dr=JSON.parse(cms.helion_live_draft_v1); }catch(e){ return false; }
+  var f=(dr&&dr.fields)||{}, n=0, MAP={'srb-date':'srbc-date','srb-ref':'srbc-ref'};
+  _srbRestoring=true;
+  try{
+    Object.keys(f).forEach(function(k){
+      var m=/^(srb_full|srb)(\|[^:]*)?::id:(.+)$/.exec(k); if(!m) return;
+      var root=m[1]==='srb'?'hx-srb-board':'hx-srb-checklist';
+      var id=m[1]==='srb_full'&&MAP[m[3]]?MAP[m[3]]:m[3];
+      var el=document.querySelector('#'+root+' #'+CSS.escape(id)); if(!el) return;
+      var r=f[k];
+      if(r.kind==='checkbox'||r.kind==='radio') el.checked=!!r.checked; else if(r.value!=null) el.value=String(r.value);
+      n++;
+    });
+  }finally{ _srbRestoring=false; }
+  if(n){ srbPersistNow(); if(typeof showToast==='function') showToast(n+' champ(s) SRB repris du CMS','success'); }
+  return n>0;
+}
+async function srbOnShow(which){
+  srbRestore();
+  if(which==='board'){ srbSigInitAll(); srbSigRedraw(); try{ loadSMSMeetings(); }catch(e){} }
+  if(which==='checklist'){ try{ updateSrbProgress(); }catch(e){} }
+  if(await srbMigrateFromCMS()){ if(which==='board') srbSigRedraw(); try{ updateSrbProgress(); }catch(e){} }
+}
+/* Export / import JSON (remplace les anciens saveSRB / loadSRB du CMS, même format) */
+function srbExportJSON(){
+  var data={}; srbFields('hx-srb-board').forEach(function(el,i){ data['field_'+i]=el.type==='checkbox'?el.checked:el.value; });
+  data._rows=srbRowCounts();
+  var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+  a.download='SRB_backup_'+new Date().toISOString().slice(0,10)+'.json'; a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
+}
+function srbImportJSON(){
+  if(!srbWritable()){ if(typeof showToast==='function') showToast('Read-only','error'); return; }
+  var inp=document.createElement('input'); inp.type='file'; inp.accept='.json';
+  inp.onchange=function(e){ var fr=new FileReader(); fr.onload=function(ev){
+    try{
+      var data=JSON.parse(ev.target.result);
+      if(data._rows) srbSetRowCounts(data._rows);
+      srbFields('hx-srb-board').forEach(function(el,i){ var v=data['field_'+i]; if(v===undefined) return; if(el.type==='checkbox') el.checked=!!v; else el.value=v; });
+      srbSigRedraw(); srbPersistNow(); alert('Backup loaded successfully!');
+    }catch(err){ alert('Loading error: '+err.message); }
+  }; fr.readAsText(e.target.files[0]); };
+  inp.click();
+}
+/* Enregistrement automatique sur toute saisie dans les deux vues */
+(function(){
+  function inSrb(t){ return t&&t.closest&&t.closest('.hx-cms-srb'); }
+  document.addEventListener('input', function(e){ if(inSrb(e.target)) srbPersistSoon(); }, true);
+  document.addEventListener('change',function(e){ if(inSrb(e.target)) srbPersistSoon(); }, true);
+  document.addEventListener('click', function(e){
+    var b=e.target&&e.target.closest&&e.target.closest('.hx-cms-srb button'); if(!b) return;
+    setTimeout(srbPersistSoon,50);
+  }, true);
+  window.addEventListener('beforeunload', function(){ if(_srbTimer) srbPersistNow(); });
+})();
+</script>
 </body>
 </html>
