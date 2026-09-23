@@ -62,6 +62,41 @@ body { font-family: var(--font-body); background: var(--navy); color: var(--whit
 #saf-login-msg { font-family: var(--font-mono); font-size: 11px; margin-top: 12px; min-height: 16px; text-align: center; }
 #saf-login-msg.err { color: #e07070; }
 #saf-login-msg.ok  { color: #70d0a0; }
+#saf-forgot-link { display:block; text-align:center; margin-top:10px; font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; color:var(--grey-400); text-decoration:underline; cursor:pointer; background:none; border:0; width:100%; }
+#saf-forgot-link:hover { color:var(--gold); }
+
+/* ─── PASSWORD RECOVERY ─────────────────────────── */
+#hlx-pw-overlay {
+  position: fixed; inset: 0; background: rgba(4,8,15,.97);
+  z-index: 100000; display: none; align-items: center; justify-content: center;
+  font-family: var(--font-body);
+}
+#hlx-pw-box {
+  background: var(--navy-mid); border: 1px solid rgba(201,162,39,.3);
+  border-radius: 14px; padding: 32px; width: 360px; max-width: 92vw;
+  box-shadow: 0 24px 64px rgba(0,0,0,.7);
+}
+#hlx-pw-box h2 { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+#hlx-pw-box .pw-account { font-family: var(--font-mono); font-size: 11px; color: var(--grey-200); margin-bottom: 20px; word-break: break-all; }
+#hlx-pw-box label { display: block; font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--grey-200); margin-bottom: 5px; }
+#hlx-pw-box input {
+  width: 100%; padding: 10px 12px; background: var(--navy);
+  border: 1px solid rgba(255,255,255,.12); border-radius: 6px;
+  font-size: 13px; font-family: var(--font-body); color: var(--white);
+  margin-bottom: 14px; outline: none;
+}
+#hlx-pw-box input:focus { border-color: rgba(201,162,39,.5); }
+#hlx-pw-box button {
+  width: 100%; background: var(--gold); color: var(--navy);
+  border: 0; padding: 12px; border-radius: 6px;
+  font-family: var(--font-display); font-size: 18px; letter-spacing: .06em;
+  cursor: pointer; transition: background .2s;
+}
+#hlx-pw-box button:hover { background: var(--gold-light); }
+#hlx-pw-box button:disabled { opacity: .5; cursor: default; }
+#hlx-pw-msg { font-family: var(--font-mono); font-size: 11px; margin-top: 12px; min-height: 16px; text-align: center; }
+#hlx-pw-msg.err { color: #e07070; }
+#hlx-pw-msg.ok  { color: #70d0a0; }
 
 /* ─── HEADER ──────────────────────────────────── */
 header {
@@ -140,12 +175,27 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
     </div>
     <h2>Login required</h2>
     <label for="saf-email">Email</label>
-    <input type="email" id="saf-email" autocomplete="username" placeholder="first.last@helion-helicopters.com">
+    <input type="email" id="saf-email" autocomplete="username" placeholder="first.last@helionhelicopters.com">
     <label for="saf-pwd">Password</label>
     <input type="password" id="saf-pwd" autocomplete="current-password">
     <button id="saf-login-btn">Sign in</button>
     <button id="saf-login-cancel-btn" type="button" style="width:100%;background:none;color:var(--grey-400);border:1px solid rgba(255,255,255,.12);margin-top:8px;padding:10px;border-radius:6px;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;cursor:pointer;">Cancel</button>
+    <button id="saf-forgot-link" type="button">Forgot password?</button>
     <div id="saf-login-msg"></div>
+  </div>
+</div>
+
+<!-- ── PASSWORD RECOVERY ── -->
+<div id="hlx-pw-overlay">
+  <div id="hlx-pw-box">
+    <h2>Set a new password</h2>
+    <div class="pw-account" id="hlx-pw-account"></div>
+    <label for="hlx-pw1">New password</label>
+    <input type="password" id="hlx-pw1" autocomplete="new-password" minlength="8">
+    <label for="hlx-pw2">Confirm new password</label>
+    <input type="password" id="hlx-pw2" autocomplete="new-password" minlength="8">
+    <button id="hlx-pw-btn" type="button">Save password</button>
+    <div id="hlx-pw-msg"></div>
   </div>
 </div>
 
@@ -256,6 +306,16 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
       from: function(){ return { select: function(){ return this; }, eq: function(){ return this; }, single: function(){ return Promise.resolve({ data:null, error:{code:'PGRST116'} }); } }; }
     };
   }
+  // ── PASSWORD RECOVERY : lecture de l'URL avant que supabase-js ne l'efface ──
+  var HLX_URL_PARAMS = (location.hash || '').replace(/^#/, '') + '&' + (location.search || '').replace(/^\?/, '');
+  var HLX_IS_RECOVERY = /(^|&)type=recovery(&|$)/.test(HLX_URL_PARAMS);
+  var HLX_RECOVERY_ERR = (function(){
+    var m = HLX_URL_PARAMS.match(/(?:^|&)error_description=([^&]*)/);
+    if(!m) return '';
+    try { return decodeURIComponent(m[1].replace(/\+/g, ' ')); } catch(e){ return m[1]; }
+  })();
+  var HLX_RECOVERY_REDIRECT = new URL('./', location.href).href;
+
   var db;
   try {
     db = (window.supabase && typeof window.supabase.createClient === 'function')
@@ -269,6 +329,74 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
   var logoutBtn = document.getElementById('saf-logout-btn');
   var loginTriggerBtn = document.getElementById('saf-login-trigger-btn');
   var loginCancelBtn = document.getElementById('saf-login-cancel-btn');
+
+  // ── PASSWORD RECOVERY ───────────────────────────────────────────────────
+  var pwOverlay = document.getElementById('hlx-pw-overlay');
+  var pwMsg     = document.getElementById('hlx-pw-msg');
+  var pwBtn     = document.getElementById('hlx-pw-btn');
+  var pwShown   = false;
+
+  function hlxShowPwReset(email){
+    pwShown = true;
+    overlay.style.display = 'none';
+    document.getElementById('hlx-pw-account').textContent = email ? ('Account: ' + email) : '';
+    pwMsg.className = ''; pwMsg.textContent = '';
+    pwOverlay.style.display = 'flex';
+    setTimeout(function(){ document.getElementById('hlx-pw1').focus(); }, 50);
+  }
+
+  async function hlxDoPwReset(){
+    var p1 = document.getElementById('hlx-pw1').value;
+    var p2 = document.getElementById('hlx-pw2').value;
+    if(p1.length < 8){ pwMsg.className = 'err'; pwMsg.textContent = 'Password must be at least 8 characters.'; return; }
+    if(p1 !== p2){ pwMsg.className = 'err'; pwMsg.textContent = 'Passwords do not match.'; return; }
+    pwBtn.disabled = true;
+    pwMsg.className = ''; pwMsg.textContent = 'Saving…';
+    var res = await db.auth.updateUser({ password: p1 });
+    if(res.error){
+      pwBtn.disabled = false;
+      pwMsg.className = 'err';
+      pwMsg.textContent = 'Failed: ' + res.error.message;
+      return;
+    }
+    pwMsg.className = 'ok'; pwMsg.textContent = 'Password updated. Please sign in with your new password.';
+    try { history.replaceState(null, '', location.pathname); } catch(e){}
+    await db.auth.signOut();
+    try { localStorage.removeItem('saf_role'); } catch(e){}
+    setTimeout(function(){
+      pwOverlay.style.display = 'none';
+      pwShown = false;
+      pwBtn.disabled = false;
+      document.getElementById('hlx-pw1').value = '';
+      document.getElementById('hlx-pw2').value = '';
+      applyGuestRole();
+      loginMsg.className = 'ok';
+      loginMsg.textContent = 'Password updated — please sign in.';
+      overlay.style.display = 'flex';
+    }, 1500);
+  }
+  pwBtn.addEventListener('click', hlxDoPwReset);
+  document.getElementById('hlx-pw2').addEventListener('keydown', function(e){ if(e.key === 'Enter') hlxDoPwReset(); });
+
+  if(db.auth && typeof db.auth.onAuthStateChange === 'function'){
+    db.auth.onAuthStateChange(function(ev, session){
+      if(ev === 'PASSWORD_RECOVERY' && !pwShown){
+        hlxShowPwReset(session && session.user && session.user.email);
+      }
+    });
+  }
+
+  // "Forgot password?" : envoie le lien de récupération vers ce portail
+  document.getElementById('saf-forgot-link').addEventListener('click', async function(){
+    var email = document.getElementById('saf-email').value.trim();
+    if(!email){ loginMsg.className = 'err'; loginMsg.textContent = 'Enter your email address first.'; return; }
+    if(typeof db.auth.resetPasswordForEmail !== 'function'){ loginMsg.className = 'err'; loginMsg.textContent = 'Supabase unavailable.'; return; }
+    loginMsg.className = ''; loginMsg.textContent = 'Sending…';
+    var res = await db.auth.resetPasswordForEmail(email, { redirectTo: HLX_RECOVERY_REDIRECT });
+    if(res.error){ loginMsg.className = 'err'; loginMsg.textContent = 'Failed: ' + res.error.message; return; }
+    loginMsg.className = 'ok'; loginMsg.textContent = 'If this account exists, a reset link has been sent.';
+  });
+  // ────────────────────────────────────────────────────────────────────────
 
   var SAF_ROLE = 'reader';
 
@@ -635,6 +763,25 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
       ]);
       if(r && r.data && r.data.session) session = r.data.session;
     }catch(e){ console.warn('getSession:', e.message); }
+
+    if(HLX_RECOVERY_ERR){
+      applyGuestRole();
+      try { history.replaceState(null, '', location.pathname); } catch(e){}
+      loginMsg.className = 'err';
+      loginMsg.textContent = 'Reset link invalid or expired (' + HLX_RECOVERY_ERR + '). Request a new one below.';
+      overlay.style.display = 'flex';
+      return;
+    }
+    if(HLX_IS_RECOVERY){
+      applyGuestRole();
+      if(session) hlxShowPwReset(session.user.email);
+      else {
+        loginMsg.className = 'err';
+        loginMsg.textContent = 'Reset link could not be validated. Request a new one below.';
+        overlay.style.display = 'flex';
+      }
+      return;
+    }
 
     if(session) onAuthenticated(session);
     else applyGuestRole();
