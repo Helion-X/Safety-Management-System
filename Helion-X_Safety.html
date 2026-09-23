@@ -15811,6 +15811,25 @@ setTimeout(function(){
       });
   }
 
+  /* ── Purge des caches locaux (poste partage) ─────────────────────────────
+     Le shim v4 recopie les donnees dans le vrai localStorage : sur un poste
+     partage, un lecteur heriterait sinon du cache d'un admin (occurrences,
+     audits, SRB...). On vide toutes les cles metier ; seules les preferences
+     d'affichage sont conservees. */
+  function safPurgeLocalCache(){
+    var keep = { safRegisterFiltersOpen:1, safRegisterDensity:1 };
+    var list = (typeof KEYS !== 'undefined' && KEYS && KEYS.slice) ? KEYS.slice() : [];
+    ['safRiskDB','safRiskDBVersion','safOccurrences','safLessons','safAudits','safSRBMeetings','safSAR','safALoS',
+     'safCAMOSignals','safChangeStudies','safEventCatalog','safArchivedRisks','saf-seeds-done','helion_live_draft_v1']
+      .forEach(function(k){ if(list.indexOf(k) === -1) list.push(k); });
+    list.forEach(function(k){
+      if(keep[k]) return;
+      try{ localStorage.removeItem(k); }catch(e){}
+      try{ if(window._nativeLocalStorage) window._nativeLocalStorage.removeItem(k); }catch(e){}
+    });
+  }
+  window.safPurgeLocalCache = safPurgeLocalCache;
+
   /* ── Boot du lecteur : ne charge QUE la projection ──────────────────────── */
   async function safReaderBoot(){
     SAF_RR_READER = true;
@@ -15863,8 +15882,21 @@ setTimeout(function(){
     // 2. Masquage : sous-nav inter-outils, sections Tools et SMS Modules,
     //    et, dans la section Navigation, tout sauf le Risk Register.
     try{
+      // Sous-nav inter-outils : le lecteur garde le SMS (registre) et les
+      // Appendices OMM ; HOME et CMS sont retires (le guide reste disponible).
       var sub = document.getElementById('saf-subnav');
-      if(sub) sub.style.display = 'none';
+      if(sub){
+        var KEEP = ['Helion-X_Safety.html','Helion-X_Appendices_OMM.html','Helion-X_User_Guide.html'];
+        Array.prototype.slice.call(sub.querySelectorAll('a')).forEach(function(a){
+          var h = (a.getAttribute('href') || '').split('#')[0];
+          if(KEEP.indexOf(h) === -1) a.style.display = 'none';
+        });
+        // separateur vertical place apres HOME : inutile sans HOME
+        Array.prototype.slice.call(sub.querySelectorAll('div > div')).forEach(function(d){
+          if(!d.children.length && /width:\s*1px/.test(d.getAttribute('style')||'')) d.style.display = 'none';
+        });
+        sub.style.display = '';
+      }
       var sections = document.querySelectorAll('aside .nav-section');
       sections.forEach(function(sec){
         var items = sec.querySelectorAll('.nav-item');
@@ -15929,6 +15961,7 @@ setTimeout(function(){
     // Reader : la RLS ne lui ouvre que la ligne du registre publie. Charger
     // sms_data echouerait, et l'import des rapports ne le concerne pas.
     if(SAF_ROLE !== 'admin' && SAF_ROLE !== 'editor'){
+      safPurgeLocalCache();
       await safReaderBoot();
       if(typeof updateCAMOBadge==='function') updateCAMOBadge();
       return;
@@ -16052,7 +16085,9 @@ setTimeout(function(){
   document.getElementById('saf-logout-btn').addEventListener('click', async function(){
     // Le rôle mémorisé ne doit pas survivre à la déconnexion : l'autosave le lit
     // pour décider s'il a le droit d'écrire.
+    if(CC_PENDING && !confirm('Des modifications ne sont pas encore enregistrees dans le cloud. Se deconnecter quand meme ? Elles seront perdues.')) return;
     try { window.SAF_SESSION_ROLE = null; window.SAF_SESSION_EMAIL = null; localStorage.removeItem('saf_role'); } catch(e){}
+    safPurgeLocalCache();
     await db.auth.signOut(); location.reload();
   });
 
@@ -16076,17 +16111,30 @@ setTimeout(function(){
     if(session){
       onAuthenticated(session);
     } else {
-      // Pas de session active — visiteur anonyme : on charge les données
-      // (lecture seule, autorisée par Supabase RLS) et on affiche l'ensemble
-      // du site normalement, sans aucune possibilité d'écriture.
-      isGuest = true;
+      // Pas de session — visiteur anonyme = LECTEUR : Risk Register publie et
+      // Appendices OMM uniquement. On ne charge JAMAIS sms_data (occurrences,
+      // audits, SRB...) : seule la projection sms_risk_register est demandee.
+      SAF_ROLE = 'reader';
+      isGuest  = true;
+      ready    = false;
+      try { window.SAF_SESSION_ROLE = 'reader'; window.SAF_SESSION_EMAIL = null; } catch(e){}
+      safPurgeLocalCache();
       guardWriteFunctions();
-      await cloudLoad();
-      ready = true;
-      bar.style.display='flex'; bar.querySelector('.dot').style.background='#E07020'; barTxt.textContent='Guest mode — read-only'; document.getElementById('saf-logout-btn').style.display='none';
-      if(typeof updateCAMOBadge==='function') updateCAMOBadge(); if(typeof updatePendingBadge==='function') updatePendingBadge();
       applyReadOnly();
-      applyGuestMode();
+      var okRR = await safReaderBoot();
+      document.getElementById('saf-logout-btn').style.display='none';
+      loginTriggerBtn.style.display = '';
+      if(okRR){
+        setBar('ok','Lecteur — Risk Register publie');
+      } else {
+        // Projection non lisible sans compte (RLS) : on n'affiche pas le
+        // referentiel embarque a la place, et on invite a se connecter.
+        try{ DB = []; filteredDB = []; if(typeof renderTable==='function') renderTable(); if(typeof updateCounts==='function') updateCounts(); }catch(e){}
+        setBar('error','Connexion requise pour consulter le Risk Register');
+        loginMsg.className=''; loginMsg.textContent='Connectez-vous (compte lecteur sms@helionhelicopters.com ou compte nominatif).';
+        overlay.style.display='flex';
+      }
+      if(typeof updateCAMOBadge==='function') updateCAMOBadge();
     }
   })();
 })();
