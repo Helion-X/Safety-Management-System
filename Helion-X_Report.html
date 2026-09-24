@@ -7,7 +7,7 @@
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="yes" name="mobile-web-app-capable"/>
 <meta content="#0D1B2A" name="theme-color"/>
-<title>Helion — Safety Report</title>
+<title>Helion — Event Report</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&amp;family=IBM+Plex+Sans:wght@300;400;600&amp;family=Bebas+Neue&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -31,6 +31,7 @@ body{font-family:var(--font-b);background:var(--navy);color:var(--white);min-hei
 #hdr-in{max-width:600px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;}
 #hdr-top{display:flex;align-items:center;justify-content:center;width:100%;position:relative;margin-bottom:4px;}
 #hdr-logo{height:80px;width:auto;object-fit:contain;display:block;}
+#hdr-tag{font-family:var(--font-m);font-size:10px;color:var(--gold-light);letter-spacing:.08em;text-transform:uppercase;text-align:center;width:100%;}
 #hdr-title{font-family:var(--font-d);font-size:clamp(22px,5.4vw,36px);letter-spacing:.06em;color:var(--white);line-height:1;text-transform:uppercase;text-align:center;width:100%;}
 
 /* ── CONTAINER ── */
@@ -48,19 +49,20 @@ body{font-family:var(--font-b);background:var(--navy);color:var(--white);min-hei
 
 /* ── BRANCHES ── */
 #form-body.hidden{display:none;}
-.saf-only,.sec-only{display:none;}
+.saf-only,.sec-only,.is-only{display:none;}
 body.mode-safety .saf-only{display:block;}
 body.mode-security .sec-only{display:block;}
+body.mode-infosec .is-only{display:block;}
 .warn{border-radius:8px;padding:12px 14px;font-size:12px;line-height:1.55;margin-bottom:12px;}
 .warn-red{background:rgba(204,34,0,.12);border:1px solid rgba(204,34,0,.4);color:#f0a89c;}
 .warn-gold{background:rgba(201,162,39,.10);border:1px solid rgba(201,162,39,.3);color:var(--gold-light);}
 .hint{font-size:11px;font-style:italic;color:var(--grey-400);line-height:1.5;margin-top:8px;}
 
 /* ── REPORT TYPE SELECTOR ── */
-#rtype{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 4px;}
-.rt{padding:16px 12px;border:1.5px solid rgba(255,255,255,.12);border-radius:10px;background:rgba(255,255,255,.04);
+#rtype{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 4px;}
+.rt{padding:14px 8px;border:1.5px solid rgba(255,255,255,.12);border-radius:10px;background:rgba(255,255,255,.04);
     cursor:pointer;user-select:none;-webkit-user-select:none;text-align:center;transition:all .15s;}
-.rt .rt-t{font-family:var(--font-d);font-size:20px;letter-spacing:.05em;color:var(--grey-200);line-height:1.1;}
+.rt .rt-t{font-family:var(--font-d);font-size:clamp(16px,4.6vw,20px);letter-spacing:.05em;color:var(--grey-200);line-height:1.1;}
 .rt .rt-s{font-family:var(--font-m);font-size:9px;letter-spacing:.5px;color:var(--grey-600);margin-top:5px;text-transform:uppercase;}
 .rt:active{background:rgba(255,255,255,.08);}
 .rt.on{border-color:var(--gold);background:rgba(201,162,39,.12);}
@@ -130,6 +132,8 @@ body.mode-security .sec-only{display:block;}
 
 /* ── FILE UPLOAD ── */
 .fu{border:1.5px dashed rgba(255,255,255,.15);border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);}
+.fu2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.fu2 .fu{padding:16px 8px;}
 .fu-icon{font-size:28px;margin-bottom:8px;}
 .fu-txt{font-family:var(--font-m);font-size:11px;color:var(--grey-400);}
 .fu-txt strong{color:var(--steel-bright);}
@@ -183,7 +187,8 @@ body.mode-security .sec-only{display:block;}
 <div id="hdr-top">
 <img alt="Helion Helicopters" id="hdr-logo" src="data:image/png;base64,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"/>
 </div>
-<div id="hdr-title">Safety Report — Security Report</div>
+<div id="hdr-title">Event Report</div>
+<div id="hdr-tag">Safety · Security · Information Security</div>
 </div>
 </div>
 <!-- FORM -->
@@ -196,13 +201,21 @@ Reporting is the foundation of aviation safety. Every event you report — even 
 </div>
 <div id="rtype">
 <div class="rt" onclick="pickType(this,'Safety')"><div class="rt-t">SAFETY</div><div class="rt-s">Flight safety occurrence</div></div>
-<div class="rt" onclick="pickType(this,'Security')"><div class="rt-t">SECURITY</div><div class="rt-s">Security &amp; Part-IS event</div></div>
+<div class="rt" onclick="pickType(this,'Security')"><div class="rt-t">SECURITY</div><div class="rt-s">Unlawful interference</div></div>
+<div class="rt" onclick="pickType(this,'Information Security')"><div class="rt-t">PART-IS</div><div class="rt-s">Information security</div></div>
 </div>
 <!-- FORM BODY (revealed once a report type is chosen) -->
 <div id="form-body" class="hidden">
 <!-- SECURITY WARNINGS -->
 <div class="sec-only">
-<div class="warn warn-red">If the event is still in progress — intrusion, threat, suspicious item, ongoing cyber attack — call the emergency services and inform the Accountable Manager <strong>before</strong> filling in this form.</div>
+<div class="warn warn-red">If the event is still in progress — intrusion, threat, suspicious item — call the emergency services and inform the Accountable Manager <strong>before</strong> filling in this form.</div>
+</div>
+<!-- INFORMATION SECURITY WARNINGS -->
+<div class="is-only">
+<div class="warn warn-red">If an attack is in progress — ransomware, hijacked account, files being encrypted — disconnect the device from the network (cable and Wi-Fi) <strong>without switching it off</strong>, then immediately inform the Security Manager and IT support <strong>before</strong> filling in this form.</div>
+<div class="warn warn-gold">Do not forward a suspicious email or open its attachments: keep it as it is, the Security Manager will tell you how to hand it over.</div>
+</div>
+<div class="sec-only is-only">
 <div class="warn warn-gold">Do not describe an exploitable vulnerability in detail here. This report is handled by the Security Manager under restricted distribution.</div>
 </div>
 <!-- S1 REPORTER -->
@@ -214,7 +227,7 @@ Reporting is the foundation of aviation safety. Every event you report — even 
 <div id="anon-sub">No identity information sent</div>
 </div>
 </div>
-<div class="sec-only"><div class="warn warn-gold">An anonymous security report is accepted, but it prevents any follow-up investigation. Leaving a contact is strongly recommended.</div></div>
+<div class="sec-only is-only"><div class="warn warn-gold">An anonymous security or information security report is accepted, but it prevents any follow-up investigation. Leaving a contact is strongly recommended.</div></div>
 <div id="rep-fields">
 <div class="frow">
 <div class="f"><label>First name</label><input id="f-fn" placeholder="First name" type="text"/></div>
@@ -273,7 +286,10 @@ Reporting is the foundation of aviation safety. Every event you report — even 
 </div>
 <div class="oth"><input id="f-sec-oth" placeholder="Other — please specify…" type="text"/></div>
 </div>
-<div class="slabel" data-t="Information security (Part-IS)"></div>
+</div>
+<!-- S3 EVENT TYPE — INFORMATION SECURITY (Part-IS) -->
+<div class="is-only">
+<div class="slabel" data-t="Type of information security event" data-req="1"></div>
 <div class="f">
 <label>Information security event</label>
 <div class="cg" id="g-is">
@@ -288,7 +304,7 @@ Reporting is the foundation of aviation safety. Every event you report — even 
 </div>
 <div class="oth"><input id="f-is-oth" placeholder="Other — please specify…" type="text"/></div>
 </div>
-<div class="f"><label>System or asset concerned</label><input id="f-asset" placeholder="AMOS, EFB, ops mailbox, hangar door, HB-ZKN…" type="text"/></div>
+<div class="f"><label>System or asset concerned</label><input id="f-asset" placeholder="AMOS, EFB, ops mailbox, server, company phone…" type="text"/></div>
 <div class="f">
 <label>Does that asset support a safety-related function?</label>
 <div class="rg" id="g-asset-fn" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
@@ -362,7 +378,7 @@ Reporting is the foundation of aviation safety. Every event you report — even 
 <div class="ri" onclick="pickRadio(this,'safImpact','No')"><span class="rm"></span><span class="it">No</span></div>
 <div class="ri" onclick="pickRadio(this,'safImpact','Unknown')"><span class="rm"></span><span class="it">Unknown</span></div>
 </div>
-<div class="hint">A “Yes” or “Unknown” makes this an information security incident under Part-IS and starts the notification clock to the authority.</div>
+<div class="hint">A “Yes” or “Unknown” also passes the event to the Safety Manager for a flight safety assessment.</div>
 </div>
 <div class="f">
 <label>External notification already made</label>
@@ -395,6 +411,60 @@ Reporting is the foundation of aviation safety. Every event you report — even 
 <div class="hint">Do not alter the scene and do not delete anything — preserve recordings, logs and messages until the Security Manager has taken over.</div>
 </div>
 </div>
+<!-- S6 IMPACT AND RESPONSE — INFORMATION SECURITY -->
+<div class="is-only">
+<div class="slabel" data-t="Impact &amp; response"></div>
+<div class="f">
+<label>Does this event have, or could it have, an impact on aviation safety?</label>
+<div class="rg" id="g-safimp-is" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+<div class="ri" onclick="pickRadio(this,'isSafImpact','Yes')"><span class="rm"></span><span class="it">Yes</span></div>
+<div class="ri" onclick="pickRadio(this,'isSafImpact','No')"><span class="rm"></span><span class="it">No</span></div>
+<div class="ri" onclick="pickRadio(this,'isSafImpact','Unknown')"><span class="rm"></span><span class="it">Unknown</span></div>
+</div>
+<div class="hint">A “Yes” or “Unknown” makes this an information security incident under Part-IS and starts the notification clock to the authority.</div>
+</div>
+<div class="f">
+<label>Is personal data involved?</label>
+<div class="rg" id="g-pdata" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+<div class="ri" onclick="pickRadio(this,'personalData','Yes')"><span class="rm"></span><span class="it">Yes</span></div>
+<div class="ri" onclick="pickRadio(this,'personalData','No')"><span class="rm"></span><span class="it">No</span></div>
+<div class="ri" onclick="pickRadio(this,'personalData','Unknown')"><span class="rm"></span><span class="it">Unknown</span></div>
+</div>
+<div class="hint">Crew, passenger, customer, medical or HR data. A personal data breach may require a separate data-protection notification.</div>
+</div>
+<div class="f">
+<label>Containment actions already taken</label>
+<div class="cg cg2" id="g-contain">
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Device disconnected from network</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Password changed</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Account or device locked</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">IT support informed</span></div>
+<div class="ci" onclick="tickBox(this)" style="grid-column:span 2"><span class="cm">✓</span><span class="it">None yet</span></div>
+</div>
+</div>
+<div class="f">
+<label>External notification already made</label>
+<div class="cg cg2" id="g-notif-is">
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">HCAA</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">National CSIRT</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Police — cyber crime</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Provider / supplier</span></div>
+<div class="ci" onclick="tickBox(this)" style="grid-column:span 2"><span class="cm">✓</span><span class="it">None yet</span></div>
+</div>
+<div class="oth"><input id="f-notif-ref-is" placeholder="Who, when, ticket or case reference…" type="text"/></div>
+</div>
+<div class="f"><label>How and when was it detected</label><input id="f-detect-is" placeholder="Antivirus alert, email received, colleague, at what time…" type="text"/></div>
+<div class="f">
+<label>Evidence available</label>
+<div class="cg cg2" id="g-evid-is">
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Original email kept</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Screenshots</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">System / access logs</span></div>
+<div class="ci" onclick="tickBox(this)"><span class="cm">✓</span><span class="it">Affected device kept</span></div>
+</div>
+<div class="hint">Do not delete anything and do not reinstall the device — keep emails, files and logs until the Security Manager has taken over.</div>
+</div>
+</div>
 <!-- S7 DESCRIPTION -->
 <div class="slabel" data-t="Description" data-req="1"></div>
 <div class="f"><label>Event description <span class="req">*</span></label><textarea id="f-desc" placeholder="Describe the facts objectively…" style="min-height:140px;"></textarea></div>
@@ -403,22 +473,30 @@ Reporting is the foundation of aviation safety. Every event you report — even 
 <!-- S8 PHOTOS AND FILES -->
 <div class="slabel" data-t="Photos &amp; Files"></div>
 <div class="f">
-<label>Photos</label>
+<label>Photos &amp; videos</label>
+<div class="fu2">
+<div class="fu" onclick="document.getElementById('f-cam').click()">
+<input type="file" id="f-cam" accept="image/*" capture="environment" style="display:none" onchange="addFiles(this,'fl-ph')"/>
+<div class="fu-icon">&#128247;</div>
+<div class="fu-txt"><strong>Take a photo</strong></div>
+</div>
 <div class="fu" onclick="document.getElementById('f-ph').click()">
-<input accept="image/*" capture="environment" id="f-ph" multiple="" onchange="addFiles(this,'fl-ph')" style="display:none" type="file"/>
-<div class="fu-icon">📷</div>
-<div class="fu-txt"><strong>Take photo</strong><br/>or choose from gallery</div>
+<input type="file" id="f-ph" accept="image/*,video/*" multiple style="display:none" onchange="addFiles(this,'fl-ph')"/>
+<div class="fu-icon">&#128444;&#65039;</div>
+<div class="fu-txt"><strong>Choose from album</strong></div>
+</div>
 </div>
 <div class="fl" id="fl-ph"></div>
 </div>
 <div class="f">
 <label>Files</label>
 <div class="fu" onclick="document.getElementById('f-fi').click()">
-<input accept=".pdf,.doc,.docx,.xls,.xlsx,.txt" id="f-fi" multiple="" onchange="addFiles(this,'fl-fi')" style="display:none" type="file"/>
-<div class="fu-icon">📎</div>
-<div class="fu-txt"><strong>PDF, Word, Excel</strong></div>
+<input type="file" id="f-fi" accept="image/*,video/*,.heic,.heif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.csv,.txt,.rtf,.odt,.ods,.eml,.msg,.zip" multiple style="display:none" onchange="addFiles(this,'fl-fi')"/>
+<div class="fu-icon">&#128206;</div>
+<div class="fu-txt"><strong>Choose a file</strong><br/>Phone, iCloud, Dropbox, Google Drive, OneDrive&#8230;</div>
 </div>
 <div class="fl" id="fl-fi"></div>
+<div class="hint">25 MB maximum per file. Dropbox or Drive only appear if the app is installed &mdash; on iPhone, enable it once in Files &rsaquo; Browse &rsaquo; &hellip; &rsaquo; Edit.</div>
 </div>
 </div><!-- /form-body -->
 <!-- SUBMIT -->
@@ -436,13 +514,14 @@ Reporting is the foundation of aviation safety. Every event you report — even 
 <div id="ok-icon">✅</div>
 <div id="ok-title">Report submitted</div>
 <div id="ok-ref"></div>
-<div id="ok-msg">Your report has been sent to the Helion Helicopters Safety Manager.</div>
+<div id="ok-upwarn" class="warn warn-red" style="display:none;max-width:420px;margin:0 auto 20px;text-align:left;"></div>
+<div id="ok-msg">Your report has been sent to the Helion Helicopters <span id="ok-to">Safety Manager</span>.</div>
 <button id="btn-new" onclick="resetForm()">New report</button>
 </div>
 <div id="footer">
   Helion Helicopters<br/>
   Reg. (EU) 376/2014 · ORO.GEN.160 · CAMO.A.202<br/>
-Confidential form — Safety Manager only
+Confidential form — Safety Manager / Security Manager only
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -534,6 +613,7 @@ function pickType(el,val){
   DATA.rtype=val;
   document.body.classList.toggle('mode-safety',val==='Safety');
   document.body.classList.toggle('mode-security',val==='Security');
+  document.body.classList.toggle('mode-infosec',val==='Information Security');
   document.getElementById('form-body').classList.remove('hidden');
   renumber();
   document.getElementById('form-body').scrollIntoView({behavior:'smooth',block:'start'});
@@ -567,21 +647,44 @@ function tickBox(el){
   el.dataset.checked=el.classList.contains('on')?'1':'0';
 }
 
-/* ── FILES ── */
+/* ── FILES ──
+   Les fichiers sont envoyés dans le bucket Storage privé BUCKET, sous
+   <référence du rapport>/NN_nom. Le formulaire anonyme n'a que le droit
+   d'y déposer, jamais de lire. */
+const SBUCKET='helion-report-files', MAXFILE=25*1024*1024;
+let FILE_SEQ=0;
+function escHtml(t){return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function fmtSize(b){return b>=1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB';}
 function addFiles(input,listId){
   const list=document.getElementById(listId);
+  const refused=[];
   Array.from(input.files).forEach(f=>{
-    FILES.push(f);
+    if(f.size>MAXFILE){refused.push(f.name);return;}
+    const id=++FILE_SEQ; f._id=id; FILES.push(f);
     const d=document.createElement('div');
     d.className='fi';
-    d.innerHTML=`<span class="fn">&#128196; ${f.name} (${(f.size/1024).toFixed(0)} KB)</span><button class="fr-btn" onclick="rmFile(this,'${f.name}','${listId}')">&#10005;</button>`;
+    const ico=(f.type||'').startsWith('image/')?'&#128247;':(f.type||'').startsWith('video/')?'&#127909;':'&#128196;';
+    d.innerHTML='<span class="fn">'+ico+' '+escHtml(f.name)+' ('+fmtSize(f.size)+')</span><button class="fr-btn" type="button">&#10005;</button>';
+    d.querySelector('button').onclick=()=>{FILES=FILES.filter(x=>x._id!==id);d.remove();};
     list.appendChild(d);
   });
   input.value='';
+  if(refused.length) setStatus('error','File too large (25 MB max): '+refused.join(', '));
 }
-function rmFile(btn,name,listId){
-  FILES=FILES.filter(f=>f.name!==name);
-  btn.closest('.fi').remove();
+function safeName(n){
+  const s=String(n).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9._-]+/g,'_').replace(/^_+/,'');
+  return (s||'fichier').slice(-100);
+}
+/* Remplit `done` au fur et à mesure : en cas d'échec, on sait ce qui est parti. */
+async function uploadAttachments(ref,done){
+  for(let i=0;i<FILES.length;i++){
+    const f=FILES[i];
+    const path=ref+'/'+String(i+1).padStart(2,'0')+'_'+safeName(f.name);
+    setStatus('saving',((i,n)=>'Uploading files '+i+'/'+n+'…')(i+1,FILES.length));
+    const {error}=await SDB.storage.from(SBUCKET).upload(path,f,{contentType:f.type||'application/octet-stream',upsert:false});
+    if(error) throw error;
+    done.push({name:f.name,path:path,bucket:SBUCKET,size:f.size,type:f.type||''});
+  }
 }
 
 /* ── HELPERS ── */
@@ -607,7 +710,7 @@ function setStatus(type,txt){
 
 /* ── VALIDATE ── */
 function validate(){
-  if(!DATA.rtype){setStatus('error','Choose Safety or Security report');return false;}
+  if(!DATA.rtype){setStatus('error','Choose a Safety, Security or Part-IS report');return false;}
   if(!g('f-date')){setStatus('error','Date is required');return false;}
   if(!DATA.entity){setStatus('error','Entity is required');return false;}
   if(!g('f-loc')){setStatus('error','Location is required');return false;}
@@ -628,24 +731,29 @@ async function submit(){
 
   const allChecked=(sel)=>[...document.querySelectorAll(sel+' .ci.on')].map(e=>e.querySelector('.it').textContent.trim().split('\n')[0].trim());
 
+  const isSec=DATA.rtype==='Security', isIS=DATA.rtype==='Information Security';
+  /* Each branch only sends its own fields. */
   const occ={
     id:ref, report_type:DATA.rtype, date:g('f-date'), time_local:g('f-time'),
     entity:DATA.entity, entity_other:g('f-entity-oth'),
     event_types_avi:allChecked('#g-avi'),
-    severity:DATA.rtype==='Security'?'security':(allChecked('#g-avi')[0]||'hazard'),
+    severity:isIS?'infosec':(isSec?'security':(allChecked('#g-avi')[0]||'hazard')),
+    report_domain:isIS?'infosec':(isSec?'security':'safety'),
     event_type_avi_other:g('f-avi-oth'),
-    security_types:allChecked('#g-sec'),
-    security_type_other:g('f-sec-oth'),
-    infosec_types:allChecked('#g-is'),
-    infosec_type_other:g('f-is-oth'),
-    infosec_asset:g('f-asset'),
-    infosec_asset_safety_function:DATA.assetFn||'',
-    safety_impact:DATA.safImpact||'',
-    external_notification:allChecked('#g-notif'),
-    external_notification_ref:g('f-notif-ref'),
-    aircraft_secured:DATA.acSecured||'',
-    detection:g('f-detect'),
-    evidence:allChecked('#g-evid'),
+    security_types:isSec?allChecked('#g-sec'):[],
+    security_type_other:isSec?g('f-sec-oth'):'',
+    infosec_types:isIS?allChecked('#g-is'):[],
+    infosec_type_other:isIS?g('f-is-oth'):'',
+    infosec_asset:isIS?g('f-asset'):'',
+    infosec_asset_safety_function:isIS?(DATA.assetFn||''):'',
+    infosec_personal_data:isIS?(DATA.personalData||''):'',
+    infosec_containment:isIS?allChecked('#g-contain'):[],
+    safety_impact:isIS?(DATA.isSafImpact||''):(isSec?(DATA.safImpact||''):''),
+    external_notification:isIS?allChecked('#g-notif-is'):(isSec?allChecked('#g-notif'):[]),
+    external_notification_ref:isIS?g('f-notif-ref-is'):(isSec?g('f-notif-ref'):''),
+    aircraft_secured:isSec?(DATA.acSecured||''):'',
+    detection:isIS?g('f-detect-is'):(isSec?g('f-detect'):''),
+    evidence:isIS?allChecked('#g-evid-is'):(isSec?allChecked('#g-evid'):[]),
     aircraft_type:g('f-ac'), aircraft_reg:g('f-reg'),
     pic:g('f-pic'), copilot:g('f-copilot'), other_persons:g('f-oth'),
     location:g('f-loc'), base:g('f-base'),
@@ -657,12 +765,22 @@ async function submit(){
     actions:g('f-act')?[{text:g('f-act'),status:'open',owner:'',owner_custom:'',actionDate:''}]:[],
     comments:g('f-com'),
     attachments_count:FILES.length,
+    attachments:[],
     reporter:reporter, reporter_email:ANON?'':g('f-em'), reporter_phone:ANON?'':g('f-tel'),
     reporter_role:g('f-role'),
     source:'helion_report_form', operator:SOPERATOR, status:'pending_review',
     classification:'', five_whys:null, contributing_factors:[],
     created_at:now, updated_at:now,
   };
+
+  /* Pièces jointes d'abord : le rapport porte ensuite leurs chemins. Un échec
+     d'envoi des fichiers n'empêche pas le rapport de partir. */
+  let upErr=null;
+  if(FILES.length){
+    try{ await uploadAttachments(ref,occ.attachments); }
+    catch(e){ upErr=e; console.error('Upload error:',e); }
+    occ.attachments_failed=upErr?FILES.length-occ.attachments.length:0;
+  }
 
   try{
     /* Write to helion_reports on the Helion project — anon access allowed by RLS */
@@ -680,7 +798,11 @@ async function submit(){
       document.getElementById('form-wrap').style.display='none';
       document.getElementById('footer').style.display='none';
       document.getElementById('ok-ref').textContent=ref;
+      document.getElementById('ok-to').textContent=DATA.rtype==='Safety'?'Safety Manager':'Security Manager';
       document.getElementById('ok-wrap').classList.add('show');
+      const uw=document.getElementById('ok-upwarn');
+      uw.textContent=upErr?'Attachments not uploaded ('+((upErr&&upErr.message)||'error')+') — report sent without them, ref. '+ref+'. Email them to the Safety Manager quoting this reference.':'';
+      uw.style.display=upErr?'block':'none';
       window.scrollTo({top:0,behavior:'smooth'});
     },900);
 
@@ -711,7 +833,7 @@ function resetForm(){
   document.getElementById('fl-ph').innerHTML='';
   document.getElementById('fl-fi').innerHTML='';
   FILES=[];DATA={rtype:'',entity:'',checks:{}};
-  document.body.classList.remove('mode-safety','mode-security');
+  document.body.classList.remove('mode-safety','mode-security','mode-infosec');
   document.getElementById('form-body').classList.add('hidden');
   if(ANON)toggleAnon();
   document.getElementById('status').className='';
