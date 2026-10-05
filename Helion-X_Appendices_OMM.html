@@ -1738,7 +1738,7 @@ h1{margin:0 0 13mm 0;font-family:Georgia,'Times New Roman',serif;font-size:28pt;
     var blocks = Array.isArray(data.appendices) ? data.appendices : [data];
     var imported = 0;
     blocks.forEach(function(block) { if (applyBlock(block)) imported++; });
-    if (!imported) throw new Error('Aucun bloc Appendix compatible trouve dans le fichier.');
+    if (!imported) throw new Error('No compatible Appendix block found in the file.');
     cleanAllFileSelects();
     if (typeof stamp === 'function') stamp();
     return imported;
@@ -1746,8 +1746,8 @@ h1{margin:0 0 13mm 0;font-family:Georgia,'Times New Roman',serif;font-size:28pt;
 
   function handleHTML(text) {
     var parsed = new DOMParser().parseFromString(text, 'text/html');
-    if (!parsed.getElementById('app')) throw new Error('Le fichier HTML ne semble pas etre un fichier Appendices O.M.M valide.');
-    setStatus('ok', 'Import HTML valide - ouverture du fichier...');
+    if (!parsed.getElementById('app')) throw new Error('The HTML file does not appear to be a valid O.M.M Appendices file.');
+    setStatus('ok', 'Valid HTML import - opening the file...');
     setTimeout(function() {
       document.open();
       document.write(text);
@@ -1758,7 +1758,7 @@ h1{margin:0 0 13mm 0;font-family:Georgia,'Times New Roman',serif;font-size:28pt;
   function handleJSON(text) {
     var data = JSON.parse(text);
     var count = window.safImportAppendicesData(data);
-    setStatus('ok', 'Import JSON reussi - ' + count + ' bloc(s) mis a jour.');
+    setStatus('ok', 'JSON import successful - ' + count + ' block(s) updated.');
     setTimeout(closeModal, 1400);
   }
 
@@ -1766,10 +1766,10 @@ h1{margin:0 0 13mm 0;font-family:Georgia,'Times New Roman',serif;font-size:28pt;
     if (!file) return;
     var name = file.name || '';
     if (!/\.(html?|json)$/i.test(name)) {
-      setStatus('err', 'File invalide - attendu : .html ou .json');
+      setStatus('err', 'Invalid file - expected: .html or .json');
       return;
     }
-    setStatus('', 'Chargement en cours...');
+    setStatus('', 'Loading...');
     var reader = new FileReader();
     reader.onload = function(e) {
       try {
@@ -1777,10 +1777,10 @@ h1{margin:0 0 13mm 0;font-family:Georgia,'Times New Roman',serif;font-size:28pt;
         if (/\.json$/i.test(name)) handleJSON(text);
         else handleHTML(text);
       } catch (err) {
-        setStatus('err', 'Erreur import : ' + err.message);
+        setStatus('err', 'Import error: ' + err.message);
       }
     };
-    reader.onerror = function() { setStatus('err', 'Impossible de lire le fichier.'); };
+    reader.onerror = function() { setStatus('err', 'Unable to read the file.'); };
     reader.readAsText(file);
   }
 
@@ -2925,7 +2925,7 @@ h1 {
       from: function(){ return chain; },
       auth: {
         getSession: function(){ return Promise.resolve({ data: { session: null }, error: null }); },
-        signInWithPassword: function(){ return Promise.resolve({ data: null, error: { message: 'Supabase non configuré' } }); },
+        signInWithPassword: function(){ return Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }); },
         signOut: function(){ return Promise.resolve({ error: null }); }
       }
     };
@@ -2958,7 +2958,7 @@ h1 {
       var res = await db.from('helion_data').select('data').eq('module', MODULE).single();
       if(res.error){
         if(res.error.code === 'PGRST116'){ setBar('ok','Empty database — saved on first change'); return; } // pas encore de ligne
-        setBar('ok','Erreur chargement: '+res.error.message); return;
+        setBar('ok','Loading error: '+res.error.message); return;
       }
       if(res.data && res.data.data && typeof window.safImportAppendicesData === 'function'){
         window.safImportAppendicesData(res.data.data);
@@ -2969,7 +2969,7 @@ h1 {
         }
         setBar('ok','Cloud ✓');
       }
-    }catch(e){ setBar('ok','Chargement impossible: '+e.message); }
+    }catch(e){ setBar('ok','Unable to load: '+e.message); }
   }
 
   // --- Sauvegarde vers la base ---
@@ -3100,7 +3100,7 @@ h1 {
       ? 'position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(48,32,74,.94);border-bottom:1px solid rgba(170,130,255,.35);padding:5px 16px;font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;color:#d5c2ff;text-align:center;pointer-events:none;'
       : 'position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(30,50,80,.92);border-bottom:1px solid rgba(106,130,165,.3);padding:5px 16px;font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;color:#9fc4e8;text-align:center;pointer-events:none;';
     banner.textContent = isAuthority
-      ? '⚑ ACCÈS AUTORITÉ — consultation seule · aucune écriture possible'
+      ? '⚑ AUTHORITY ACCESS — view only · no changes possible'
       : '🔒 MODE LECTURE SEULE — consultation uniquement, aucune modification possible.';
     document.body.prepend(banner);
 

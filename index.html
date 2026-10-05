@@ -300,7 +300,7 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
     return {
       auth: {
         getSession: function(){ return Promise.resolve({ data: { session: null }, error: null }); },
-        signInWithPassword: function(){ return Promise.resolve({ data: null, error: { message: 'Supabase non configuré' } }); },
+        signInWithPassword: function(){ return Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }); },
         signOut: function(){ return Promise.resolve({ error: null }); }
       },
       from: function(){ return { select: function(){ return this; }, eq: function(){ return this; }, single: function(){ return Promise.resolve({ data:null, error:{code:'PGRST116'} }); } }; }

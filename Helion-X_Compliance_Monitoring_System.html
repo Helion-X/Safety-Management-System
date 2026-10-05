@@ -1972,7 +1972,7 @@ function safExportPDF() {
 <div class="cms-nav-label">Outils / Tools</div>
 <button class="tab" onclick="showMainTab('grille_easa',this)"><span class="cms-nav-icon">🔍</span><span class="cms-nav-text"><span class="cms-nav-title">EASA Audit Grid</span></span></button>
 <button class="tab" onclick="showMainTab('compliance_matrix',this)"><span class="cms-nav-icon">◫</span><span class="cms-nav-text"><span class="cms-nav-title">Compliance matrix <span id="cmx-count" style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#00d4ff;">0</span></span></span></button>
-<button class="tab" onclick="showMainTab('regulatory_watch',this);rwRender()"><span class="cms-nav-icon">↻</span><span class="cms-nav-text"><span class="cms-nav-title">Veille réglementaire / Regulatory watch</span></span></button>
+<button class="tab" onclick="showMainTab('regulatory_watch',this);rwRender()"><span class="cms-nav-icon">↻</span><span class="cms-nav-text"><span class="cms-nav-title">Regulatory watch</span></span></button>
 <button class="tab" onclick="showMainTab('sms_bridge',this);smsBridgeLoad()"><span class="cms-nav-icon">🛟</span><span class="cms-nav-text"><span class="cms-nav-title">Safety (SMS)</span></span></button>
 <button class="tab" onclick="showMainTab('cmsx_audits',this)"><span class="cms-nav-icon">📁</span><span class="cms-nav-text"><span class="cms-nav-title">Audits &amp; Authority</span></span></button>
 <button class="tab" onclick="showMainTab('cmsx_rapport_annuel',this)"><span class="cms-nav-icon">📊</span><span class="cms-nav-text"><span class="cms-nav-title">Annual Report</span></span></button>
@@ -18709,7 +18709,7 @@ function safSmsProcessImport(raw, filename){
       '<div class="cmsx-note" style="margin-top: 12px; font-size: 11px; ">The occurrences will be created with the status <strong>Open</strong>. You will be able to complete the exact Level, the due date and corrective action in the register.</div>'
     )+
     '<div class="cmsx-toolbar" style="position:sticky;bottom:0;background:#0a1322;padding:12px 0 4px;margin-top:16px;border-top:1px solid #1a2840;">'+
-      (news.length>0?'<button class="cmsx-btn primary" onclick="safSmsConfirmImport()" id="saf-sms-confirm-btn" data-pending="'+encodeURIComponent(JSON.stringify(news))+'">✅ Importer '+news.length+' occurrence'+(news.length>1?'s':'')+'</button>':'')+
+      (news.length>0?'<button class="cmsx-btn primary" onclick="safSmsConfirmImport()" id="saf-sms-confirm-btn" data-pending="'+encodeURIComponent(JSON.stringify(news))+'">✅ Import '+news.length+' occurrence'+(news.length>1?'s':'')+'</button>':'')+
       '<button class="cmsx-btn" onclick="document.getElementById(\'saf-sms-confirm-modal\').style.display=\'none\'">Cancel</button>'+
     '</div>';
 
@@ -19678,7 +19678,7 @@ function list(){
      + 'A matrix can be linked to a Management of Change (MoC) study in the Safety module.</p>'
      + '<div class="gen-row" style="margin-top:12px;">'
      + '<button class="btn-primary" onclick="cmxNew()">＋ New matrix</button>'
-     + '<button class="btn-ghost" onclick="cmxRender()">↺ Actualiser</button></div></div>';
+     + '<button class="btn-ghost" onclick="cmxRender()">↺ Refresh</button></div></div>';
 
   if(!all.length){
     h += '<div class="card"><p class="sub-text" style="text-align:center;padding:16px;">No matrix saved.</p></div>';
@@ -20328,20 +20328,20 @@ function save(s){try{localStorage.setItem(RW_KEY,JSON.stringify(s));}catch(e){} 
 function daysSince(iso){if(!iso)return 99999;var d=new Date(iso);return isNaN(d)?99999:Math.floor((Date.now()-d.getTime())/86400000);}
 function getStatus(s){
  var pending=(s.alerts||[]).filter(function(a){return !a.reviewed;});
- if(s.current&&s.current.changed) return {code:'obsolete',lbl:'BASE À REVOIR / BASE REVIEW REQUIRED',c:'#ff4444',bg:'rgba(255,68,68,.12)'};
- if(pending.length) return {code:'review',lbl:'REVUE RÉGLEMENTAIRE REQUISE / REGULATORY REVIEW REQUIRED',c:'#f5a623',bg:'rgba(245,166,35,.12)'};
- if(s.last_check&&s.last_check.ok&&daysSince(s.last_check.at)<=14) return {code:'current',lbl:'À JOUR / CURRENT',c:'#00c48c',bg:'rgba(0,196,140,.12)'};
- return {code:'unverified',lbl:'NON VÉRIFIÉ / NOT VERIFIED',c:'#94a3b8',bg:'rgba(148,163,184,.10)'};
+ if(s.current&&s.current.changed) return {code:'obsolete',lbl:'BASE REVIEW REQUIRED',c:'#ff4444',bg:'rgba(255,68,68,.12)'};
+ if(pending.length) return {code:'review',lbl:'REGULATORY REVIEW REQUIRED',c:'#f5a623',bg:'rgba(245,166,35,.12)'};
+ if(s.last_check&&s.last_check.ok&&daysSince(s.last_check.at)<=14) return {code:'current',lbl:'CURRENT',c:'#00c48c',bg:'rgba(0,196,140,.12)'};
+ return {code:'unverified',lbl:'NOT VERIFIED',c:'#94a3b8',bg:'rgba(148,163,184,.10)'};
 }
 function srcCard(title,val,url){return '<div style="background:#0b1628;border:1px solid #1a2840;border-radius:9px;padding:12px 14px;min-width:220px;flex:1;">'+
  '<div style="font:700 10px IBM Plex Mono,monospace;color:#6a82a5;text-transform:uppercase;letter-spacing:.06em;">'+X(title)+'</div><div style="font:700 13px IBM Plex Mono,monospace;color:#e8f0fe;margin-top:5px;">'+X(val||'—')+'</div>'+
- '<a href="'+X(url)+'" target="_blank" rel="noopener" style="font-size:10px;color:#00d4ff;text-decoration:none;display:inline-block;margin-top:6px;">↗ Source officielle / Official source</a></div>';}
+ '<a href="'+X(url)+'" target="_blank" rel="noopener" style="font-size:10px;color:#00d4ff;text-decoration:none;display:inline-block;margin-top:6px;">↗ Official source</a></div>';}
 function renderBanner(){
  var s=load(),st=getStatus(s),h=document.getElementById('regwatch-banner'); if(!h)return;
  var pending=(s.alerts||[]).filter(function(a){return !a.reviewed;}).length;
  h.innerHTML='<div style="margin:14px 22px 0;padding:12px 14px;border:1px solid '+st.c+';background:'+st.bg+';border-radius:9px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">'+
  '<span style="width:10px;height:10px;border-radius:50%;background:'+st.c+';box-shadow:0 0 8px '+st.c+';"></span><div style="flex:1;min-width:260px;"><b style="color:'+st.c+';font:700 11px IBM Plex Mono,monospace;">'+st.lbl+'</b><div style="font-size:10px;color:#94a3b8;margin-top:3px;">EAR Air OPS baseline: Rev. '+X(s.baseline.ear_revision)+' · '+X(s.baseline.ear_date)+' · '+pending+' publication(s) awaiting disposition · last online check: '+X(s.last_check?new Date(s.last_check.at).toLocaleString():'never')+'</div></div>'+
- '<button class="btn" onclick="rwCheckNow()">↻ Vérifier / Check now</button><button class="btn" onclick="rwOpenPanel()">Détails / Details</button></div>';
+ '<button class="btn" onclick="rwCheckNow()">↻ Check now</button><button class="btn" onclick="rwOpenPanel()">Details</button></div>';
 }
 function render(){
  renderBanner(); var s=load(),host=document.getElementById('regwatch-content'); if(!host)return; var st=getStatus(s),pending=(s.alerts||[]).filter(function(a){return !a.reviewed;});
@@ -20349,15 +20349,15 @@ function render(){
  var cards='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">'+
  srcCard('EASA Easy Access Rules','Rev. '+s.baseline.ear_revision+' — '+s.baseline.ear_date,SOURCES.ear)+
  srcCard('EUR-Lex baseline',s.baseline.eurlex_consolidated||'—',SOURCES.eurlex)+
- srcCard('Dernière vérification / Last check',s.last_check?(new Date(s.last_check.at).toLocaleString()+(s.last_check.ok?' ✓':' ✕')):'Jamais / Never',SOURCES.regs)+'</div>';
+ srcCard('Last check',s.last_check?(new Date(s.last_check.at).toLocaleString()+(s.last_check.ok?' ✓':' ✕')):'Never',SOURCES.regs)+'</div>';
  var rows=(s.alerts||[]).slice().sort(function(a,b){return String(b.published).localeCompare(String(a.published));}).map(function(a){
   var c=a.reviewed?'#00c48c':'#f5a623';
-  return '<tr><td><b style="font-family:IBM Plex Mono,monospace;color:#67e8f9;">'+X(a.id)+'</b><div style="font-size:9px;color:#6a82a5;">'+X(a.kind||'')+'</div></td><td>'+X(a.published||'—')+'</td><td><div style="font-weight:600;color:#e8f0fe;">'+X(a.title)+'</div><div style="font-size:10px;color:#6a82a5;margin-top:3px;">'+X(a.note||'')+'</div></td><td>'+X(a.source||'')+'</td><td><span style="color:'+c+';font-weight:700;">'+(a.reviewed?'ANALYSÉ / REVIEWED':'À ANALYSER / REVIEW')+'</span>'+(a.reviewed?'<div style="font-size:9px;color:#6a82a5;">'+X(a.reviewed_by||'')+' · '+X(a.reviewed_at?new Date(a.reviewed_at).toLocaleDateString():'')+'</div>':'')+'</td><td style="min-width:180px;"><select onchange="rwSetImpact(\''+X(a.id)+'\',this.value)" '+(canWrite()?'':'disabled')+' style="width:100%;background:#071220;color:#e8f0fe;border:1px solid #253d5e;border-radius:5px;padding:5px;font-size:10px;"><option value="" '+(!a.impact?'selected':'')+'>Impact à déterminer</option><option value="none" '+(a.impact==='none'?'selected':'')+'>Sans impact / No impact</option><option value="applicable" '+(a.impact==='applicable'?'selected':'')+'>Applicable — action requise</option><option value="not_applicable" '+(a.impact==='not_applicable'?'selected':'')+'>Non applicable</option></select><div style="margin-top:5px;display:flex;gap:5px;flex-wrap:wrap;"><a href="'+X(a.url||SOURCES.regs)+'" target="_blank" class="btn" style="padding:4px 8px;text-decoration:none;">↗ Source</a>'+(canWrite()?'<button class="btn" style="padding:4px 8px;" onclick="rwToggleReviewed(\''+X(a.id)+'\')">'+(a.reviewed?'Réouvrir':'Marquer analysé')+'</button>':'')+'</div></td></tr>';
+  return '<tr><td><b style="font-family:IBM Plex Mono,monospace;color:#67e8f9;">'+X(a.id)+'</b><div style="font-size:9px;color:#6a82a5;">'+X(a.kind||'')+'</div></td><td>'+X(a.published||'—')+'</td><td><div style="font-weight:600;color:#e8f0fe;">'+X(a.title)+'</div><div style="font-size:10px;color:#6a82a5;margin-top:3px;">'+X(a.note||'')+'</div></td><td>'+X(a.source||'')+'</td><td><span style="color:'+c+';font-weight:700;">'+(a.reviewed?'REVIEWED':'TO REVIEW')+'</span>'+(a.reviewed?'<div style="font-size:9px;color:#6a82a5;">'+X(a.reviewed_by||'')+' · '+X(a.reviewed_at?new Date(a.reviewed_at).toLocaleDateString():'')+'</div>':'')+'</td><td style="min-width:180px;"><select onchange="rwSetImpact(\''+X(a.id)+'\',this.value)" '+(canWrite()?'':'disabled')+' style="width:100%;background:#071220;color:#e8f0fe;border:1px solid #253d5e;border-radius:5px;padding:5px;font-size:10px;"><option value="" '+(!a.impact?'selected':'')+'>Impact to be determined</option><option value="none" '+(a.impact==='none'?'selected':'')+'>No impact</option><option value="applicable" '+(a.impact==='applicable'?'selected':'')+'>Applicable — action required</option><option value="not_applicable" '+(a.impact==='not_applicable'?'selected':'')+'>Not applicable</option></select><div style="margin-top:5px;display:flex;gap:5px;flex-wrap:wrap;"><a href="'+X(a.url||SOURCES.regs)+'" target="_blank" class="btn" style="padding:4px 8px;text-decoration:none;">↗ Source</a>'+(canWrite()?'<button class="btn" style="padding:4px 8px;" onclick="rwToggleReviewed(\''+X(a.id)+'\')">'+(a.reviewed?'Reopen':'Mark as reviewed')+'</button>':'')+'</div></td></tr>';
  }).join('');
- var hist=(s.checks||[]).slice(-12).reverse().map(function(c){return '<tr><td>'+X(new Date(c.at).toLocaleString())+'</td><td>'+X(c.via||'')+'</td><td style="color:'+(c.ok?'#00c48c':'#ff4444')+';font-weight:700;">'+(c.ok?'OK':'ÉCHEC')+'</td><td>'+X(c.summary||'')+'</td></tr>';}).join('');
- host.innerHTML='<div style="border:1px solid '+st.c+';background:'+st.bg+';border-radius:10px;padding:15px 16px;margin-bottom:14px;"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><span style="width:12px;height:12px;border-radius:50%;background:'+st.c+';"></span><b style="color:'+st.c+';font-family:IBM Plex Mono,monospace;">'+st.lbl+'</b><span style="font-size:10px;color:#94a3b8;">'+pending.length+' publication(s) awaiting disposition</span><div style="margin-left:auto;display:flex;gap:7px;flex-wrap:wrap;"><button class="btn primary" onclick="rwCheckNow()">↻ Vérifier maintenant / Check now</button><button class="btn" onclick="document.getElementById(\'rw-file\').click()"># Import XML/ZIP EASA & hash</button><input id="rw-file" type="file" accept=".xml,.zip,application/xml,application/zip" style="display:none" onchange="rwImportRegFile(this)">'+(s.current&&s.current.changed&&canWrite()?'<button class="btn" onclick="rwAdoptCurrent()">✓ Adopter baseline vérifiée / Adopt verified baseline</button>':'')+(s.pending_xml_hash&&canWrite()?'<button class="btn" onclick="rwAdoptFileHash()"># Adopter empreinte importée / Adopt imported hash</button>':'')+'</div></div><div style="font-size:10px;color:#94a3b8;margin-top:8px;line-height:1.5;">A green status requires a successful official-source check within the last 14 days and no unresolved publication. A detected publication is not automatically considered applicable.</div></div>'+cards+
- '<div style="font-size:13px;font-weight:700;color:#e8f0fe;margin:18px 0 8px;">Publications détectées / Detected publications</div><div style="overflow:auto;"><table style="min-width:980px;"><thead><tr><th>Référence</th><th>Date</th><th>Publication</th><th>Source</th><th>Statut</th><th>Disposition</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+ 
- '<div style="font-size:13px;font-weight:700;color:#e8f0fe;margin:20px 0 8px;">Traçabilité / Audit trail</div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;"><div class="badge">Embedded DB SHA-256: <span id="rw-dbhash">'+X(s.baseline.embedded_hash||'calcul…')+'</span></div><div class="badge">Imported EASA file SHA-256: '+X(s.baseline.xml_hash||'not set')+'</div><div class="badge">File: '+X(s.baseline.xml_name||'—')+'</div></div><div style="overflow:auto;"><table><thead><tr><th>Date</th><th>Mode</th><th>Résultat</th><th>Détail</th></tr></thead><tbody>'+hist+'</tbody></table></div>';
+ var hist=(s.checks||[]).slice(-12).reverse().map(function(c){return '<tr><td>'+X(new Date(c.at).toLocaleString())+'</td><td>'+X(c.via||'')+'</td><td style="color:'+(c.ok?'#00c48c':'#ff4444')+';font-weight:700;">'+(c.ok?'OK':'FAILED')+'</td><td>'+X(c.summary||'')+'</td></tr>';}).join('');
+ host.innerHTML='<div style="border:1px solid '+st.c+';background:'+st.bg+';border-radius:10px;padding:15px 16px;margin-bottom:14px;"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><span style="width:12px;height:12px;border-radius:50%;background:'+st.c+';"></span><b style="color:'+st.c+';font-family:IBM Plex Mono,monospace;">'+st.lbl+'</b><span style="font-size:10px;color:#94a3b8;">'+pending.length+' publication(s) awaiting disposition</span><div style="margin-left:auto;display:flex;gap:7px;flex-wrap:wrap;"><button class="btn primary" onclick="rwCheckNow()">↻ Check now</button><button class="btn" onclick="document.getElementById(\'rw-file\').click()"># Import XML/ZIP EASA & hash</button><input id="rw-file" type="file" accept=".xml,.zip,application/xml,application/zip" style="display:none" onchange="rwImportRegFile(this)">'+(s.current&&s.current.changed&&canWrite()?'<button class="btn" onclick="rwAdoptCurrent()">✓ Adopt verified baseline</button>':'')+(s.pending_xml_hash&&canWrite()?'<button class="btn" onclick="rwAdoptFileHash()"># Adopt imported hash</button>':'')+'</div></div><div style="font-size:10px;color:#94a3b8;margin-top:8px;line-height:1.5;">A green status requires a successful official-source check within the last 14 days and no unresolved publication. A detected publication is not automatically considered applicable.</div></div>'+cards+
+ '<div style="font-size:13px;font-weight:700;color:#e8f0fe;margin:18px 0 8px;">Detected publications</div><div style="overflow:auto;"><table style="min-width:980px;"><thead><tr><th>Reference</th><th>Date</th><th>Publication</th><th>Source</th><th>Status</th><th>Disposition</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+ 
+ '<div style="font-size:13px;font-weight:700;color:#e8f0fe;margin:20px 0 8px;">Audit trail</div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;"><div class="badge">Embedded DB SHA-256: <span id="rw-dbhash">'+X(s.baseline.embedded_hash||'calculating…')+'</span></div><div class="badge">Imported EASA file SHA-256: '+X(s.baseline.xml_hash||'not set')+'</div><div class="badge">File: '+X(s.baseline.xml_name||'—')+'</div></div><div style="overflow:auto;"><table><thead><tr><th>Date</th><th>Mode</th><th>Result</th><th>Detail</th></tr></thead><tbody>'+hist+'</tbody></table></div>';
  hashEmbeddedDB();
 }
 function addCheck(s,ok,via,summary){var c={at:now(),ok:!!ok,via:via||'',summary:summary||''};s.last_check=c;s.checks=s.checks||[];s.checks.push(c);if(s.checks.length>100)s.checks=s.checks.slice(-100);}
@@ -20403,8 +20403,8 @@ async function importFile(inp){var f=inp&&inp.files&&inp.files[0];if(!f)return;v
 function adoptCurrent(){
  var s=load(); if(!canWrite()||!s.current||!s.current.changed)return;
  var pending=(s.alerts||[]).filter(function(a){return !a.reviewed;});
- if(pending.length){alert('Analyse requise : '+pending.length+' publication(s) ne sont pas encore clôturées / reviewed.');return;}
- if(!confirm('Adopter les versions vérifiées comme nouvelle baseline réglementaire ? Cette action est tracée.'))return;
+ if(pending.length){alert('Review required: '+pending.length+' publication(s) are not yet reviewed.');return;}
+ if(!confirm('Adopt the verified versions as the new regulatory baseline? This action is logged.'))return;
  if(s.current.ear_revision)s.baseline.ear_revision=s.current.ear_revision;
  if(s.current.ear_date)s.baseline.ear_date=s.current.ear_date;
  if(s.current.eurlex_consolidated)s.baseline.eurlex_consolidated=s.current.eurlex_consolidated;
@@ -20414,8 +20414,8 @@ function adoptCurrent(){
 function adoptFileHash(){
  var s=load();if(!canWrite()||!s.pending_xml_hash)return;
  var pending=(s.alerts||[]).filter(function(a){return !a.reviewed && a.kind==='SOURCE';});
- if(pending.length){alert('Analyse requise : la modification de fichier importé doit d’abord être marquée analysée.');return;}
- if(!confirm('Adopter cette empreinte SHA-256 comme nouvelle référence du fichier EASA importé ?'))return;
+ if(pending.length){alert('Review required: the imported file change must first be marked as reviewed.');return;}
+ if(!confirm('Adopt this SHA-256 hash as the new reference for the imported EASA file?'))return;
  s.baseline.xml_hash=s.pending_xml_hash;s.baseline.xml_name=s.pending_xml_name||s.baseline.xml_name;s.pending_xml_hash='';s.pending_xml_name='';
  addCheck(s,true,'file hash baseline','Imported EASA file SHA-256 baseline adopted by '+(who()||'user')+'.');save(s);
 }
@@ -21399,7 +21399,7 @@ function manParse(pages,name){
     s.text=s.blocks.map(function(b){return b.text;}).join(' ');
     s.blocks.forEach(function(b){
       if(!b.bullet)lead=null;
-      var parts=b.bullet?[b.text]:b.text.split(/(?<=[.!?;])\s+(?=[A-ZÀ-ÖØ-Þ(«"“])/u);
+      var parts=b.bullet?[b.text]:b.text.replace(/([.!?;])\s+(?=[A-ZÀ-ÖØ-Þ(«"“])/gu,'$1\u0001').split('\u0001');
       parts.forEach(function(x){
         x=x.trim(); if(x.length<20)return;
         var st=RX_STRONG.test(x)?'s':(RX_MED.test(x)?'m':'');
