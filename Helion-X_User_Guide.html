@@ -45,13 +45,17 @@ footer{text-align:center;color:#536273;font:10px 'IBM Plex Mono',monospace;paddi
 <a href="#sms-export" data-en="6.9 SMS Export / backup area" data-el="6.9 SMS Export / backup area">6.9 SMS Export / backup area</a>
 <div class="nav-group">CMS</div>
 <a href="#cms" data-en="7. CMS module — orientation" data-el="7. CMS module — προσανατολισμός">7. CMS module — orientation</a>
-<a href="#cms-dashboard" data-en="7.1 CMS Dashboard" data-el="7.1 CMS Dashboard">7.1 CMS Dashboard</a>
+<a href="#cms-dashboard" data-en="7.1 CMS home and performance dashboard" data-el="7.1 CMS home και performance dashboard">7.1 CMS home and performance dashboard</a>
 <a href="#cms-auditplan" data-en="7.2 APP13-OMM — Audit Plan" data-el="7.2 APP13-OMM — Πρόγραμμα Ελέγχων">7.2 APP13-OMM — Audit Plan</a>
-<a href="#cms-kpi" data-en="7.3 APP14-OMM — Compliance indicators" data-el="7.3 APP14-OMM — Δείκτες Συμμόρφωσης">7.3 APP14-OMM — Compliance indicators</a>
+<a href="#cms-kpi" data-en="7.3 APP14-OMM — Compliance Assurance Indicators" data-el="7.3 APP14-OMM — Δείκτες Συμμόρφωσης">7.3 APP14-OMM — Compliance indicators</a>
 <a href="#cms-cap" data-en="7.4 APP15-OMM — Corrective Action Plan (CAP)" data-el="7.4 APP15-OMM — Σχέδιο Διορθωτικών Ενεργειών (CAP)">7.4 APP15-OMM — Corrective Action Plan (CAP)</a>
 <a href="#cms-competence" data-en="7.5 APP16–APP18 — Subcontractors, Auditors and Trainers" data-el="7.5 APP16–APP18 — Subcontractors, Auditors και Trainers">7.5 APP16–APP18 — Subcontractors, Auditors and Trainers</a>
 <a href="#cms-srb" data-en="7.6 SRB Checklist and SRB record" data-el="7.6 SRB Checklist και SRB record">7.6 SRB Checklist and SRB record</a>
 <a href="#cms-easa" data-en="7.7 EASA Audit Grid" data-el="7.7 EASA Audit Grid">7.7 EASA Audit Grid</a>
+<a href="#cms-workflow" data-en="7.7.1 Audit workflow" data-el="7.7.1 Audit workflow">7.7.1 Audit workflow</a>
+<a href="#cms-gridbuild" data-en="7.7.2 Grids from plan and manuals" data-el="7.7.2 Grids από plan και manuals">7.7.2 Grids from plan and manuals</a>
+<a href="#cms-governance" data-en="7.7.3 Audit governance" data-el="7.7.3 Audit governance">7.7.3 Audit governance</a>
+<a href="#cms-paste" data-en="7.7.4 Grids by copy-paste" data-el="7.7.4 Grids με copy-paste">7.7.4 Grids by copy-paste</a>
 <a href="#cms-matrix" data-en="7.8 Compliance Matrix" data-el="7.8 Πίνακας Συμμόρφωσης">7.8 Compliance Matrix</a>
 <a href="#cms-watch" data-en="7.9 Regulatory Watch" data-el="7.9 Κανονιστική Παρακολούθηση">7.9 Regulatory Watch</a>
 <a href="#cms-audits" data-en="7.10 Audits &amp; Authority" data-el="7.10 Audits &amp; Authority">7.10 Audits &amp; Authority</a>
@@ -113,6 +117,7 @@ footer{text-align:center;color:#536273;font:10px 'IBM Plex Mono',monospace;paddi
 <li>When finished, use <strong>Sign out / Log out</strong> on a shared computer.</li>
 </ol>
 <div class="warn"><strong>Important:</strong> a disabled field or Save/Add/Delete button in read-only mode is a permission control, not a malfunction.</div>
+<h4>“No role declared for this account”</h4><p>If an amber banner with this title appears after sign-in, your email address does not match any row of the role table. The account is then treated as read-only. This is not a deliberate restriction: ask the SMS administrator to check the spelling of the declared address (a missing or extra letter is the usual cause).</p>
 </div>
 <div class="lang el"><h2>2. Πρόσβαση, ρόλοι και λειτουργία μόνο ανάγνωσης</h2>
 <p>Το Helion-X διαχωρίζει τους χρήστες που μπορούν να τροποποιούν δεδομένα από εκείνους που έχουν μόνο δικαίωμα προβολής.</p>
@@ -129,6 +134,7 @@ footer{text-align:center;color:#536273;font:10px 'IBM Plex Mono',monospace;paddi
 <li>Σε κοινόχρηστο υπολογιστή χρησιμοποιήστε <strong>Sign out / Log out</strong> όταν ολοκληρώσετε.</li>
 </ol>
 <div class="warn"><strong>Σημαντικό:</strong> ένα απενεργοποιημένο πεδίο ή κουμπί Save/Add/Delete σε read-only mode είναι έλεγχος δικαιωμάτων και όχι βλάβη.</div>
+<h4>«No role declared for this account»</h4><p>Αν εμφανιστεί αυτό το amber banner μετά το sign-in, η email address δεν αντιστοιχεί σε καμία γραμμή του role table και ο λογαριασμός λειτουργεί ως read-only. Δεν πρόκειται για σκόπιμο περιορισμό: ζητήστε από τον SMS administrator να ελέγξει την ορθογραφία της δηλωμένης διεύθυνσης.</p>
 </div>
 </section>
 <section class="guide-section" id="saving">
@@ -144,6 +150,12 @@ footer{text-align:center;color:#536273;font:10px 'IBM Plex Mono',monospace;paddi
 <h4>What the export formats are for</h4>
 <ul><li><strong>JSON:</strong> full or module backup designed for re-import/restore.</li><li><strong>CSV:</strong> tabular analysis, registers and traceability in Excel-compatible form.</li><li><strong>PDF / Print:</strong> controlled snapshot for review, signature, filing or authority evidence.</li><li><strong>HTML:</strong> used in the OMM module to save a self-contained updated working file.</li></ul>
 <div class="warn"><strong>Restore/import is potentially destructive.</strong> Confirm that the selected file belongs to the correct Helion-X environment and that a current backup exists before replacing data.</div>
+<h4>CMS autosave</h4><p>In the CMS, corrective actions (CAP), contractor records and audit grids are saved automatically while you type; the record windows therefore only have a <strong>Close</strong> button. A final save is also forced when the browser tab is hidden or closed. Wait for the cloud indicator to show <em>Synchronized ✓</em> before closing the browser.</p>
+<h4>Version conflict (two administrators at the same time)</h4><p>The whole CMS is stored as one cloud record. To prevent one person from silently overwriting another person's work, each save only succeeds if nobody has saved a newer version in the meantime (optimistic locking). If someone did, a red <strong>Version conflict — saving suspended</strong> banner appears and autosave stops. Then:</p><ol>
+<li>Select <strong>Download my changes</strong> to keep a JSON copy of your work.</li>
+<li>Select <strong>Reload from server</strong> to load the other person's version, then re-enter your changes.</li>
+<li>Use <strong>Overwrite server</strong> only if you are certain the other changes may be discarded — they are lost permanently.</li></ol>
+<p>Every 60 seconds the CMS also checks the server and shows <em>⚠ Newer version on the server</em> in the cloud bar: reload before continuing.</p>
 </div>
 <div class="lang el"><h2>3. Αποθήκευση, συγχρονισμός, εξαγωγές και αντίγραφα ασφαλείας</h2>
 <p>Τα modules του Helion-X χρησιμοποιούν συνδυασμό τοπικής αποθήκευσης browser, cloud synchronization και ρητών αρχείων export. Το export είναι ελεγχόμενο backup και όχι υποκατάστατο της κανονικής διαδικασίας Save.</p>
@@ -157,6 +169,11 @@ footer{text-align:center;color:#536273;font:10px 'IBM Plex Mono',monospace;paddi
 <h4>Χρήση των μορφών export</h4>
 <ul><li><strong>JSON:</strong> πλήρες ή module backup για re-import/restore.</li><li><strong>CSV:</strong> πίνακες, μητρώα και ανάλυση συμβατή με Excel.</li><li><strong>PDF / Print:</strong> ελεγχόμενο στιγμιότυπο για review, υπογραφές, αρχειοθέτηση ή evidence προς αρχή.</li><li><strong>HTML:</strong> χρησιμοποιείται στο OMM για αποθήκευση ενημερωμένου αυτοτελούς αρχείου.</li></ul>
 <div class="warn"><strong>Το restore/import μπορεί να αντικαταστήσει δεδομένα.</strong> Βεβαιωθείτε ότι το αρχείο ανήκει στο σωστό περιβάλλον Helion-X και ότι υπάρχει πρόσφατο backup.</div>
+<h4>CMS autosave</h4><p>Στο CMS, τα CAP records, οι contractor records και τα audit grids αποθηκεύονται αυτόματα κατά την πληκτρολόγηση· τα παράθυρα έχουν μόνο κουμπί <strong>Close</strong>. Περιμένετε την ένδειξη <em>Synchronized ✓</em> πριν κλείσετε τον browser.</p>
+<h4>Version conflict (δύο administrators ταυτόχρονα)</h4><p>Κάθε save ολοκληρώνεται μόνο αν κανείς δεν έχει αποθηκεύσει νεότερη version στο μεταξύ (optimistic locking). Διαφορετικά εμφανίζεται το banner <strong>Version conflict — saving suspended</strong> και το autosave σταματά:</p><ol>
+<li><strong>Download my changes</strong> για JSON αντίγραφο της εργασίας σας.</li>
+<li><strong>Reload from server</strong> για φόρτωση της άλλης version και επανακαταχώριση των αλλαγών σας.</li>
+<li><strong>Overwrite server</strong> μόνο αν είστε βέβαιοι ότι οι άλλες αλλαγές μπορούν να χαθούν οριστικά.</li></ol>
 </div>
 </section>
 <section class="guide-section" id="workflow">
@@ -434,11 +451,18 @@ footer{text-align:center;color:#536273;font:10px 'IBM Plex Mono',monospace;paddi
 </div>
 </section>
 <section class="guide-section" id="cms-dashboard">
-<div class="lang en"><h2>7.1 CMS Dashboard</h2>
-<p>Use the CMS dashboards to review surveillance completion, finding status and indicator trends before opening individual audit/action records. Recalculate/refresh indicators after major updates and verify any red/amber state against the underlying source data before making a management decision.</p>
+<div class="lang en"><h2>7.1 CMS home and Management System Performance Dashboard</h2>
+<p>The CMS home page gives quick access to APP13 (Audit Plan), APP14 (Compliance Assurance Indicators), APP15 (CAP) and the Management System Performance Dashboard, with a short summary (open Level 1 findings, overdue corrective actions, CAP effectiveness verified).</p>
+<p>The <strong>Management System Performance Dashboard</strong> keeps three views separate:</p><ul>
+<li><strong>A — Compliance Assurance (CMS):</strong> the CMS-01 to CMS-08 indicators, calculated from the audit workflow, saved grids, CAP register and regulatory watch.</li>
+<li><strong>B — Safety Performance (SMS):</strong> Safety Objective → SPI → Safety Performance Target → Alert Level → Trend → SRB action. Rates are only calculated when reliable exposure data are entered (period, flight hours, HESLO missions, personnel).</li>
+<li><strong>C — Management System Health:</strong> MoC, overdue actions, safety objectives, barrier verification, SRB actions and training currency.</li></ul>
+<div class="note">An indicator shows “—” when its source data are not available yet. This is intentional: no value is estimated. Targets are Helion internal targets, not EASA-prescribed numerical limits.</div>
 </div>
-<div class="lang el"><h2>7.1 CMS Dashboard</h2>
-<p>Χρησιμοποιήστε τα CMS dashboards για review surveillance completion, finding status και indicator trends πριν ανοίξετε επιμέρους audit/action records. Μετά από σημαντικές αλλαγές κάντε recalculate/refresh και ελέγξτε κάθε red/amber state στα underlying source data.</p>
+<div class="lang el"><h2>7.1 CMS home και Management System Performance Dashboard</h2>
+<p>Η αρχική σελίδα του CMS δίνει γρήγορη πρόσβαση στα APP13, APP14, APP15 και στο Management System Performance Dashboard, με σύντομη σύνοψη (open Level 1 findings, overdue corrective actions, CAP effectiveness verified).</p>
+<p>Το <strong>Management System Performance Dashboard</strong> διαχωρίζει τρεις όψεις: <strong>A — Compliance Assurance</strong> (CMS-01 έως CMS-08), <strong>B — Safety Performance</strong> (SPI με exposure data) και <strong>C — Management System Health</strong>.</p>
+<div class="note">Η ένδειξη «—» σημαίνει ότι τα source data δεν είναι ακόμη διαθέσιμα· καμία τιμή δεν εκτιμάται. Τα targets είναι εσωτερικά Helion targets.</div>
 </div>
 </section>
 <section class="guide-section" id="cms-auditplan">
@@ -452,13 +476,24 @@ footer{text-align:center;color:#536273;font:10px 'IBM Plex Mono',monospace;paddi
 </div>
 </section>
 <section class="guide-section" id="cms-kpi">
-<div class="lang en"><h2>7.3 APP14-OMM — Compliance indicators</h2>
-<p>This tab presents CMS KPI/SPI-style compliance indicators.</p>
-<ol><li>Select <strong>Recalculate KPI</strong> after updating audits/findings.</li><li>Use <strong>Edit</strong> only when a defined indicator requires a manual override or target/label adjustment.</li><li>Leave a manual override blank when the indicator must remain automatically calculated.</li><li>Use PDF for management review and CSV for trend analysis.</li><li>For any alert/watch status, document the analysis and decision in the SRB/CAP or other relevant record rather than changing the number simply to return the indicator to green.</li></ol>
+<div class="lang en"><h2>7.3 APP14-OMM — Compliance Assurance Indicators</h2>
+<p>APP14 presents the compliance assurance indicators CMS-01 to CMS-08, calculated automatically from the CMS records:</p>
+<table><tr><th>Ref.</th><th>Indicator</th><th>Source</th></tr>
+<tr><td>CMS-01</td><td>Audit programme completed on time</td><td>Audit workflow / APP13</td></tr>
+<tr><td>CMS-02</td><td>Applicable requirements covered during the audit cycle</td><td>Saved audit grids</td></tr>
+<tr><td>CMS-03</td><td>Open Level 1 findings</td><td>CAP register</td></tr>
+<tr><td>CMS-04</td><td>Corrective actions completed within the approved deadline</td><td>CAP register</td></tr>
+<tr><td>CMS-05</td><td>Overdue corrective actions</td><td>CAP register</td></tr>
+<tr><td>CMS-06</td><td>Repeat findings</td><td>CAP regulatory references</td></tr>
+<tr><td>CMS-07</td><td>CAP effectiveness verified</td><td>CAP effectiveness records</td></tr>
+<tr><td>CMS-08</td><td>Regulatory changes reviewed / implemented by applicability date</td><td>Regulatory watch</td></tr></table>
+<p>Select <strong>Recalculate</strong> after significant updates. The values cannot be edited by hand: to change an indicator, correct the underlying record (audit status, CAP dates, effectiveness verification). The overall compliance result is shown for information only and is not used to judge auditor performance.</p>
+<div class="note">For any alert/watch status, document the analysis and the decision in the SRB or CAP record rather than changing data simply to return the indicator to green.</div>
 </div>
-<div class="lang el"><h2>7.3 APP14-OMM — Δείκτες Συμμόρφωσης</h2>
-<p>Το tab παρουσιάζει CMS KPI/SPI-style compliance indicators.</p>
-<ol><li>Επιλέξτε <strong>Recalculate KPI</strong> μετά από updates σε audits/findings.</li><li>Χρησιμοποιήστε <strong>Edit</strong> μόνο για defined manual override ή target/label adjustment.</li><li>Αφήστε το manual override κενό όταν πρέπει να παραμείνει auto-calculated.</li><li>Χρησιμοποιήστε PDF για management review και CSV για trend analysis.</li><li>Σε alert/watch status καταγράψτε analysis και decision σε SRB/CAP ή άλλο relevant record· μην αλλάζετε απλώς την τιμή για να γίνει green.</li></ol>
+<div class="lang el"><h2>7.3 APP14-OMM — Δείκτες Compliance Assurance</h2>
+<p>Το APP14 παρουσιάζει τους δείκτες CMS-01 έως CMS-08, που υπολογίζονται αυτόματα από τα CMS records (audit workflow, saved grids, CAP register, regulatory watch).</p>
+<p>Επιλέξτε <strong>Recalculate</strong> μετά από σημαντικές ενημερώσεις. Οι τιμές δεν αλλάζουν χειροκίνητα: διορθώστε το υποκείμενο record (audit status, CAP dates, effectiveness verification).</p>
+<div class="note">Για κάθε alert/watch status, τεκμηριώστε την ανάλυση και την απόφαση στο SRB ή στο CAP record.</div>
 </div>
 </section>
 <section class="guide-section" id="cms-cap">
@@ -476,7 +511,12 @@ footer{text-align:center;color:#536273;font:10px 'IBM Plex Mono',monospace;paddi
 <li>Enter the <strong>Effectiveness verification date</strong> and verification finding. Confirm that the root cause was eliminated/reduced before final closure.</li>
 </ol>
 <p>Use CSV for the whole register, Print for the register view, and <strong>Export selected to PDF</strong> when only selected findings need formal circulation.</p>
-</div>
+<h4>Updates — finding origin, Observation and evidence</h4><ul>
+<li><strong>Finding origin:</strong> Internal, Authority, or <strong>External auditor</strong> (independent / third-party audit). For Authority and external-auditor findings, record the external reference.</li>
+<li><strong>Status:</strong> Not started, In progress, <strong>Observation</strong>, Completed.</li>
+<li><strong>Finding evidence:</strong> attach PDF, DOCX, PPTX, XLSX, JPG or PNG files (50 MB maximum each). Files are uploaded immediately to private Supabase storage and open through a signed link valid for one hour. The 📎 counter in the register shows the number of files.</li>
+<li><strong>Immediate correction, implementation date, implementation evidence, effectiveness review due date and independent effectiveness reviewer</strong> are recorded below the corrective action. A CAP cannot be set to Completed while these elements are missing.</li></ul>
+<p>Records are saved automatically; select <strong>Close</strong> when finished. Deleting a CAP does not delete files already uploaded to Supabase.</p></div>
 <div class="lang el"><h2>7.4 APP15-OMM — Σχέδιο Διορθωτικών Ενεργειών (CAP)</h2>
 <p>Το CAP register είναι το controlled follow-up των compliance findings.</p>
 <h4>Προσθήκη corrective action</h4><ol>
@@ -491,7 +531,12 @@ footer{text-align:center;color:#536273;font:10px 'IBM Plex Mono',monospace;paddi
 <li>Καταχωρίστε <strong>Effectiveness verification date</strong> και verification finding. Επιβεβαιώστε ότι root cause eliminated/reduced πριν το final closure.</li>
 </ol>
 <p>Χρησιμοποιήστε CSV για ολόκληρο register, Print για register view και <strong>Export selected to PDF</strong> για επιλεγμένα findings.</p>
-</div>
+<h4>Ενημερώσεις — finding origin, Observation και evidence</h4><ul>
+<li><strong>Finding origin:</strong> Internal, Authority ή <strong>External auditor</strong>, με external reference όπου απαιτείται.</li>
+<li><strong>Status:</strong> Not started, In progress, <strong>Observation</strong>, Completed.</li>
+<li><strong>Finding evidence:</strong> PDF, DOCX, PPTX, XLSX, JPG, PNG (έως 50 MB), αποθήκευση σε private Supabase storage με signed link 1 ώρας.</li>
+<li>Το CAP δεν μπορεί να γίνει Completed χωρίς immediate correction, implementation date, implementation evidence, effectiveness review due date και independent effectiveness reviewer.</li></ul>
+<p>Τα records αποθηκεύονται αυτόματα· επιλέξτε <strong>Close</strong> στο τέλος.</p></div>
 </section>
 <section class="guide-section" id="cms-competence">
 <div class="lang en"><h2>7.5 APP16–APP18 — Subcontractors, Auditors and Trainers</h2>
@@ -499,13 +544,13 @@ footer{text-align:center;color:#536273;font:10px 'IBM Plex Mono',monospace;paddi
 <h4>APP17 — Auditors & Inspectors</h4><p>Record name/function, initial/recurrent audit training, authorised domains, excluded domains and remarks/history. Use the excluded-domain field to demonstrate auditor independence where a person cannot audit his/her own responsibility.</p>
 <h4>APP18 — Trainers</h4><p>Record trainer type, qualification/certificate, qualification and recurrent dates, delivered-session count and authorised training domains. Update the record when competence scope changes.</p>
 <p>Each register supports CSV/print outputs for competence and oversight evidence.</p>
-</div>
+<h4>Contractor attachments</h4><p>Contracts, certificates and audit reports are attached in the contractor record (PDF, DOCX, PPTX, XLSX, JPG, PNG — 50 MB maximum each). Files are uploaded immediately to private Supabase storage (folder <em>Compliance/Contractors</em>) and the record is saved automatically. The 📎 button in the register lists the files and opens each one through a signed link valid for one hour. Older attachments stored in the browser are migrated to Supabase automatically the next time the record is saved.</p></div>
 <div class="lang el"><h2>7.5 APP16–APP18 — Subcontractors, Auditors και Trainers</h2>
 <h4>APP16 — List of Subcontractors</h4><p>Δημιουργήστε contractor record με service type, organisation, certificate/approval, applicable reference, approval/expiry dates, audit frequency, last audit, scope, monitoring status και findings. Ελέγχετε approvals που λήγουν και overdue surveillance.</p>
 <h4>APP17 — Auditors & Inspectors</h4><p>Καταγράψτε name/function, initial/recurrent audit training, authorised domains, excluded domains και history. Το excluded-domain field χρησιμοποιείται για απόδειξη auditor independence.</p>
 <h4>APP18 — Trainers</h4><p>Καταγράψτε trainer type, qualification/certificate, qualification/recurrent dates, delivered-session count και authorised training domains. Ενημερώστε το scope όταν αλλάζει competence.</p>
 <p>Κάθε register υποστηρίζει CSV/print outputs για evidence.</p>
-</div>
+<h4>Contractor attachments</h4><p>Contracts, certificates και audit reports επισυνάπτονται στο contractor record (έως 50 MB ανά αρχείο) και αποθηκεύονται αμέσως σε private Supabase storage· το record αποθηκεύεται αυτόματα. Το κουμπί 📎 εμφανίζει τα αρχεία με signed link 1 ώρας.</p></div>
 </section>
 <section class="guide-section" id="cms-srb">
 <div class="lang en"><h2>7.6 SRB Checklist and SRB record</h2>
@@ -533,9 +578,15 @@ footer{text-align:center;color:#536273;font:10px 'IBM Plex Mono',monospace;paddi
 <li>Generate/enter the audit number and metadata.</li>
 </ol>
 <h4>Complete the grid</h4><p>For each IR/AMC control point, select the Result and record Evidence/Document verified, Document Reference, Comments/Deviations, Corrective Action, Owner, Deadline and Priority. Expand the regulatory text when a detailed check is required.</p>
-<h4>Save/output</h4><p>Save the grid in JSON when it must be reopened and edited later. Use CSV for analysis and Print/PDF for the controlled audit record.</p>
+<h4>Save/output</h4><p>Every change is saved automatically and synchronised with the cloud; reopen a grid from the saved audits list (<strong>▶ Open</strong>). The <strong>💾 Save</strong> button only downloads an offline copy (.json file); <strong>📂 Load</strong> reopens such a copy as a new audit record. Use CSV for analysis and Print/PDF for the controlled audit record.</p>
 <div class="note">The grid is an audit aid. The auditor remains responsible for selecting the applicable regulatory scope and for recording evidence sufficient to support the result.</div>
-</div>
+<h4>Regulatory points level</h4><p>After ticking one or more subparts, the <strong>Regulatory points</strong> level lists the articles of each subpart, grouped by series. When several subparts are selected they are folded: use the buttons at the top (e.g. <em>145.A 28 · CAMO.A 23 · M.A 60</em>) to jump to one, or the filter to search by number or keyword. If no point is ticked in a subpart, the whole subpart is added; if points are ticked, only those points are added.</p>
+<p>Regulation (EU) 1321/2014 now includes <strong>Part-145</strong> (145.A and 145.B, consolidated text published by EASA on 2 September 2025). Section B entries are competent-authority requirements.</p>
+<h4>Results, editing and attachments</h4><ul>
+<li>The Result list includes <strong>● Observation</strong>, counted in the OBS indicator. <strong>N/A</strong> requires a justification.</li>
+<li><strong>✎ Edit</strong> (saved audits list) reopens the selection of an existing grid to add or remove articles; assessments already entered for retained articles are kept.</li>
+<li><strong>Audit attachments</strong> (below the toolbar) store general audit documents. For a Level 1 or Level 2 result, <strong>📎 Evidence</strong> opens the linked CAP record to attach finding evidence.</li>
+<li>Deleting a grid also deletes its attachments and the CAP entries it created.</li></ul></div>
 <div class="lang el"><h2>7.7 EASA Audit Grid</h2>
 <p>Το EASA Audit Grid δημιουργεί audit checklists από τη regulatory database που είναι ενσωματωμένη στο CMS.</p>
 <h4>Δημιουργία grid</h4><ol>
@@ -547,8 +598,83 @@ footer{text-align:center;color:#536273;font:10px 'IBM Plex Mono',monospace;paddi
 <li>Δημιουργήστε/καταχωρίστε audit number και metadata.</li>
 </ol>
 <h4>Συμπλήρωση grid</h4><p>Για κάθε IR/AMC control point επιλέξτε Result και καταγράψτε Evidence/Document verified, Document Reference, Comments/Deviations, Corrective Action, Owner, Deadline και Priority.</p>
-<h4>Save/output</h4><p>Save σε JSON όταν το grid πρέπει να ξανανοίξει για editing. CSV για analysis και Print/PDF για controlled audit record.</p>
+<h4>Save/output</h4><p>Κάθε αλλαγή αποθηκεύεται αυτόματα και συγχρονίζεται με το cloud· ανοίξτε ξανά ένα grid από τη λίστα saved audits (<strong>▶ Open</strong>). Το κουμπί <strong>💾 Save</strong> κατεβάζει μόνο offline αντίγραφο (.json)· το <strong>📂 Load</strong> ανοίγει τέτοιο αντίγραφο ως νέο audit record. CSV για analysis και Print/PDF για controlled audit record.</p>
 <div class="note">Το grid είναι audit aid. Ο auditor παραμένει υπεύθυνος για applicable scope και adequate evidence.</div>
+<h4>Regulatory points level</h4><p>Μετά την επιλογή subparts, το επίπεδο <strong>Regulatory points</strong> εμφανίζει τα articles κάθε subpart ανά series. Αν δεν επιλεγεί κανένα point, προστίθεται ολόκληρο το subpart· αν επιλεγούν points, προστίθενται μόνο αυτά. Το Regulation (EU) 1321/2014 περιλαμβάνει πλέον <strong>Part-145</strong>.</p>
+<h4>Results, editing και attachments</h4><ul>
+<li>Το Result περιλαμβάνει <strong>● Observation</strong>· το <strong>N/A</strong> απαιτεί justification.</li>
+<li><strong>✎ Edit</strong> επανανοίγει την επιλογή articles ενός υπάρχοντος grid χωρίς απώλεια των assessments.</li>
+<li><strong>Audit attachments</strong> για γενικά έγγραφα· <strong>📎 Evidence</strong> για Level 1/2 findings μέσω του CAP record.</li></ul></div>
+</section>
+
+<section class="guide-section" id="cms-workflow">
+<div class="lang en"><h2>7.7.1 Audit workflow</h2>
+<p>Each saved audit follows a tracked workflow shown above the grid:</p>
+<p><strong>Planned → Prepared → In progress → Completed → Report issued → Closed</strong>, with <strong>On hold</strong> available at any stage.</p><ul>
+<li>The status moves to <em>In progress</em> automatically when the first point is assessed.</li>
+<li>Record the auditor, auditee, planned dates and report reference in the workflow bar.</li>
+<li>Finishing with points not assessed, stepping back, or closing with open CAP items requires confirmation and is logged.</li>
+<li><strong>🕘 History</strong> shows every status change with date and user. The saved audits list can be filtered by status.</li></ul>
+</div>
+<div class="lang el"><h2>7.7.1 Audit workflow</h2>
+<p>Κάθε saved audit ακολουθεί workflow: <strong>Planned → Prepared → In progress → Completed → Report issued → Closed</strong>, με δυνατότητα <strong>On hold</strong>. Καταχωρίστε auditor, auditee, planned dates και report reference· κάθε αλλαγή status καταγράφεται στο <strong>History</strong>.</p>
+</div>
+</section>
+
+<section class="guide-section" id="cms-gridbuild">
+<div class="lang en"><h2>7.7.2 Grids from the audit plan and internal manuals</h2>
+<h4>From the Audit Plan (APP13)</h4><ol>
+<li>In APP13, select <strong>🧩 Build an audit grid</strong>.</li>
+<li>Tick plan points, or use a phase preset / <em>Whole visible tab</em>.</li>
+<li>Enter audit number, title, planned dates and initial status, then <strong>▶ Create grid</strong>. Optionally create one assessment line per cited article with its IR text.</li></ol>
+<p>The <em>Programme audit tracking</em> table in APP13 lists the audits built from the plan with their status and progress.</p>
+<h4>From an internal manual (PDF)</h4><ol>
+<li>In the EASA Audit Grid, open the internal manual card and enter the manual code, title and revision; narrow the page range to audit a single chapter.</li>
+<li>Drop the PDF. It is read in the browser only — its content is not sent anywhere. Scanned PDFs need OCR first.</li>
+<li>Review the proposed checkpoints (sentences with <em>shall, must, is required…</em>; recommendations with <em>should</em> are optional), tick, correct the text if needed, then <strong>▶ Generate grid</strong>.</li></ol>
+</div>
+<div class="lang el"><h2>7.7.2 Grids από το audit plan και internal manuals</h2>
+<h4>Από το Audit Plan (APP13)</h4><p>Στο APP13 επιλέξτε <strong>🧩 Build an audit grid</strong>, επιλέξτε plan points ή phase preset και πατήστε <strong>▶ Create grid</strong>.</p>
+<h4>Από internal manual (PDF)</h4><p>Το PDF διαβάζεται μόνο στον browser. Ελέγξτε τα προτεινόμενα checkpoints (shall, must…), διορθώστε όπου χρειάζεται και πατήστε <strong>▶ Generate grid</strong>. Τα scanned PDFs απαιτούν πρώτα OCR.</p>
+</div>
+</section>
+
+<section class="guide-section" id="cms-paste">
+<div class="lang en"><h2>7.7.4 Grids by copy-paste</h2>
+<p>The <strong>📋 Paste points</strong> button accepts three kinds of text, which stay in the browser:</p><ul>
+<li>a list — one point per line (bullets and numbering such as 1.2, a), Q3 recognised), or one point per paragraph when points are separated by a blank line;</li>
+<li>a table copied from Excel or Word — columns Ref. | Topic | Checkpoint; the header row is detected automatically and multi-line cells are accepted;</li>
+<li>EASA references at the start of a point (ORO.GEN.200(a)(3), M.A.302, 145.A.30, AMC1 …) — the IR text and AMC are taken from the database and your text becomes the point title.</li></ul>
+<h4>Create a grid</h4><p>Use the <em>📋 Build a grid by copy-paste</em> card above the saved audits. Enter the code (prefix of automatic references, e.g. CHK-01), the title and section heading, select <strong>Analyse</strong>, review the preview (tick, correct reference or text), then <strong>▶ Create grid</strong>. The grid then follows the normal workflow (initial status Prepared, source Copy-paste).</p>
+<h4>Add points to an open grid</h4><p>Use the 📋 button in the toolbar of the EASA grid (also for grids built from a manual or the audit plan). Points are added in a dated section; assessments already entered are kept and an EASA reference already in the grid is not duplicated. Not possible after Report issued or Closed.</p>
+<h4>PDF → Audit Grid</h4><p>The 📋 button in the PDF grid toolbar adds a section to the open grid; on the PDF mode start screen, <em>📋 Paste a JSON grid or checkpoints</em> creates one. A PDF-grid JSON can be pasted directly, without a file.</p>
+<div class="note">Pasted points are kept when the article selection of the grid is edited later.</div>
+<h4>Cloud saving of PDF grids</h4><p>Every “PDF → Audit Grid” grid (imported JSON, pasted JSON or pasted points) is saved automatically on each change and synchronised with the cloud like the rest of the CMS. The PDF mode start screen lists the saved grids (▶ Open, 🗑 Delete); the <em>← PDF grids</em> toolbar button returns to it. <em>Download a copy</em> produces an offline copy (.json file) that can be reopened with <em>Add a grid from a file</em>.</p>
+</div>
+<div class="lang el"><h2>7.7.4 Grids με copy-paste</h2>
+<p>Το κουμπί <strong>📋 Paste points</strong> δέχεται λίστα (ένα point ανά γραμμή ή ανά παράγραφο), πίνακα από Excel/Word (Ref. | Topic | Checkpoint) ή EASA references στην αρχή κάθε point (IR + AMC από τη database). Το κείμενο παραμένει στον browser.</p>
+<ul><li><strong>Create a grid:</strong> κάρτα <em>Build a grid by copy-paste</em> → Analyse → έλεγχος preview → Create grid.</li>
+<li><strong>Add to an open grid:</strong> κουμπί 📋 στο toolbar· τα υπάρχοντα assessments διατηρούνται. Δεν επιτρέπεται μετά από Report issued ή Closed.</li>
+<li><strong>PDF → Audit Grid:</strong> κουμπί 📋 στο PDF toolbar ή επικόλληση JSON grid απευθείας.</li></ul>
+<p>Τα PDF grids αποθηκεύονται αυτόματα και συγχρονίζονται με το cloud· η αρχική οθόνη του PDF mode εμφανίζει τα αποθηκευμένα grids (Open / Delete).</p>
+</div>
+</section>
+
+<section class="guide-section" id="cms-governance">
+<div class="lang en"><h2>7.7.3 Audit governance</h2>
+<p>The governance bar under the workflow secures the audit record:</p><ul>
+<li><strong>Frozen regulatory baseline:</strong> the regulatory revision in force when the audit starts is recorded with the audit.</li>
+<li><strong>Auditor independence:</strong> enter the audited-area owner and set Independence to <em>Verified</em> with a justification. The audit cannot start while independence is not verified or when the auditor is also the audited-area owner.</li>
+<li><strong>Closure checks:</strong> an audit cannot be closed while CAP items are open, CAP effectiveness evidence is incomplete, an N/A has no justification or independence is not validated.</li>
+<li><strong>Report snapshot:</strong> when the status becomes <em>Report issued</em>, an unchangeable snapshot of the results is stored.</li>
+<li><strong>🕘 Audit trail</strong> lists every change (status, results, fields) with date and user; <strong>▦ Compliance coverage</strong> shows the requirements covered by saved grids.</li></ul>
+<div class="note">Coverage is calculated from saved grids only. It does not replace the Applicability Matrix, where every requirement must be declared applicable or not applicable with a justification.</div>
+</div>
+<div class="lang el"><h2>7.7.3 Audit governance</h2>
+<ul><li><strong>Frozen regulatory baseline</strong> για κάθε audit.</li>
+<li><strong>Auditor independence:</strong> το audit δεν ξεκινά αν δεν έχει επαληθευτεί η independence ή αν ο auditor είναι και audited-area owner.</li>
+<li><strong>Closure checks:</strong> δεν επιτρέπεται κλείσιμο με open CAP, ελλιπή effectiveness evidence, N/A χωρίς justification ή μη επαληθευμένη independence.</li>
+<li><strong>Report snapshot</strong> στο Report issued, <strong>Audit trail</strong> και <strong>Compliance coverage</strong>.</li></ul>
 </div>
 </section>
 <section class="guide-section" id="cms-matrix">
