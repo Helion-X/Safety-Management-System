@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Helion-X – SMS Synoptic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{
+  --bg:#14212c; --bg2:#172632; --panel:#1c2c3a; --line:#2e4557;
+  --ink:#e8eef2; --dim:#8fa3b3; --accent:#d9b44a;
+  --ok:#3ccf91; --warn:#f0b429; --fail:#ef4b4b; --na:#6c8193;
+  --cond:'Barlow Semi Condensed','Arial Narrow',system-ui,sans-serif;
+  --body:'Barlow',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{background:var(--bg)}
+body{margin:0;color:var(--ink);font:15px/1.45 var(--body);background:var(--bg)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+header{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;padding:12px 20px;background:var(--bg2);border-bottom:1px solid var(--line)}
+.brand h1{margin:0;font:700 23px/1.1 var(--cond);letter-spacing:.01em}
+.brand p{margin:2px 0 0;color:var(--dim);font-size:13px}
+.topnav{position:sticky;top:0;z-index:20;display:flex;gap:6px;flex-wrap:wrap;padding:8px 20px;background:#0f1c28;border-bottom:1px solid var(--line)}
+.topnav a{padding:7px 14px;border:1px solid var(--line);border-radius:4px;background:var(--panel);color:var(--ink);text-decoration:none;font:600 15px var(--cond)}
+.topnav a:hover,.topnav a:focus-visible{border-color:var(--accent);background:#4a3c12}
+.lamps{display:flex;gap:8px;flex-wrap:wrap}
+.lamp{display:flex;align-items:center;gap:10px;min-width:150px;padding:6px 12px;border:1px solid var(--line);border-radius:4px;background:#101b24;cursor:pointer;text-align:left;font:600 14px/1.15 var(--cond)}
+.lamp b{font-size:26px;line-height:1;min-width:1.2em}
+.lamp.fail.on{background:#561a1e;border-color:var(--fail);color:#ffdede;box-shadow:inset 0 0 0 1px var(--fail),0 0 16px rgba(239,75,75,.35)}
+.lamp.warn.on{background:#4a390f;border-color:var(--warn);color:#ffecbd;box-shadow:inset 0 0 0 1px var(--warn)}
+.lamp.quiet{font-weight:500;color:var(--dim);min-width:auto;cursor:default}
+.lamp.quiet b{font-size:18px}
+.lamp[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:2px}
+.meta{margin-left:auto;display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;color:var(--dim);font-size:13px}
+.btn{padding:6px 12px;border:1px solid var(--line);border-radius:4px;background:var(--panel);cursor:pointer;font-size:13px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:#4a3c12;border-color:#8a7020}
+.who{color:var(--ink)}
+.busy{color:var(--accent)}
+
+main{display:grid;grid-template-columns:minmax(0,1fr) 380px;align-items:start}
+.syn{min-width:0;padding:8px 12px 28px;border-right:1px solid var(--line)}
+.mapwrap{overflow-x:auto;overflow-y:hidden}
+svg#map{display:block;width:100%;min-width:980px;height:auto;user-select:none}
+aside{position:sticky;top:52px;max-height:calc(100vh - 52px);overflow:auto;padding:18px 20px 30px}
+@media (max-width:980px){
+  main{grid-template-columns:1fr}
+  .syn{border-right:0}
+  aside{position:static;max-height:none;border-top:1px solid var(--line)}
+}
+
+/* Planetary synoptic */
+.mapwrap{border-radius:8px;background:radial-gradient(ellipse at 50% 50%,#1e3550 0%,#142538 50%,#0f1c2a 100%)}
+.star{fill:#d6e6f5}
+.star.tw{animation:tw 3.5s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.15}50%{opacity:.9}}
+.node .corona{transform-box:fill-box;transform-origin:center;animation:corona 5s ease-in-out infinite}
+@keyframes corona{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.12);opacity:.7}}
+.motionbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:2px 0 8px;color:var(--dim);font-size:13px}
+.motionbar .btn[aria-pressed="true"]{border-color:var(--accent);background:#4a3c12}
+.motionbar .sep{width:10px}
+svg.anim .corona,svg.anim .star.tw{animation-play-state:running}
+svg:not(.anim) .corona,svg:not(.anim) .star.tw,svg:not(.anim) .edge.st-fail .ln,svg:not(.anim) .node.st-fail .halo{animation-play-state:paused}
+.orbit{fill:none;stroke:rgba(160,185,205,.17);stroke-width:1;stroke-dasharray:2 7}
+.node{cursor:pointer}
+.node .halo{fill:none;stroke:var(--st);stroke-width:2;opacity:.45}
+.node.st-fail .halo{stroke-width:3.5;opacity:.95;animation:pulse 1.6s ease-in-out infinite}
+.node .pl{stroke:rgba(255,255,255,.2);stroke-width:1}
+.node.st-ok .pl{fill:url(#g-ok)} .node.st-warn .pl{fill:url(#g-warn)} .node.st-fail .pl{fill:url(#g-fail)} .node.st-na .pl{fill:url(#g-na)}
+.node.absent .pl{fill:rgba(18,30,42,.55);stroke:var(--st);stroke-width:1.8;stroke-dasharray:5 4}
+.node .ic{font-size:19px;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.node.sun .ic{font-size:34px}
+.node.absent .ic{opacity:.55}
+.node .t{fill:var(--ink);font:600 14px var(--cond);text-anchor:middle;paint-order:stroke;stroke:#13233a;stroke-width:4px;stroke-linejoin:round}
+.node.sun .t{font-size:18px}
+.node.absent .t{fill:#b3c1cd}
+.node .corona{fill:url(#g-sun);pointer-events:none}
+.node:focus{outline:none}
+.node:focus-visible .halo,.node.sel .halo{opacity:1;stroke-width:4;filter:url(#glow)}
+.edge .ln{fill:none;stroke:var(--st);stroke-width:2;stroke-linecap:round;opacity:.85}
+.edge.st-na .ln{stroke-dasharray:3 6;opacity:.6}
+.edge.st-fail .ln{stroke-width:3.2;opacity:1;stroke-dasharray:10 7;animation:flow 1s linear infinite}
+.node .sorb{fill:none;stroke:rgba(200,220,235,.16);stroke-width:1;stroke-dasharray:1.5 4}
+.node .sat{stroke:#13233a;stroke-width:1.5;fill:var(--st)}
+.edge .pt{display:none;pointer-events:none}
+.edge.st-ok .pt{display:inline;fill:#d4fbe8}
+.edge.st-warn .pt{display:inline;fill:#ffe39a}
+.edge.st-fail .pt{display:inline;fill:#ff8a8a}
+.edge .hit{fill:none;stroke:transparent;stroke-width:16;cursor:pointer}
+.edge .bdg{display:none;cursor:pointer}
+.edge.st-fail .bdg,.edge.st-warn .bdg{display:inline}
+.edge .bdg circle{fill:var(--st);stroke:#13233a;stroke-width:2.5}
+.edge .bdg text{fill:#13233a;font:700 13px var(--body);text-anchor:middle}
+.edge .lbl{display:none;fill:var(--ink);font:500 12.5px var(--body);paint-order:stroke;stroke:#13233a;stroke-width:4px;text-anchor:middle;pointer-events:none}
+.edge:hover .lbl,.edge.sel .lbl,.edge:focus-visible .lbl,svg[data-filter] .edge.st-fail .lbl,svg[data-filter] .edge.st-warn .lbl{display:inline}
+.edge.sel .ln{stroke-width:4;opacity:1}
+.edge:focus{outline:none}
+@keyframes flow{to{stroke-dashoffset:-17}}
+@keyframes pulse{0%,100%{opacity:.95}50%{opacity:.2}}
+
+.st-ok{--st:var(--ok)} .st-warn{--st:var(--warn)} .st-fail{--st:var(--fail)} .st-na{--st:var(--na)}
+svg.focus .node:not(.rel):not(.sel),svg.focus .edge:not(.rel):not(.sel){opacity:.22}
+svg[data-filter="fail"] .node:not(.st-fail),svg[data-filter="fail"] .edge:not(.st-fail){opacity:.12}
+svg[data-filter="warn"] .node:not(.st-warn),svg[data-filter="warn"] .edge:not(.st-warn){opacity:.12}
+
+/* To-do list */
+.issues h2,aside h2{font:700 19px/1.2 var(--cond);margin:22px 0 8px}
+.issues ol{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.issues li{border-bottom:1px solid var(--line)}
+.issues button{display:grid;grid-template-columns:14px minmax(0,1fr) auto;gap:4px 12px;align-items:baseline;width:100%;padding:9px 6px;background:none;border:0;text-align:left;cursor:pointer}
+.issues button:hover{background:var(--panel)}
+.issues .mk{width:12px;height:12px;border-radius:2px;background:var(--st);align-self:center}
+.issues .nm{font-weight:600}
+.issues .vl{color:var(--dim);font-size:13.5px;text-align:right}
+.issues .empty{color:var(--dim);padding:10px 0}
+@media (max-width:620px){.issues button{grid-template-columns:14px 1fr}.issues .vl{grid-column:2;text-align:left}}
+
+/* Panel */
+aside .kind{color:var(--dim);font-size:13px;margin:0}
+aside h3{font:700 21px/1.15 var(--cond);margin:2px 0 6px}
+.pill{display:inline-block;padding:2px 10px;border-radius:3px;font:600 13px var(--cond);background:var(--st);color:#10202b}
+.val{font-size:16px;margin:10px 0 2px}
+.det{color:var(--dim);margin:0 0 6px;font-size:14px;overflow-wrap:anywhere}
+.desc{margin:12px 0;font-size:14.5px}
+.fix{margin:12px 0;padding:10px 12px;border-left:3px solid var(--st);background:var(--panel);font-size:14px}
+.checks{list-style:none;margin:8px 0;padding:0}
+.checks li{display:grid;grid-template-columns:12px 1fr;gap:2px 10px;padding:8px 0;border-top:1px solid var(--line)}
+.checks .mk{width:10px;height:10px;border-radius:50%;background:var(--st);margin-top:6px}
+.checks .cl{font-weight:600}
+.links{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.links button{display:flex;align-items:center;gap:10px;padding:7px 10px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--st);border-radius:3px;cursor:pointer;text-align:left;font-size:14px}
+.att{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:4px}
+.att label{display:block;font-size:13px;color:var(--dim);margin:8px 0 3px}
+.att input,.att textarea,dialog input{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:3px;background:#101b24;color:var(--ink);font:inherit}
+.att p{margin:0 0 4px;font-size:14px}
+.legend{list-style:none;padding:0;margin:10px 0}
+.legend li{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:14px}
+.legend svg{flex:none}
+.note{color:var(--dim);font-size:13.5px}
+
+dialog{border:1px solid var(--line);border-radius:6px;background:var(--bg2);color:var(--ink);padding:20px 22px;width:min(380px,92vw)}
+dialog::backdrop{background:rgba(5,12,18,.65)}
+dialog h2{font:700 20px var(--cond);margin:0 0 10px}
+dialog label{display:block;font-size:13px;color:var(--dim);margin:10px 0 3px}
+dialog .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+dialog .err{color:#ff9a9a;font-size:13.5px;min-height:1.2em;margin:8px 0 0}
+</style>
+<body>
+<nav class="topnav" aria-label="Suite tools">
+  <a href="index.html">⌂ Home</a>
+  <a href="Helion-X_Safety.html">🛡️ Safety</a>
+  <a href="Helion-X_Compliance_Monitoring_System.html">📋 CMS</a>
+  <a href="Helion-X_Appendices_OMM.html">📁 OMM</a>
+  <a href="Helion-X_User_Guide.html">? Guide</a>
+</nav>
+<header>
+  <div class="brand">
+    <h1>SMS Synoptic</h1>
+    <p>Helion Helicopters, constellation of SMS functions and their links, checked live</p>
+  </div>
+  <div class="lamps">
+    <button class="lamp fail" id="lampFail" aria-pressed="false" title="Show failed items only"><b id="nFail">–</b><span>failed</span></button>
+    <button class="lamp warn" id="lampWarn" aria-pressed="false" title="Show degraded items only"><b id="nWarn">–</b><span>degraded</span></button>
+    <span class="lamp quiet"><b id="nOk">–</b><span>operational</span></span>
+    <span class="lamp quiet"><b id="nNa">–</b><span>not checked</span></span>
+  </div>
+  <div class="meta">
+    <span id="conn"></span>
+    <span id="stamp"></span>
+    <button class="btn" id="btnRun">Run checks again</button>
+    <button class="btn" id="btnDiag">Copy diagnostic</button>
+  </div>
+</header>
+
+<main>
+  <section class="syn">
+    <div class="motionbar" role="group" aria-label="Orbit motion">
+      <button class="btn" id="btnPlay" aria-pressed="true">Pause</button>
+      <span class="sep"></span><span>Speed</span>
+      <button class="btn" data-speed="0.5" aria-pressed="false">slow</button>
+      <button class="btn" data-speed="1" aria-pressed="true">normal</button>
+      <button class="btn" data-speed="3" aria-pressed="false">fast</button>
+      <span class="sep"></span><span id="motionHint">Each satellite is one check of the function, coloured by its result.</span>
+    </div>
+    <div class="mapwrap"><svg id="map" viewBox="0 0 1500 1000" role="img" aria-label="Synoptic of SMS functions and their links"></svg></div>
+    <div class="issues">
+      <h2>To be addressed</h2>
+      <ol id="issues"><li class="empty">Checks in progress.</li></ol>
+    </div>
+  </section>
+  <aside id="panel" aria-live="polite"></aside>
+</main>
+
+<dialog id="login">
+  <form id="loginForm" method="dialog">
+    <h2>Sign in to the SMS</h2>
+    <div id="stepPwd">
+      <label for="lgEmail">Email address</label>
+      <input id="lgEmail" type="email" autocomplete="username" placeholder="first.last@helionhelicopters.com" required>
+      <label for="lgPwd">Password</label>
+      <input id="lgPwd" type="password" autocomplete="current-password" required>
+    </div>
+    <p class="err" id="lgErr"></p>
+    <div class="row">
+      <button type="button" class="btn" id="lgCancel">Cancel</button>
+      <button type="submit" class="btn primary" id="lgGo">Sign in</button>
+    </div>
+  </form>
+</dialog>
+<script>
+'use strict';
+/* =====================================================================
+   Helion-X SMS Synoptic.
+   Self-contained: Helion Supabase project only
+   (helion_data, helion_reports, helion_user_roles), Helion files only.
+   The public key is read automatically from index.html (same repository).
+   Only fill CFG.key if the page is opened elsewhere.
+   ===================================================================== */
+const CFG = { url: 'https://uihoemaastmyhgxxwxdb.supabase.co', key: '' };
+const T_DATA = 'helion_data', T_REPORTS = 'helion_reports', T_ROLES = 'helion_user_roles';
+const F_SMS = 'Helion-X_Safety.html';
+const F_CMS = 'Helion-X_Compliance_Monitoring_System.html';
+const F_OMM = 'Helion-X_Appendices_OMM.html';
+const F_REP = 'Helion-X_Report.html';
+const FILES = ['index.html', F_SMS, F_CMS, F_OMM, F_REP, 'Helion-X_User_Guide.html'];
+const ATT_KEY = 'helion_synoptic_attest_v1';
+const READER_ACCOUNT = 'sms@helionhelicopters.com';
+
+/* ---------- Functions ---------- */
+const NODES = [
+  {id:'report', label:'Reporting form', sub:F_REP, file:F_REP,
+   desc:'Public Safety / Security reporting form (QR code). Each submission receives a reference HLX-YYMMDD-XXXX.'},
+  {id:'reports', label:'Received reports', sub:'Table helion_reports',
+   desc:'Queue of submitted reports, awaiting import into the occurrence log.'},
+  {id:'email', label:'Email alert', sub:'Notification of new reports',
+   desc:'Notification sent to the Safety Manager for each new report.'},
+  {id:'audit', label:'Audits and inspections', sub:'Compliance Monitoring', file:F_CMS,
+   desc:'EASA audit grids, 12-month audit plan and progress tracking.'},
+  {id:'hosting', label:'Portal and navigation', sub:'index.html and internal links', file:'index.html',
+   desc:'Home page of the Helion-X suite and links between files. The check flags in particular any link prefixed again with Archives/.'},
+
+  {id:'fivew', label:'Cause analysis', sub:'5 Whys in the occurrence form', file:F_SMS,
+   desc:'Cause analysis of each occurrence, entered in the investigation form (single entry area).'},
+  {id:'occ', label:'Occurrence log', sub:'Occurrence Log', file:F_SMS,
+   desc:'Investigation of occurrences imported from reports or entered directly.'},
+  {id:'taxo', label:'Event catalogue', sub:'Event Accounting', file:F_SMS,
+   desc:'Links each occurrence to a catalogue event in order to count observed frequencies.'},
+  {id:'eccairs', label:'ECCAIRS notification', sub:'Deadlines and E5X export', file:F_SMS,
+   desc:'Tracking of Regulation (EU) 376/2014 notification deadlines to the HCAA and generation of E5X files.'},
+  {id:'findings', label:'Audit findings', sub:'Findings register', file:F_CMS,
+   desc:'Non-compliances raised in audit, with level and due date.'},
+  {id:'cap', label:'Corrective actions', sub:'CAP', file:F_CMS,
+   desc:'Corrective action plans associated with findings.'},
+  {id:'auth', label:'Sign-in and roles', sub:T_ROLES,
+   desc:'Authentication and role (admin, editor, reader, authority) read from helion_user_roles. No second factor on the Helion-X suite.'},
+
+  {id:'ref', label:'Scenario baseline', sub:'Initial risk data',
+   desc:'Baseline of risk scenarios from which the register is rebuilt at each opening. Kept in the cloud (module sms_referentiel) or, failing that, embedded in the Safety file.'},
+  {id:'rr', label:'Risk register', sub:'Risk Register', file:F_SMS,
+   desc:'Risk scenarios with initial and residual ICAO ratings.'},
+  {id:'bar', label:'Barriers and traceability', sub:'Barrier register', file:F_SMS,
+   desc:'Prevention, mitigation and recovery measures, with source document, owner and verification due date.'},
+  {id:'eff', label:'Barrier effectiveness', sub:'Verification campaign', file:F_SMS, view:'barriereff',
+   desc:'Evidence that barriers are in place, applied and effective. Module « Barrier effectiveness » of the Safety file.'},
+  {id:'moc', label:'Management of change', sub:'MOC studies', file:F_SMS,
+   desc:'Change studies, with a root cause reference to the occurrence log.'},
+  {id:'matrix', label:'EASA compliance matrix', sub:'Compliance Monitoring', file:F_CMS,
+   desc:'EASA requirements attached to a change study and appended to the MOC PDF.'},
+  {id:'cloud', label:'Database', sub:'Supabase, table helion_data',
+   desc:'Cloud storage of the Safety and Compliance Monitoring modules (Helion project).'},
+
+  {id:'so', label:'Safety objectives', sub:'Safety Policy & Objectives', file:F_SMS,
+   desc:'Declared safety objectives, measured by the SPIs.'},
+  {id:'spi', label:'Performance indicators', sub:'SPIs and thresholds', file:F_SMS,
+   desc:'Indicators fed by the register scenarios (firefighting / belly tank activity), with alert thresholds per ICAO Doc 9859.'},
+  {id:'srb', label:'Safety Review Board', sub:'Management reviews', file:F_SMS,
+   desc:'Periodic management review of indicators, risks and findings (SRB and SRB Checklist tabs of the Safety file).'},
+  {id:'ll', label:'Lessons learned', sub:'Lessons Learned, Safety Alerts', file:F_SMS,
+   desc:'Dissemination of lessons drawn from occurrences.'},
+  {id:'actions', label:'Action tracking', sub:'MOC and CAP assignments', file:F_SMS,
+   desc:'Actions assigned with owner and due date, notified by email.',
+   manual:{key:'assign-mail', label:'Assignment email', period:180, what:'Assign a test action and check that the owner receives the email.'}},
+
+  {id:'omm', label:'List of documents', sub:'Appendices OMM', file:F_OMM,
+   desc:'Operations manual appendices, readable by the reader account.'},
+  {id:'pub', label:'Published register', sub:'Reader view, sms_risk_register',
+   desc:'Projection of the register readable by the shared reader account ' + READER_ACCOUNT + '.'},
+  {id:'partis', label:'Information security', sub:'Part-IS — ISMS', file:F_SMS, module:{view:'isms', key:'safISMS'},
+   desc:'Information security management system (Regulation (EU) 2023/203, Part-IS.I.OR): assets, IS risks, incidents and requirements. Module « Part-IS — ISMS » of the Safety file.'},
+  {id:'training', label:'SMS training', sub:'SMS Training & Competence', file:F_SMS, module:{view:'training', key:'safTrainingRecords'},
+   desc:'SMS training records of personnel (AMC1 ORO.GEN.200(a)(4)). Module « SMS Training & Competence » of the Safety file.'},
+  {id:'erp', label:'ERP exercises', sub:'Emergency response plan', file:F_SMS, module:{view:'erp', key:'safERPExercises'},
+   desc:'Log of emergency response plan exercises. Module « Emergency Response Plan » of the Safety file.'},
+  {id:'interfaces', label:'External interfaces', sub:'External Interfaces', file:F_SMS, module:{view:'interfaces', key:'safInterfaces'},
+   desc:'Register of interfaces with external organisations: subcontractors, contracted maintenance, aerodromes, customers (ORO.GEN.205). Module « External Interfaces » of the Safety file.'},
+];
+const NODE = Object.fromEntries(NODES.map(n => [n.id, n]));
+
+/* ---------- Links ---------- */
+const EDGES = [
+  {id:'e1', from:'report', to:'reports', label:'Submission', run:()=>chkDeposit(),
+   desc:'The form writes each report into helion_reports.',
+   fix:'Check that Helion-X_Report.html is at the root of the repository and that the anonymous insert policy on helion_reports still exists.'},
+  {id:'e2', from:'reports', to:'email', label:'Alert', manual:{key:'report-mail', label:'Email alert', period:90, what:'Submit a test report and check that the alert email is received.'},
+   desc:'Each new record in helion_reports triggers an email. This link cannot be measured from the page: it is attested by a test.',
+   fix:'Check the trigger on the Helion Supabase project, the email service quota and the alert template.'},
+  {id:'e3', from:'reports', to:'occ', label:'Import', run:()=>chkImport(),
+   desc:'Received reports are imported into the occurrence log for investigation.',
+   fix:'Open the Safety file with an admin or editor account and run the import of mobile reports.'},
+  {id:'e4', from:'occ', to:'fivew', label:'Causes', run:()=>chkFiveWhys(),
+   desc:'Each investigated occurrence carries a cause analysis.',
+   fix:'Complete the 5 Whys in the occurrence form of the listed records.'},
+  {id:'e5', from:'occ', to:'taxo', label:'Classification', run:()=>chkTaxo(),
+   desc:'Each occurrence is linked to a catalogue event.',
+   fix:'Use « ∑ Link taxonomy » in the header of the Occurrence Log.'},
+  {id:'e6', from:'taxo', to:'rr', label:'Observed frequencies', run:()=>chkFrequencies(),
+   desc:'Event frequencies feed the probability ratings of the register.',
+   fix:'Without catalogue links, probabilities rest on no occurrence data: link the occurrences.'},
+  {id:'e7', from:'occ', to:'eccairs', label:'Notification',
+   manual:{key:'e5x', label:'E5X export', period:180, what:'Generate an E5X export of an occurrence and check that ECCAIRS2 accepts it.'},
+   desc:'Reportable occurrences are sent to ECCAIRS2 within the regulatory deadlines.',
+   fix:'Test an E5X export and review the deadlines of pending notifications.'},
+  {id:'e8', from:'ref', to:'rr', label:'Baseline', run:()=>chkReferentiel(),
+   desc:'The register is rebuilt from the scenario baseline, then adopts the edited records.',
+   fix:'Move the baseline out of the public Safety file into the cloud (module sms_referentiel, admin account) and empty INITIAL_DATA.'},
+  {id:'e9', from:'rr', to:'bar', label:'Measures', run:()=>chkBarriers(),
+   desc:'Each scenario carries its barriers, each with an owner and a source document.',
+   fix:'Fill in owners and confirm source documents in the Barrier register.'},
+  {id:'e10', from:'bar', to:'eff', label:'Verification', run:()=>chkBarrierChecks(),
+   desc:'Barriers are verified when due and their effectiveness level is recorded.',
+   fix:'Port the barrier effectiveness module to Helion-X_Safety.html if absent, then run the verification campaign on overdue or critical barriers.'},
+  {id:'e11', from:'eff', to:'rr', label:'Residual supported', run:()=>chkResidual(),
+   desc:'The claimed residual risk is supported by an effectiveness assessment.',
+   fix:'Assess the effectiveness of the listed scenarios, overdue ones first.'},
+  {id:'e12', from:'rr', to:'spi', label:'Indicators', run:()=>chkIndicators(),
+   desc:'Scenarios name the indicator that monitors them.',
+   fix:'Associate a safety indicator with the priority scenarios.'},
+  {id:'e13', from:'spi', to:'so', label:'Targets', run:()=>chkObjectives(),
+   desc:'SPIs measure the achievement of declared safety objectives.',
+   fix:'Declare the safety objectives and link them to their SPIs.'},
+  {id:'e14', from:'spi', to:'srb', label:'Review', run:()=>chkSrb(),
+   desc:'Indicators are reviewed by the Safety Review Board.',
+   fix:'Hold and record an SRB meeting.'},
+  {id:'e15', from:'rr', to:'pub', label:'Publication', run:()=>chkPublication(),
+   desc:'The register is published in a separate row, the only one readable by the reader account.',
+   fix:'Republish the register with the PUBLISH button of the cloud bar.'},
+  {id:'e16', from:'occ', to:'moc', label:'Root cause', run:()=>chkRootCause(),
+   desc:'Change studies cite the occurrence that triggered the change.',
+   fix:'Correct the root cause reference of the listed MOCs so that it points to an existing occurrence.'},
+  {id:'e17', from:'moc', to:'matrix', label:'Compliance', run:()=>chkMatrix(),
+   desc:'The Safety file reads the compliance matrix from the Compliance Monitoring module to append it to the MOC PDF.',
+   fix:'Open the Compliance Monitoring, build the matrix and save it to the cloud.'},
+  {id:'e18', from:'moc', to:'actions', label:'Actions', run:()=>chkMocActions(),
+   desc:'Change studies generate assigned and dated actions.',
+   fix:'Chase the owners of overdue actions or revise their due date.'},
+  {id:'e19', from:'cap', to:'actions', label:'Actions', run:()=>chkCapActions(),
+   desc:'Corrective action plans produce tracked actions.',
+   fix:'Chase overdue corrective actions.'},
+  {id:'e20', from:'audit', to:'findings', label:'Findings', run:()=>chkAudits(),
+   desc:'Audits produce recorded findings.',
+   fix:'Record the audits in the Compliance Monitoring.'},
+  {id:'e21', from:'findings', to:'cap', label:'Treatment', run:()=>chkFindingsCap(),
+   desc:'Each open finding receives a corrective action plan.',
+   fix:'Write the CAP of the findings that have none.'},
+  {id:'e22', from:'occ', to:'ll', label:'Lessons', run:()=>chkLessons(),
+   desc:'Lessons from occurrences are disseminated as Safety Alerts.',
+   fix:'Reopen the listed Safety Alerts and restore their body text.'},
+  {id:'e23', from:'so', to:'training', label:'Competence', run:()=>moduleLink('training'),
+   desc:'Safety objectives rely on SMS training of personnel.',
+   fix:'Record SMS training and renew expired ones in SMS Training & Competence.'},
+  {id:'e24', from:'srb', to:'erp', label:'Preparedness', run:()=>moduleLink('erp'),
+   desc:'The management review examines emergency response plan exercises.',
+   fix:'Plan and record an emergency response exercise in Emergency Response Plan.'},
+  {id:'e25', from:'rr', to:'partis', label:'Cyber risks', run:()=>moduleLink('partis'),
+   desc:'Information security risks are managed in a Part-IS ISMS.',
+   fix:'In Part-IS — ISMS, assess information security risks and link them to the relevant SMS scenarios.'},
+  {id:'e26', from:'moc', to:'interfaces', label:'Interfaces', run:()=>moduleLink('interfaces'),
+   desc:'Changes are assessed against external interfaces.',
+   fix:'In External Interfaces, list the external organisations and keep their reviews up to date.'},
+  {id:'e27', from:'auth', to:'cloud', label:'Session', run:()=>chkSessionData(),
+   desc:'The signed-in session, with its role, opens data access.',
+   fix:'Sign in again, then check the role row in helion_user_roles (case-insensitive match on the email).'},
+];
+const EDGE = Object.fromEntries(EDGES.map(e => [e.id, e]));
+
+/* =====================================================================
+   Utilities
+   ===================================================================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const R = (status, value, detail = '') => ({status, value, detail});
+const RANK = {ok:0, na:1, warn:2, fail:3};
+const worst = list => list.reduce((a, b) => RANK[b] > RANK[a] ? b : a, 'ok');
+const LABEL = {ok:'Operational', warn:'Degraded', fail:'Failed', na:'Not checked'};
+
+function parseMaybe(v){
+  if (typeof v === 'string'){ const t = v.trim(); if (t[0] === '{' || t[0] === '['){ try { return JSON.parse(t); } catch(e){} } }
+  return v;
+}
+function toList(v){
+  v = parseMaybe(v); if (!v) return [];
+  if (Array.isArray(v)) return v;
+  if (typeof v === 'object'){
+    for (const k of ['items','list','records','entries','data','risks','scenarios','alerts','objectives']) if (Array.isArray(v[k])) return v[k];
+    const vals = Object.values(v).map(parseMaybe);
+    if (vals.length && vals.every(x => x && typeof x === 'object' && !Array.isArray(x))) return vals;
+  }
+  return [];
+}
+function hasText(v, min = 1, d = 4){
+  v = parseMaybe(v); if (v == null || d < 0) return false;
+  if (typeof v === 'string') return v.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim().length >= min;
+  if (typeof v === 'number') return min <= 1;
+  if (typeof v === 'boolean') return false;
+  if (Array.isArray(v)) return v.some(x => hasText(x, min, d - 1));
+  if (typeof v === 'object') return Object.values(v).some(x => hasText(x, min, d - 1));
+  return false;
+}
+/* A risk record is recognised by its identifier (SMS-nn, HLX-nn, R-nn…) or by its risk fields */
+const RISK_ID = /^(SMS|HLX|HEL|RSK|RISK|R)-?\d+/i;
+const isRisk = x => x && typeof x === 'object' && !Array.isArray(x) &&
+  (RISK_ID.test(String(x.id || '')) || ('undesirable_event' in x && ('barriers' in x || 'prevention' in x)));
+function deepRiskArray(o, d = 5){
+  o = parseMaybe(o); if (!o || d < 0) return [];
+  if (Array.isArray(o)){
+    if (o.some(isRisk)) return o.filter(x => x && typeof x === 'object');
+    for (const x of o){ const r = deepRiskArray(x, d - 1); if (r.length) return r; }
+    return [];
+  }
+  if (typeof o === 'object') for (const v of Object.values(o)){ const r = deepRiskArray(v, d - 1); if (r.length) return r; }
+  return [];
+}
+function deepCollect(o, keyRe, d = 4, out = []){
+  o = parseMaybe(o); if (d < 0 || !o || typeof o !== 'object') return out;
+  for (const [k, v] of Object.entries(o)){
+    if (keyRe.test(k)) out.push(parseMaybe(v));
+    if (v && typeof v === 'object') deepCollect(v, keyRe, d - 1, out);
+  }
+  return out;
+}
+function parseD(v){
+  if (!v) return null;
+  if (v instanceof Date) return isNaN(v) ? null : v;
+  const s = String(v).trim();
+  let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) { const d = new Date(s.length > 10 ? s : s + 'T00:00:00'); return isNaN(d) ? null : d; }
+  m = s.match(/^(\d{1,2})[./](\d{1,2})[./](\d{4})/);
+  if (m) return new Date(+m[3], +m[2] - 1, +m[1]);
+  return null;
+}
+function datesOf(obj, keyRe){
+  const out = [];
+  if (!obj || typeof obj !== 'object') return out;
+  for (const [k, v] of Object.entries(obj)) if (keyRe.test(k)){ const d = parseD(v); if (d) out.push(d); }
+  return out;
+}
+const firstDate = (obj, keyRe) => datesOf(obj, keyRe)[0] || null;
+function maxDate(arr, keyRe){ let m = null; for (const o of arr) for (const d of datesOf(o, keyRe)) if (!m || d > m) m = d; return m; }
+const TODAY = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
+const daysSince = d => d ? Math.floor((Date.now() - d.getTime()) / 864e5) : null;
+const fmtD = d => { d = parseD(d) || d; return d instanceof Date ? d.toLocaleDateString('en-GB') : '—'; };
+const fmtSize = n => n > 1e6 ? (n / 1e6).toFixed(2) + ' MB' : Math.round(n / 1e3) + ' KB';
+const plural = (n, s, p) => n + ' ' + (n === 1 ? s : (p || s + 's'));
+const DONE_RE = /done|clos|termin|complet|fait|ferm|resolved|réalis|realis/i;
+
+/* =====================================================================
+   Context and loading
+   ===================================================================== */
+const CTX = {sb:null, files:{}, nav:{archives:[], broken:[], scanned:0}, mods:null, risks:[], occs:[], bars:[]};
+const RES = {};
+let SEL = null, FILTER = null, BUSY = false;
+
+function modData(m){ const r = CTX.mods && CTX.mods[m]; return r ? parseMaybe(r.data) : null; }
+function keysMatching(re){
+  const out = [];
+  for (const [m, r] of Object.entries(CTX.mods || {})){
+    const d = parseMaybe(r.data);
+    if (re.test(m)) out.push({m, k:'(module)', v:d});
+    if (d && typeof d === 'object' && !Array.isArray(d)) for (const k of Object.keys(d)) if (re.test(k)) out.push({m, k, v:parseMaybe(d[k])});
+  }
+  return out;
+}
+const itemsOf = hits => hits.flatMap(h => toList(h.v)).filter(x => x && typeof x === 'object');
+const isFull = () => ['admin','editor','authority'].includes(CTX.role);
+const hasSms = () => !!(CTX.mods && CTX.mods.sms_data);
+/* Compliance Monitoring row: cms_data, or any module named after it */
+function cmsKey(){
+  if (!CTX.mods) return null;
+  if (CTX.mods.cms_data) return 'cms_data';
+  return Object.keys(CTX.mods).find(k => /^cms|compliance/i.test(k)) || null;
+}
+const cmsData = () => { const k = cmsKey(); return k ? modData(k) : null; };
+function naData(){
+  if (!CTX.sb) return R('na', 'Not checked', 'Supabase configuration not found: the public key was not found in index.html.');
+  if (!CTX.session) return R('na', 'Not checked', 'Sign-in required to read the data.');
+  return R('na', 'Not checked', `Data not accessible with role ${CTX.role || 'unknown'}${CTX.modsErr ? ' (' + CTX.modsErr + ')' : ''}.`);
+}
+
+async function fetchFiles(){
+  CTX.files = {};
+  await Promise.all(FILES.map(async f => {
+    try {
+      const r = await fetch(f, {cache:'no-store'});
+      const t = r.ok ? await r.text() : '';
+      CTX.files[f] = {ok:r.ok, code:r.status, size:t.length, text:t};
+    } catch(e){ CTX.files[f] = {ok:false, code:0, size:0, text:''}; }
+  }));
+  const s = CTX.files[F_SMS];
+  CTX.views = new Set(); CTX.viewsKnown = !!(s && s.ok && s.text);
+  CTX.embedded = null;
+  if (CTX.viewsKnown){
+    const re = /id="view-([\w-]+)"/g; let m; while ((m = re.exec(s.text))) CTX.views.add(m[1]);
+    /* Scenario baseline embedded in clear in the public file? */
+    const i = s.text.search(/INITIAL_DATA\s*=\s*\[/);
+    if (i >= 0){
+      const slice = s.text.slice(i, i + 400000);
+      const open = /INITIAL_DATA\s*=\s*\[\s*\{/.test(slice.slice(0, 200));
+      CTX.embedded = open ? Math.max(1, (slice.match(/"undesirable_event"\s*:|undesirable_event\s*:/g) || []).length) : 0;
+    }
+  }
+}
+async function scanNav(){
+  CTX.nav = {archives:[], broken:[], scanned:0, saf:[]};
+  const re = /(?:href\s*=\s*|location(?:\.href)?\s*=\s*|location\.(?:assign|replace)\(\s*|window\.open\(\s*)["'`]([^"'`?#:\s]+\.html)/g;
+  const targets = new Map(), seenA = new Set();
+  for (const f of FILES){
+    const t = CTX.files[f] && CTX.files[f].text; if (!t) continue;
+    CTX.nav.scanned++;
+    /* Isolation check: no Helion file may point to another Supabase project or to non-Helion tables */
+    const foreign = (t.match(/https:\/\/[a-z0-9]{16,24}\.supabase\.co/g) || []).filter(u => !u.includes('uihoemaastmyhgxxwxdb'));
+    const safTables = t.match(/from\(\s*['"](saf_data|saf_reports|user_roles)['"]\s*\)/g) || [];
+    if (foreign.length || safTables.length) CTX.nav.saf.push({file:f, what:[...new Set([...foreign, ...safTables.map(x => x.replace(/from\(\s*['"]|['"]\s*\)/g, ''))])]});
+    let m; re.lastIndex = 0;
+    while ((m = re.exec(t))){
+      const tg = m[1].replace(/^\.\//, '');
+      if (tg.startsWith('../')) continue;
+      if (/^archives\//i.test(tg)){ const k = f + '|' + tg; if (!seenA.has(k)){ seenA.add(k); CTX.nav.archives.push({file:f, target:tg}); } }
+      else { if (!targets.has(tg)) targets.set(tg, new Set()); targets.get(tg).add(f); }
+    }
+  }
+  for (const [tg, srcs] of targets){
+    let ok, code;
+    if (CTX.files[tg]){ ok = CTX.files[tg].ok; code = CTX.files[tg].code; }
+    else { try { const r = await fetch(tg, {method:'HEAD', cache:'no-store'}); ok = r.ok; code = r.status; } catch(e){ ok = false; code = 0; } }
+    if (!ok) CTX.nav.broken.push({target:tg, from:[...srcs], code});
+  }
+}
+function initSb(){
+  if (CTX.sb || !window.supabase) return;
+  let url = CFG.url, key = CFG.key;
+  for (const f of FILES){
+    const t = CTX.files[f] && CTX.files[f].text; if (!t) continue;
+    if (!key && t.includes('uihoemaastmyhgxxwxdb')){
+      const m = t.match(/["'`](eyJhbGciOi[\w-]+\.[\w-]+\.[\w-]+|sb_publishable_[\w-]+)["'`]/); if (m) key = m[1];
+    }
+    if (key) break;
+  }
+  if (url && key) CTX.sb = window.supabase.createClient(url, key);
+}
+async function loadSession(){
+  CTX.session = null; CTX.email = null; CTX.role = null; CTX.roleErr = null;
+  if (!CTX.sb) return;
+  const {data} = await CTX.sb.auth.getSession();
+  CTX.session = data && data.session; if (!CTX.session) return;
+  CTX.email = CTX.session.user && CTX.session.user.email;
+  const q = await CTX.sb.from(T_ROLES).select('role').ilike('user_email', CTX.email).limit(1);
+  if (q.error) CTX.roleErr = q.error.message;
+  CTX.role = (!q.error && q.data && q.data[0]) ? String(q.data[0].role).toLowerCase().trim() : null;
+}
+async function loadData(){
+  CTX.mods = null; CTX.modsErr = null; CTX.reports = null; CTX.reportsErr = null;
+  if (!CTX.session) return;
+  const q = await CTX.sb.from(T_DATA).select('module,data,updated_at');
+  if (q.error) CTX.modsErr = q.error.message;
+  else { CTX.mods = {}; for (const r of q.data || []) CTX.mods[r.module] = r; }
+  if (['admin','editor'].includes(CTX.role)){
+    let r = await CTX.sb.from(T_REPORTS).select('*').order('created_at', {ascending:false}).limit(400);
+    if (r.error) r = await CTX.sb.from(T_REPORTS).select('*').limit(400);
+    if (r.error) CTX.reportsErr = r.error.message; else CTX.reports = r.data || [];
+  }
+}
+function derive(){
+  CTX.risks = []; CTX.occs = []; CTX.bars = []; CTX.risksSrc = null;
+  const sms = modData('sms_data');
+  if (sms){
+    CTX.risks = deepRiskArray(sms.safRiskDB !== undefined ? sms.safRiskDB : sms);
+    CTX.occs = toList(sms.safOccurrences).filter(o => o && typeof o === 'object');
+    if (CTX.risks.length) CTX.risksSrc = 'sms_data';
+  }
+  if (!CTX.risks.length && CTX.mods && CTX.mods.sms_risk_register){ CTX.risks = deepRiskArray(modData('sms_risk_register')); if (CTX.risks.length) CTX.risksSrc = 'sms_risk_register'; }
+  for (const r of CTX.risks) for (const b of toList(r.barriers)) if (b && typeof b === 'object' && !b.archived) { b.__rid = r.id; CTX.bars.push(b); }
+}
+
+/* =====================================================================
+   Checks
+   ===================================================================== */
+function fileCheck(name){
+  if (CTX.offline) return R('na', 'Offline', 'Page opened from disk: files cannot be checked.');
+  const f = CTX.files[name];
+  if (!f) return R('na', 'Not checked');
+  if (!f.ok) return R('fail', `File unreachable (HTTP ${f.code || 'no response'})`, `${name} does not respond at the root of the site.`);
+  return R('ok', 'Online', `${name} responds (${fmtSize(f.size)}).`);
+}
+function navCheck(){
+  if (CTX.offline) return R('na', 'Offline');
+  const a = CTX.nav.archives, b = CTX.nav.broken;
+  if (a.length || b.length){
+    const parts = [];
+    if (a.length) parts.push(`${plural(a.length, 'link')} prefixed with Archives/: ` + a.map(x => `${x.target} in ${x.file}`).join('; '));
+    if (b.length) parts.push(`${plural(b.length, 'target')} not found: ` + b.map(x => `${x.target} (HTTP ${x.code || '—'}, from ${x.from.join(', ')})`).join('; '));
+    return R('fail', `${plural(a.length + b.length, 'broken link')}`, parts.join('. ') + '.');
+  }
+  return R('ok', 'All links resolve', `${plural(CTX.nav.scanned, 'file')} scanned.`);
+}
+function sepCheck(){
+  if (CTX.offline) return R('na', 'Offline');
+  const s = CTX.nav.saf || [];
+  if (s.length) return R('fail', `${plural(s.length, 'file')} pointing outside the Helion project`, s.map(x => `${x.file}: ${x.what.join(', ')}`).join('; ') + '. Helion data must only use project uihoemaastmyhgxxwxdb and the helion_* tables.');
+  return R('ok', 'Helion project only', `${plural(CTX.nav.scanned, 'file')} scanned: no other Supabase project, no non-Helion table.`);
+}
+function authCheck(){
+  if (!CTX.sb) return R('na', 'Configuration not found', 'The Helion Supabase public key was not found in index.html. Fill it in CFG.key at the top of this file.');
+  if (!CTX.session) return R('warn', 'Not signed in', 'Data checks are suspended until a session is open.');
+  if (!CTX.role) return R('fail', 'No role found', `${CTX.email} has no row in ${T_ROLES}${CTX.roleErr ? ' (' + CTX.roleErr + ')' : ''}: the application treats it as read-only.`);
+  return R('ok', CTX.role, CTX.email);
+}
+function cloudCheck(){
+  if (!CTX.session) return naData();
+  if (CTX.modsErr) return R('fail', 'Read refused', CTX.modsErr);
+  const names = Object.keys(CTX.mods || {});
+  if (!names.length) return R(isFull() ? 'fail' : 'warn', 'No readable module', 'The query succeeds but returns no row: check the RLS policies of helion_data.');
+  if (CTX.role === 'reader' && names.some(n => n !== 'sms_risk_register')) return R('fail', 'Reader sees more than the published register', `Readable modules: ${names.join(', ')}. The reader policy must be limited to sms_risk_register.`);
+  return R('ok', plural(names.length, 'module') + ' read', names.join(', '));
+}
+function chkSessionData(){
+  const a = authCheck(); if (a.status !== 'ok') return a;
+  return cloudCheck();
+}
+const viewOf = n => n.view || (n.module && n.module.view);
+const isGhost = n => !!(viewOf(n) && CTX.viewsKnown && !CTX.views.has(viewOf(n)));
+function smsVal(k){ const d = modData('sms_data'); return d ? parseMaybe(d[k]) : undefined; }
+function moduleCheck(n){
+  if (!CTX.viewsKnown) return R('na', 'Not checked', 'The Safety file could not be read.');
+  if (isGhost(n)) return R('fail', 'Module absent', `View « ${viewOf(n)} » does not exist in ${F_SMS}: the function remains to be implemented.`);
+  return R('ok', 'Present in the Safety file');
+}
+function moduleData(id){
+  const n = NODE[id];
+  if (!hasSms() || !isFull()) return naData();
+  const v = smsVal(n.module.key), t = TODAY();
+  if (id === 'training'){
+    const a = toList(v); if (!a.length) return R('warn', 'No training recorded', 'The module exists but contains no record.');
+    const exp = a.filter(x => { const d = parseD(x.valid_until); return d && d < t; });
+    if (exp.length) return R('warn', `${exp.length} of ${a.length} training records expired`, exp.slice(0, 8).map(x => x.person).join(', '));
+    return R('ok', plural(a.length, 'record') + ' up to date');
+  }
+  if (id === 'erp'){
+    const a = toList(v); if (!a.length) return R('warn', 'No exercise recorded', 'No emergency response plan exercise has been logged.');
+    const last = maxDate(a, /date/i), age = daysSince(last);
+    if (age != null && age > 365) return R('warn', `Last exercise on ${fmtD(last)}`, `${age} days ago: more than a year without an exercise.`);
+    return R('ok', `${plural(a.length, 'exercise')}, last on ${fmtD(last)}`);
+  }
+  if (id === 'interfaces'){
+    const a = toList(v).filter(x => x.status !== 'Terminated');
+    if (!a.length) return R('warn', 'No interface listed', 'The external interfaces register is empty.');
+    const due = a.filter(x => { const d = parseD(x.next_review); return !d || d < t; });
+    if (due.length) return R('warn', `${due.length} of ${a.length} reviews overdue or not planned`, due.slice(0, 8).map(x => `${x.id} ${x.org}`).join(', '));
+    return R('ok', plural(a.length, 'active interface') + ', reviews up to date');
+  }
+  if (id === 'partis'){
+    const d = (v && typeof v === 'object' && !Array.isArray(v)) ? v : {};
+    const comp = d.compliance || {}, risks = toList(d.risks), inc = toList(d.incidents), assets = toList(d.assets);
+    const REQ = 13, na = Object.values(comp).filter(c => c && c.status === 'Not applicable').length;
+    const done = Object.values(comp).filter(c => c && c.status === 'Implemented').length, pct = Math.round(100 * done / Math.max(1, REQ - na));
+    const late = inc.filter(x => (x.safety_impact === 'Yes' || x.safety_impact === 'Possible') && x.authority === 'Pending' && daysSince(parseD(x.date)) * 24 > 72);
+    if (late.length) return R('fail', `${plural(late.length, 'incident')} not notified beyond 72 h`, late.map(x => x.id).join(', '));
+    if (!assets.length && !risks.length) return R('warn', 'ISMS to be built', `No asset or IS risk recorded; Part-IS requirements implemented: ${pct} %.`);
+    if (pct < 100) return R('warn', `${pct} % of Part-IS requirements implemented`, `${assets.length} assets, ${risks.length} IS risks, ${inc.length} incidents.`);
+    return R('ok', 'Part-IS requirements implemented', `${assets.length} assets, ${risks.length} IS risks.`);
+  }
+  return R('na', 'Not checked');
+}
+function moduleLink(id){
+  const n = NODE[id], m = moduleCheck(n);
+  if (m.status === 'fail') return m;
+  if (id === 'partis' && hasSms() && isFull()){
+    const d = smsVal('safISMS') || {}, open = toList(d.risks).filter(x => x.status !== 'Closed');
+    if (!open.length) return R('warn', 'No IS risk assessed', 'The risk register does not yet receive any information security threat.');
+    const unl = open.filter(x => !hasText(x.sms));
+    if (unl.length) return R('warn', `${unl.length} of ${open.length} IS risks not linked to the register`, unl.slice(0, 8).map(x => x.id).join(', '));
+    return R('ok', `${open.length} IS risks linked to the register`);
+  }
+  return moduleData(id);
+}
+function manualCheck(m){
+  const a = loadAtt()[m.key];
+  if (!a) return R('warn', 'Never attested', m.what + ' This link cannot be measured automatically.');
+  const age = daysSince(parseD(a.date));
+  const who = a.by ? ` by ${a.by}` : '';
+  if (age > m.period) return R('warn', `Last test ${age} days ago`, `Attested on ${fmtD(a.date)}${who}. Chosen interval: ${m.period} days.`);
+  return R('ok', `Successful test on ${fmtD(a.date)}`, (a.note ? a.note + ' ' : '') + `Attested${who}. Next test within ${m.period - age} days.`);
+}
+
+const DATE_K = /created_at|submitted_at|inserted_at|^date$|received/i;
+function chkDeposit(){
+  const f = fileCheck(F_REP);
+  if (f.status === 'fail') return f;
+  if (!CTX.reports) return R(f.status, f.value, (f.detail ? f.detail + ' ' : '') + (CTX.session ? `Table ${T_REPORTS} is only readable with an admin or editor role.` : `Sign-in required to read table ${T_REPORTS}.`));
+  const last = maxDate(CTX.reports, DATE_K);
+  return R('ok', last ? `Last submission on ${fmtD(last)}` : 'No submission recorded', `${plural(CTX.reports.length, 'report')} in the table.`);
+}
+function chkImport(){
+  if (!CTX.reports) return CTX.session && CTX.reportsErr ? R('na', 'Not checked', CTX.reportsErr) : naData();
+  const done = /import|archiv|reject|rejet|dupli|clos|trait/i;
+  const pend = CTX.reports.filter(r => !done.test(String(r.status || '')));
+  if (!pend.length) return R('ok', 'No report awaiting import', 'All received reports have been imported.');
+  const ages = pend.map(r => daysSince(firstDate(r, DATE_K))).filter(x => x != null);
+  const max = ages.length ? Math.max(...ages) : 0;
+  const ids = pend.slice(0, 8).map(r => r.ref || r.id).join(', ');
+  return R(max > 14 ? 'fail' : 'warn', `${pend.length} awaiting import`, `The oldest has been waiting for ${max} days. ${ids}`);
+}
+const shortId = o => String(o.id).split(' - ')[0];
+function chkFiveWhys(){
+  if (!hasSms()) return naData();
+  if (!CTX.occs.length) return R('na', 'Log empty');
+  const rev = CTX.occs.filter(o => !/pending/i.test(o.status || '') && /review|clos|instru|done|complet|valid/i.test(o.status || ''));
+  const miss = rev.filter(o => !hasText(o.five_whys));
+  if (!rev.length) return R('ok', 'No investigated occurrence to check', `${plural(CTX.occs.length, 'occurrence')} under investigation.`);
+  if (!miss.length) return R('ok', `${rev.length} of ${rev.length} analysed`, 'All investigated occurrences carry a cause analysis.');
+  return R('warn', `${miss.length} of ${rev.length} investigated without analysis`, miss.slice(0, 10).map(shortId).join(', '));
+}
+function chkTaxo(){
+  if (!hasSms()) return naData();
+  const n = CTX.occs.length; if (!n) return R('na', 'Log empty');
+  const miss = CTX.occs.filter(o => !hasText(o.catalog_event_id));
+  if (!miss.length) return R('ok', `${n} of ${n} linked`, 'All occurrences are linked to the catalogue.');
+  return R(miss.length === n ? 'fail' : 'warn', `${miss.length} of ${n} not linked`, miss.slice(0, 10).map(shortId).join(', '));
+}
+function chkFrequencies(){
+  if (!hasSms()) return naData();
+  const linked = CTX.occs.filter(o => hasText(o.catalog_event_id));
+  if (!linked.length) return R('fail', 'No observed frequency', 'No occurrence is linked to the catalogue: probability ratings rest on no real data.');
+  const ev = new Set(linked.map(o => o.catalog_event_id));
+  return R('ok', `${linked.length} occurrences, ${plural(ev.size, 'event')}`, 'Observed frequencies feed the catalogue.');
+}
+function chkReferentiel(){
+  /* 1. Embedded in the public file? (Safety file read before data) */
+  if (CTX.embedded) return R('fail', 'Baseline embedded in clear in the public file', `INITIAL_DATA in ${F_SMS} carries about ${plural(CTX.embedded, 'scenario')}: the register can be read by anyone from the public repository.`);
+  if (!CTX.session || !isFull()) return CTX.embedded === 0 ? R('ok', 'Not embedded in the file', 'INITIAL_DATA is empty in the Safety file; cloud content requires a full-access role.') : naData();
+  const row = CTX.mods && CTX.mods.sms_referentiel;
+  if (!row){
+    if (CTX.embedded === 0) return R('fail', 'No baseline anywhere', 'INITIAL_DATA is empty and module sms_referentiel is missing: the register is rebuilt without a baseline.');
+    return R('warn', 'No cloud baseline', 'Module sms_referentiel is missing from helion_data.');
+  }
+  const ref = deepRiskArray(modData('sms_referentiel'));
+  if (!ref.length) return R('fail', 'Baseline empty', 'The module exists but contains no recognisable scenario.');
+  if (CTX.risksSrc !== 'sms_data') return R('ok', `${ref.length} scenarios in the baseline`, `Updated on ${fmtD(row.updated_at)}.`);
+  const have = new Set(CTX.risks.map(r => r.id));
+  const miss = ref.filter(r => !have.has(r.id)).map(r => r.id);
+  if (miss.length) return R('fail', `${plural(miss.length, 'baseline scenario')} missing from the register`, miss.slice(0, 15).join(', '));
+  return R('ok', `${ref.length} scenarios, all present in the register`, `Baseline updated on ${fmtD(row.updated_at)}; register at ${CTX.risks.length} scenarios.`);
+}
+function chkBarriers(){
+  if (!CTX.risks.length) return naData();
+  const n = CTX.bars.length;
+  if (!n) return R('fail', 'No barrier', 'Scenarios carry no structured barrier.');
+  const bare = CTX.risks.filter(r => !toList(r.barriers).some(b => b && !b.archived)).map(r => r.id);
+  const noOwner = CTX.bars.filter(b => !hasText(b.owner)).length;
+  const noDoc = CTX.bars.filter(b => { const d = b.trac && b.trac.doc; return !d || !hasText(d.ref) || /confirm|verif|pending|reconcil/i.test(d.status || ''); }).length;
+  if (bare.length) return R('fail', `${plural(bare.length, 'scenario')} without barrier`, bare.slice(0, 12).join(', '));
+  const st = (noOwner || noDoc) ? 'warn' : 'ok';
+  return R(st, `${noOwner} of ${n} without owner`, `${noDoc} barriers without a confirmed source document, across ${CTX.risks.length} scenarios.`);
+}
+function chkBarrierChecks(){
+  const m = moduleCheck(NODE.eff); if (m.status === 'fail') return m;
+  if (!CTX.bars.length) return naData();
+  const t = TODAY();
+  const failing = CTX.bars.filter(b => b.trac && b.trac.eff && b.trac.eff.level === 'defaillante');
+  const overdue = CTX.bars.filter(b => { const d = parseD(b.trac && b.trac.verif && b.trac.verif.next); return d && d < t; });
+  const crit = CTX.bars.filter(b => b.trac && b.trac.eff && b.trac.eff.critical);
+  const critNever = crit.filter(b => !b.trac.eff.level || b.trac.eff.level === 'en_place');
+  if (failing.length) return R('fail', `${plural(failing.length, 'barrier')} declared failed`, failing.slice(0, 10).map(b => `${b.__rid} ${b.id || ''}`.trim()).join(', '));
+  if (overdue.length || critNever.length) return R('warn', `${plural(overdue.length, 'verification')} overdue`, `${critNever.length} of ${crit.length} critical barriers without demonstrated effectiveness.`);
+  return R('ok', 'Verifications up to date', `${plural(crit.length, 'critical barrier')} tracked.`);
+}
+function chkResidual(){
+  if (!CTX.risks.length) return naData();
+  const t = TODAY();
+  const missing = CTX.risks.filter(r => !hasText(r.control_effectiveness));
+  const late = CTX.risks.filter(r => { const d = parseD(r.effectiveness_due_date); const done = parseD(r.effectiveness_assessed_date); return d && d < t && (!done || done < d); });
+  if (late.length) return R('fail', `${plural(late.length, 'assessment')} overdue`, late.slice(0, 12).map(r => r.id).join(', '));
+  if (missing.length) return R('warn', `${missing.length} of ${CTX.risks.length} scenarios without assessment`, 'The claimed residual risk is not yet supported by effectiveness evidence.');
+  return R('ok', 'Residual supported on all scenarios');
+}
+function chkIndicators(){
+  if (!CTX.risks.length) return naData();
+  const w = CTX.risks.filter(r => hasText(r.safety_indicator)).length;
+  if (!w) return R('fail', 'No scenario monitored by an indicator', 'Field safety_indicator is empty on every scenario.');
+  return R('ok', `${w} of ${CTX.risks.length} scenarios monitored`);
+}
+function chkObjectives(){
+  if (!hasSms() || !isFull()) return naData();
+  const items = itemsOf(keysMatching(/objecti/i));
+  if (!items.length) return R('fail', 'No objective declared', 'SPIs measure no safety objective.');
+  return R('ok', plural(items.length, 'objective') + ' declared');
+}
+function chkSrb(){
+  if (!CTX.session || !isFull() || !CTX.mods) return naData();
+  const items = itemsOf(keysMatching(/srb|review.?board/i));
+  if (!items.length) return R('warn', 'No review recorded', 'No Safety Review Board data found in the database.');
+  const last = maxDate(items, /date|held|tenue|meeting/i);
+  const age = daysSince(last);
+  if (age != null && age > 183) return R('warn', `Last review on ${fmtD(last)}`, `${age} days ago.`);
+  return R('ok', last ? `Last review on ${fmtD(last)}` : plural(items.length, 'review') + ' recorded');
+}
+function chkPublication(){
+  if (!CTX.session || !CTX.mods) return naData();
+  const row = CTX.mods.sms_risk_register;
+  if (!row) return R(isFull() ? 'fail' : 'na', 'Register not published', 'Row sms_risk_register is missing: the reader account sees nothing.');
+  const pub = modData('sms_risk_register');
+  const arr = deepRiskArray(pub);
+  const announced = Number(pub && pub.count != null ? pub.count : arr.length);
+  if (announced !== arr.length) return R('fail', `Inconsistent publication: ${announced} announced, ${arr.length} present`);
+  const pubD = parseD(row.updated_at);
+  if (CTX.risksSrc === 'sms_data'){
+    if (CTX.risks.length !== arr.length) return R('warn', `Register at ${CTX.risks.length}, publication at ${arr.length}`, `Published on ${fmtD(pubD)}.`);
+    const lastEdit = maxDate(CTX.risks, /user_edited_at|updated_at|last_modified|modified_at/i);
+    if (lastEdit && pubD && lastEdit > pubD) return R('warn', 'Publication older than latest edits', `Published on ${fmtD(pubD)}, register edited on ${fmtD(lastEdit)}.`);
+  }
+  return R('ok', `Published on ${fmtD(pubD)}, ${arr.length} scenarios`);
+}
+function mocItems(){ return itemsOf(keysMatching(/moc|changestud/i)); }
+function chkRootCause(){
+  if (!hasSms() || !isFull()) return naData();
+  const mocs = mocItems();
+  if (!mocs.length) return R('na', 'No change study found');
+  const ids = CTX.occs.map(o => String(o.id || '').toLowerCase()).filter(Boolean);
+  const refs = [];
+  for (const m of mocs) for (const v of deepCollect(m, /root.?cause/i)) if (typeof v === 'string' && /^(HLX|RPT|OCC)-/i.test(v.trim())) refs.push({moc:m.id || m.ref || m.title || 'MOC', ref:v.trim()});
+  if (!refs.length) return R('ok', `${plural(mocs.length, 'study', 'studies')}, no root cause to resolve`);
+  const found = r => { const x = r.toLowerCase(); return ids.some(y => y === x || y.startsWith(x) || y.includes(x) || (x.startsWith(y) && y.length > 6)); };
+  const bad = refs.filter(r => !found(r.ref));
+  if (bad.length) return R('fail', `${plural(bad.length, 'reference')} not found in the log`, bad.slice(0, 8).map(b => `${b.moc} → ${b.ref}`).join('; '));
+  return R('ok', `${plural(refs.length, 'reference')} resolved`);
+}
+function chkMatrix(){
+  if (!CTX.session || !isFull() || !CTX.mods) return naData();
+  const k = cmsKey(), cms = cmsData();
+  if (!cms) return R('fail', 'Compliance Monitoring module missing', `No cms_data row in ${T_DATA}: the Safety file cannot read the matrix.`);
+  const mx = parseMaybe(cms.cmsx_compliance_v1);
+  if (!mx) return R('warn', 'No matrix built', `Key cmsx_compliance_v1 is missing from ${k}.`);
+  const n = Array.isArray(mx) ? mx.length : Object.keys(mx).length;
+  return R('ok', `Matrix available (${plural(n, 'entry', 'entries')})`, `${k} updated on ${fmtD(CTX.mods[k].updated_at)}.`);
+}
+function overdueIn(objs){
+  let n = 0, tot = 0; const t = TODAY(), list = [];
+  for (const o of objs) for (const arr of deepCollect(o, /actions?$/i)) for (const a of toList(arr)){
+    if (!a || typeof a !== 'object') continue; tot++;
+    const due = firstDate(a, /due|ech|éch|deadline|target|limite/i);
+    const st = String(a.status || a.statut || a.state || '');
+    if (due && due < t && !DONE_RE.test(st)){ n++; list.push((a.owner || a.responsable || a.title || a.action || '').toString().slice(0, 40)); }
+  }
+  return {n, tot, list};
+}
+function chkMocActions(){
+  if (!hasSms() || !isFull()) return naData();
+  const mocs = mocItems(); if (!mocs.length) return R('na', 'No change study found');
+  const o = overdueIn(mocs);
+  if (!o.tot) return R('ok', 'No action in progress');
+  if (o.n) return R('warn', `${o.n} of ${o.tot} actions overdue`, o.list.filter(Boolean).slice(0, 8).join(', '));
+  return R('ok', `${o.tot} actions on schedule`);
+}
+function findingItems(){ const cms = cmsData(); if (!cms || typeof cms !== 'object') return []; return itemsOf(Object.entries(cms).filter(([k]) => /finding|constat/i.test(k)).map(([k, v]) => ({v:parseMaybe(v)}))); }
+function chkCapActions(){
+  if (!CTX.session || !isFull() || !CTX.mods) return naData();
+  const f = findingItems(); if (!f.length) return R('na', 'No finding found in the Compliance Monitoring data');
+  const o = overdueIn(f);
+  if (!o.tot) return R('ok', 'No corrective action in progress');
+  if (o.n) return R('warn', `${o.n} of ${o.tot} corrective actions overdue`);
+  return R('ok', `${o.tot} corrective actions on schedule`);
+}
+function chkAudits(){
+  if (!CTX.session || !isFull() || !CTX.mods) return naData();
+  const cms = cmsData();
+  if (!cms) return R('fail', 'Compliance Monitoring module missing', `The Compliance Monitoring has saved nothing in ${T_DATA}.`);
+  const keys = Object.keys(cms).filter(k => /audit|grille|grid|app13|plan/i.test(k));
+  if (!keys.length) return R('warn', 'No audit recorded');
+  return R('ok', plural(keys.length, 'audit data set'), keys.join(', '));
+}
+function chkFindingsCap(){
+  if (!CTX.session || !isFull() || !CTX.mods) return naData();
+  const f = findingItems(); if (!f.length) return R('na', 'No finding found in the Compliance Monitoring data');
+  const open = f.filter(x => !DONE_RE.test(String(x.status || x.statut || '')));
+  const noCap = open.filter(x => !Object.keys(x).some(k => /cap|correct|action/i.test(k) && hasText(x[k])));
+  if (noCap.length) return R('warn', `${noCap.length} of ${open.length} open findings without CAP`, noCap.slice(0, 8).map(x => x.id || x.ref || x.title || '').join(', '));
+  return R('ok', `${open.length} open findings, all treated`);
+}
+function chkLessons(){
+  if (!hasSms() || !isFull()) return naData();
+  const sas = itemsOf(keysMatching(/lesson|safety.?alert|^safSA$|alerts?$/i));
+  if (!sas.length) return R('na', 'No Safety Alert found');
+  const thin = sas.filter(s => !Object.entries(s).some(([k, v]) => !/^(id|title|titre|ref|date|status|statut|type|created|updated|author|by|number|num)/i.test(k) && hasText(v, 40)));
+  if (thin.length) return R('fail', `${plural(thin.length, 'Safety Alert')} reduced to a title`, thin.slice(0, 8).map(s => s.id || s.ref || s.title || '').join(', '));
+  return R('ok', `${plural(sas.length, 'Safety Alert')}, full content`);
+}
+
+function nodeChecks(n){
+  const out = [];
+  if (n.file) out.push(['File', fileCheck(n.file)]);
+  if (n.id === 'hosting'){ out.push(['Navigation links', navCheck()]); out.push(['Project isolation', sepCheck()]); }
+  if (n.id === 'auth') out.push(['Session', authCheck()]);
+  if (n.id === 'cloud') out.push(['Module reading', cloudCheck()]);
+  if (n.id === 'reports') out.push(['Queue reading', CTX.reports ? R('ok', plural(CTX.reports.length, 'report')) : naData()]);
+  if (n.id === 'ref') out.push(['Baseline', chkReferentiel()]);
+  if (n.id === 'pub') out.push(['Publication', chkPublication()]);
+  if (n.id === 'email') out.push(['Sending', manualCheck(EDGE.e2.manual)]);
+  if (n.id === 'eff') out.push(['Module', moduleCheck(n)]);
+  if (n.module){ out.push(['Module', moduleCheck(n)]); out.push(['Records', moduleData(n.id)]); }
+  if (n.manual) out.push([n.manual.label, manualCheck(n.manual)]);
+  return out;
+}
+function safe(fn){ try { return fn(); } catch(e){ console.error(e); return R('na', 'Check error', e.message); } }
+function evaluate(){
+  for (const n of NODES){
+    let checks; try { checks = nodeChecks(n); } catch(e){ console.error(e); checks = [['Check', R('na', 'Check error', e.message)]]; }
+    RES['n:' + n.id] = {checks, status:worst(checks.map(c => c[1].status))};
+  }
+  for (const e of EDGES) RES['e:' + e.id] = e.manual ? manualCheck(e.manual) : safe(e.run);
+}
+
+/* =====================================================================
+   Manual attestations (stored on this device)
+   ===================================================================== */
+function loadAtt(){ try { return JSON.parse(localStorage.getItem(ATT_KEY) || '{}'); } catch(e){ return {}; } }
+function saveAtt(key, rec){ try { const a = loadAtt(); a[key] = rec; localStorage.setItem(ATT_KEY, JSON.stringify(a)); return true; } catch(e){ return false; } }
+
+/* =====================================================================
+   Drawing
+   ===================================================================== */
+/* Constellation: risk register at the centre, three orbits around it */
+const CX = 750, CY = 505, KX = 1.45, ORB = [0, 190, 320, 440], PR = [58, 34, 30, 25];
+const PLACE = {
+  rr:[0,0],
+  ref:[1,-90], spi:[1,-25], bar:[1,45], eff:[1,110], moc:[1,170], taxo:[1,-150],
+  omm:[2,-108], so:[2,-70], pub:[2,-35], srb:[2,0], actions:[2,35], ll:[2,70], matrix:[2,110], eccairs:[2,145], occ:[2,180], fivew:[2,-145],
+  erp:[3,0], interfaces:[3,27.7], cap:[3,55.4], findings:[3,83.1], audit:[3,110.8], email:[3,138.5], reports:[3,166.2], report:[3,-166.2],
+  hosting:[3,-138.5], auth:[3,-110.8], cloud:[3,-83.1], training:[3,-55.4], partis:[3,-27.7]
+};
+const ICON = {report:'📝', reports:'📥', email:'✉️', audit:'🔎', hosting:'🧭', fivew:'❓', occ:'📒', taxo:'🗂️',
+  eccairs:'📡', findings:'⚠️', cap:'🛠️', auth:'🔐', ref:'📚', rr:'🛡️', bar:'🧱', eff:'✅', moc:'🔄', matrix:'⚖️', cloud:'☁️',
+  so:'🎯', spi:'📈', srb:'🏛️', ll:'💡', actions:'📌', omm:'📁', pub:'👁️', partis:'💻', training:'🎓', erp:'🚨', interfaces:'🔗'};
+const SHORT = {report:'Reporting', bar:'Barriers', ref:'Baseline', matrix:'EASA matrix', spi:'SPIs',
+  auth:'Sign-in and roles', partis:'Part-IS', hosting:'Portal', cloud:'Database', eccairs:'ECCAIRS', taxo:'Event catalogue'};
+const OMEGA = [0, 3.6, 2.2, 1.3];   // degrees per second, inner orbit faster
+let ROT = 0, SPEED = 1, RUNNING = true, HOVER = false, LAST = null;
+function placeNodes(){
+  for (const n of NODES){
+    const [o, a] = PLACE[n.id], t = (a + ROT * OMEGA[o]) * Math.PI / 180;
+    n.orb = o;
+    n.px = CX + ORB[o] * KX * Math.cos(t); n.py = CY + ORB[o] * Math.sin(t);
+    n.sc = 1; n.pr = PR[o];
+  }
+}
+const r1 = v => Math.round(v * 10) / 10;
+function unit(x, y){ const l = Math.hypot(x, y) || 1; return [x / l, y / l]; }
+function curve(e){
+  const a = NODE[e.from], b = NODE[e.to];
+  const mx = (a.px + b.px) / 2, my = (a.py + b.py) / 2, dx = b.px - a.px, dy = b.py - a.py, L = Math.hypot(dx, dy) || 1;
+  const nx = -dy / L, ny = dx / L, k = Math.min(.2 * L, 85);
+  const c1 = [mx + nx * k, my + ny * k], c2 = [mx - nx * k, my - ny * k];
+  const C = Math.hypot(c1[0] - CX, c1[1] - CY) >= Math.hypot(c2[0] - CX, c2[1] - CY) ? c1 : c2;
+  const ua = unit(C[0] - a.px, C[1] - a.py), ub = unit(C[0] - b.px, C[1] - b.py);
+  const S = [a.px + ua[0] * (a.pr + 9), a.py + ua[1] * (a.pr + 9)], E = [b.px + ub[0] * (b.pr + 12), b.py + ub[1] * (b.pr + 12)];
+  const M = [.25 * S[0] + .5 * C[0] + .25 * E[0], .25 * S[1] + .5 * C[1] + .25 * E[1]];
+  return {d:`M${r1(S[0])},${r1(S[1])} Q${r1(C[0])},${r1(C[1])} ${r1(E[0])},${r1(E[1])}`, M, S, C, E};
+}
+function draw(){
+  placeNodes();
+  const svg = $('#map');
+  const mk = (id, c) => `<marker id="ar-${id}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${c}"/></marker>`;
+  const gr = (id, a, b, c) => `<radialGradient id="g-${id}" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="${a}"/><stop offset=".55" stop-color="${b}"/><stop offset="1" stop-color="${c}"/></radialGradient>`;
+  let h = `<defs>${mk('ok','#3ccf91')}${mk('warn','#f0b429')}${mk('fail','#ef4b4b')}${mk('na','#6c8193')}
+    ${gr('ok','#c4f7df','#3ccf91','#124f39')}${gr('warn','#ffe9ad','#f0b429','#5f4206')}${gr('fail','#ffc9c9','#ef4b4b','#5e1215')}${gr('na','#d2dde6','#6c8193','#223039')}
+    <radialGradient id="g-sun" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#d9b44a" stop-opacity=".38"/><stop offset=".6" stop-color="#d9b44a" stop-opacity=".1"/><stop offset="1" stop-color="#d9b44a" stop-opacity="0"/></radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < 170; i++){ const tw = i % 4 === 0; h += `<circle class="star${tw ? ' tw' : ''}" cx="${r1(rnd() * 1500)}" cy="${r1(rnd() * 1000)}" r="${r1(.4 + rnd() * 1.1)}" ${tw ? `style="animation-delay:-${r1(rnd() * 3.5)}s"` : `opacity="${r1(.15 + rnd() * .55)}"`}/>`; }
+  for (let o = 1; o <= 3; o++) h += `<ellipse class="orbit" cx="${CX}" cy="${CY}" rx="${ORB[o] * KX}" ry="${ORB[o]}"/>`;
+  for (const e of EDGES){
+    const {d, M} = curve(e), a = NODE[e.from].label, b = NODE[e.to].label;
+    h += `<g class="edge st-na" id="E-${e.id}" data-k="e" data-id="${e.id}" tabindex="0" role="button" aria-label="Link ${esc(e.label)}: ${esc(a)} to ${esc(b)}">
+      <path class="hit" d="${d}"/><path class="ln" d="${d}" marker-end="url(#ar-na)"/>
+      <text class="lbl" x="${r1(M[0])}" y="${r1(M[1] - 15)}">${esc(e.label)}</text>
+      <circle class="pt" r="3.6"/>
+      <g class="bdg" transform="translate(${r1(M[0])},${r1(M[1])})"><circle r="10"/><text y="4.5">!</text></g></g>`;
+  }
+  for (const n of NODES){
+    const sun = n.orb === 0, R = PR[n.orb];
+    n.nsat = nodeChecks(n).length; n.sorbR = R + (sun ? 26 : 13);
+    let sats = `<circle class="sorb" r="${n.sorbR}"/>`;
+    for (let i = 0; i < n.nsat; i++) sats += `<circle class="sat st-na" r="${sun ? 6 : 4.5}"><title></title></circle>`;
+    h += `<g class="node st-na${isGhost(n) ? ' absent' : ''}${sun ? ' sun' : ''}" id="N-${n.id}" data-k="n" data-id="${n.id}" tabindex="0" role="button" aria-label="Function ${esc(n.label)}" transform="translate(${r1(n.px)},${r1(n.py)})">
+      ${sun ? `<circle class="corona" r="${R + 46}"/>` : ''}
+      <circle class="halo" r="${R + 6}"/>
+      <circle class="pl" r="${R}"/>
+      <g class="sats">${sats}</g>
+      <text class="ic" x="0" y="0">${ICON[n.id] || ''}</text>
+      <text class="t" x="0" y="${R + 21}">${esc(SHORT[n.id] || n.label)}</text></g>`;
+  }
+  svg.innerHTML = h;
+  for (const n of NODES){
+    n.el = document.getElementById('N-' + n.id); n.sats = n.el.querySelectorAll('.sat');
+    const hh = [...n.id].reduce((a, c) => a + c.charCodeAt(0), 0);
+    n.sphase = (hh % 360) * Math.PI / 180; n.sspeed = (.35 + (hh % 7) * .06) * (hh % 2 ? 1 : -1);
+  }
+  for (const e of EDGES){
+    const g = document.getElementById('E-' + e.id);
+    e.ln = g.querySelector('.ln'); e.hit = g.querySelector('.hit'); e.lbl = g.querySelector('.lbl');
+    e.bdg = g.querySelector('.bdg'); e.pt = g.querySelector('.pt');
+    e.phase = (parseInt(e.id.slice(1), 10) * .137) % 1;
+  }
+  layout();
+  svg.addEventListener('pointerover', ev => { HOVER = !!ev.target.closest('[data-k]'); });
+  svg.addEventListener('pointerleave', () => { HOVER = false; });
+  svg.addEventListener('click', ev => {
+    const g = ev.target.closest('[data-k]');
+    if (!g){ select(null); return; }
+    select({kind:g.dataset.k, id:g.dataset.id});
+  });
+  svg.addEventListener('keydown', ev => {
+    if (ev.key !== 'Enter' && ev.key !== ' ') return;
+    const g = ev.target.closest('[data-k]'); if (!g) return;
+    ev.preventDefault(); select({kind:g.dataset.k, id:g.dataset.id});
+  });
+}
+function layout(){
+  placeNodes();
+  for (const n of NODES) n.el.setAttribute('transform', `translate(${r1(n.px)},${r1(n.py)})`);
+  for (const e of EDGES){
+    const c = curve(e); e.geo = c;
+    e.ln.setAttribute('d', c.d); e.hit.setAttribute('d', c.d);
+    e.lbl.setAttribute('x', r1(c.M[0])); e.lbl.setAttribute('y', r1(c.M[1] - 15));
+    e.bdg.setAttribute('transform', `translate(${r1(c.M[0])},${r1(c.M[1])})`);
+  }
+}
+function qpt(g, t){ const u = 1 - t; return [u * u * g.S[0] + 2 * u * t * g.C[0] + t * t * g.E[0], u * u * g.S[1] + 2 * u * t * g.C[1] + t * t * g.E[1]]; }
+let CLOCK = 0;
+function frame(ts){
+  if (LAST == null) LAST = ts;
+  const dt = Math.min((ts - LAST) / 1000, .1); LAST = ts;
+  if (RUNNING){
+    CLOCK += dt * SPEED;
+    // Satellites: one per check of the function, coloured by its result
+    for (const n of NODES){
+      const k = n.sats ? n.sats.length : 0;
+      for (let i = 0; i < k; i++){
+        const a = n.sphase + CLOCK * n.sspeed + i * 2 * Math.PI / k;
+        n.sats[i].setAttribute('cx', r1(Math.cos(a) * n.sorbR)); n.sats[i].setAttribute('cy', r1(Math.sin(a) * n.sorbR * .55));
+      }
+    }
+    // A dot travels each link from origin to destination; on a failed link it stops at the cross
+    for (const e of EDGES){
+      if (!e.geo || !e.pt) continue;
+      const dur = e.st === 'warn' ? 4.5 : 2.6;
+      const t = ((CLOCK / dur) + e.phase) % 1;
+      let p = t, op;
+      if (e.st === 'fail'){ p = Math.min(t, .5); op = t < .5 ? 1 : Math.max(0, 1 - (t - .5) * 4); }
+      else op = Math.min(1, t * 8, (1 - t) * 8);
+      const [x, y] = qpt(e.geo, p);
+      e.pt.setAttribute('cx', r1(x)); e.pt.setAttribute('cy', r1(y)); e.pt.setAttribute('opacity', r1(op));
+    }
+  }
+  requestAnimationFrame(frame);
+}
+function setRunning(on){
+  RUNNING = on; LAST = null;
+  $('#map').classList.toggle('anim', on);
+  const b = $('#btnPlay'); b.textContent = on ? 'Pause' : 'Animate'; b.setAttribute('aria-pressed', on);
+}
+document.querySelectorAll('[data-speed]').forEach(b => b.addEventListener('click', () => {
+  SPEED = +b.dataset.speed;
+  document.querySelectorAll('[data-speed]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  if (!RUNNING) setRunning(true);
+}));
+$('#btnPlay').addEventListener('click', () => setRunning(!RUNNING));
+
+function paint(){
+  const svg = $('#map');
+  let cF = 0, cW = 0, cO = 0, cN = 0;
+  const tally = s => { if (s === 'fail') cF++; else if (s === 'warn') cW++; else if (s === 'ok') cO++; else cN++; };
+  for (const n of NODES){
+    const s = RES['n:' + n.id] ? RES['n:' + n.id].status : 'na'; tally(s);
+    const g = document.getElementById('N-' + n.id);
+    g.setAttribute('class', `node st-${s}${isGhost(n) ? ' absent' : ''}${n.orb === 0 ? ' sun' : ''}`);
+    const ch = (RES['n:' + n.id] && RES['n:' + n.id].checks) || [];
+    (n.sats || []).forEach((sat, i) => {
+      const c = ch[i], st = c ? c[1].status : 'na';
+      sat.setAttribute('class', `sat st-${st}`);
+      sat.querySelector('title').textContent = c ? `${c[0]}: ${c[1].value}` : '';
+    });
+    g.setAttribute('aria-label', `Function ${n.label}, ${LABEL[s]}`);
+  }
+  for (const e of EDGES){
+    const s = RES['e:' + e.id] ? RES['e:' + e.id].status : 'na'; tally(s);
+    const g = document.getElementById('E-' + e.id);
+    g.setAttribute('class', `edge st-${s}`); e.st = s;
+    g.querySelector('.ln').setAttribute('marker-end', `url(#ar-${s})`);
+    g.querySelector('.bdg text').textContent = s === 'fail' ? '✕' : '!';
+    g.setAttribute('aria-label', `Link ${e.label}: ${NODE[e.from].label} to ${NODE[e.to].label}, ${LABEL[s]}`);
+  }
+  $('#nFail').textContent = cF; $('#nWarn').textContent = cW; $('#nOk').textContent = cO; $('#nNa').textContent = cN;
+  $('#lampFail').classList.toggle('on', cF > 0); $('#lampWarn').classList.toggle('on', cW > 0);
+  document.title = (cF ? `(${cF}) ` : '') + 'Helion-X – SMS Synoptic';
+  applySel(); renderIssues(); renderPanel(); renderConn();
+}
+function applySel(){
+  const svg = $('#map');
+  svg.querySelectorAll('.sel,.rel').forEach(el => el.classList.remove('sel', 'rel'));
+  svg.classList.toggle('focus', !!SEL);
+  if (!SEL) return;
+  if (SEL.kind === 'n'){
+    document.getElementById('N-' + SEL.id).classList.add('sel');
+    for (const e of EDGES) if (e.from === SEL.id || e.to === SEL.id){
+      document.getElementById('E-' + e.id).classList.add('rel');
+      document.getElementById('N-' + (e.from === SEL.id ? e.to : e.from)).classList.add('rel');
+    }
+  } else {
+    const e = EDGE[SEL.id];
+    document.getElementById('E-' + e.id).classList.add('sel');
+    document.getElementById('N-' + e.from).classList.add('rel');
+    document.getElementById('N-' + e.to).classList.add('rel');
+  }
+}
+function select(s){ SEL = s; applySel(); renderPanel(); if (s && window.matchMedia('(max-width:980px)').matches) $('#panel').scrollIntoView({behavior:'smooth', block:'start'}); }
+
+function issueItems(){
+  const out = [];
+  for (const e of EDGES){ const r = RES['e:' + e.id]; if (r && (r.status === 'fail' || r.status === 'warn')) out.push({kind:'e', id:e.id, status:r.status, name:`${NODE[e.from].label} → ${NODE[e.to].label}`, value:r.value}); }
+  for (const n of NODES){
+    const r = RES['n:' + n.id]; if (!r || (r.status !== 'fail' && r.status !== 'warn')) continue;
+    const bad = r.checks.filter(c => c[1].status === r.status).map(c => c[1].value);
+    if (isGhost(n) && EDGES.some(e => e.to === n.id && RES['e:' + e.id] && RES['e:' + e.id].status === r.status)) continue;
+    out.push({kind:'n', id:n.id, status:r.status, name:n.label, value:bad.join(', ')});
+  }
+  return out.sort((a, b) => RANK[b.status] - RANK[a.status]);
+}
+function renderIssues(){
+  const ol = $('#issues'); const items = issueItems().filter(i => !FILTER || i.status === FILTER);
+  if (!items.length){ ol.innerHTML = `<li class="empty">${BUSY ? 'Checks in progress.' : 'Nothing to address: all checked links are operational.'}</li>`; return; }
+  ol.innerHTML = items.map(i => `<li><button class="st-${i.status}" data-k="${i.kind}" data-id="${i.id}"><span class="mk"></span><span class="nm">${esc(i.name)}</span><span class="vl">${esc(i.value)}</span></button></li>`).join('');
+}
+
+/* ---------- Panel ---------- */
+function legendHTML(){
+  const ln = (c, dash) => `<svg width="46" height="12" aria-hidden="true"><line x1="2" y1="6" x2="44" y2="6" stroke="${c}" stroke-width="3" ${dash ? `stroke-dasharray="${dash}"` : ''}/></svg>`;
+  return `<p class="kind">How to read it</p><h3>Reading the constellation</h3>
+    <p class="desc">Each planet is an SMS function, each trajectory a link between two functions, travelled by a dot from origin to destination. The satellites of a planet are its checks, coloured by their result. The risk register is at the centre; the further a planet, the more upstream (collection) or downstream (dissemination) the function. Checks read the online Helion-X files and the Helion Supabase database with your session. Tap a function or a link for details.</p>
+    <ul class="legend">
+      <li>${ln('#3ccf91')} Operational</li>
+      <li>${ln('#f0b429')} Degraded, to be monitored</li>
+      <li>${ln('#ef4b4b', '10 6')} Failed: the dot stops at the cross, flashing red halo on the planet</li>
+      <li>${ln('#6c8193', '3 5')} Not checked, for lack of access or data</li>
+      <li><svg width="46" height="22" aria-hidden="true"><circle cx="23" cy="11" r="9" fill="none" stroke="#ef4b4b" stroke-dasharray="4 3"/></svg> Ghost planet: expected function absent from the SMS</li>
+    </ul>
+    <p class="note">Links that cannot be measured from the page (emails, E5X export) are attested after a test. The attestation is stored on this device.</p>`;
+}
+function checkLi(label, r){ return `<li class="st-${r.status}"><span class="mk"></span><div><div class="cl">${esc(label)}: ${esc(r.value)}</div>${r.detail ? `<div class="det">${esc(r.detail)}</div>` : ''}</div></li>`; }
+function attForm(m){
+  const a = loadAtt()[m.key];
+  return `<div class="att" data-key="${esc(m.key)}"><p><strong>Attest a test</strong></p><p class="det">${esc(m.what)}</p>
+    <label for="attD">Test date</label><input id="attD" type="date" value="${new Date().toISOString().slice(0, 10)}">
+    <label for="attB">Performed by</label><input id="attB" value="${esc(CTX.email || (a && a.by) || '')}">
+    <label for="attN">Observation</label><input id="attN" value="">
+    <p style="margin-top:10px"><button class="btn primary" id="attSave">Record successful test</button></p></div>`;
+}
+function renderPanel(){
+  const el = $('#panel');
+  if (!SEL){ el.innerHTML = legendHTML(); return; }
+  if (SEL.kind === 'n'){
+    const n = NODE[SEL.id], r = RES['n:' + n.id] || {status:'na', checks:[]};
+    const rel = EDGES.filter(e => e.from === n.id || e.to === n.id);
+    el.innerHTML = `<p class="kind">Function${isGhost(n) ? ' expected, absent from the SMS' : ''}</p><h3>${esc(n.label)}</h3>
+      <span class="pill st-${r.status}">${LABEL[r.status]}</span>
+      <p class="desc">${esc(n.desc)}</p>
+      <ul class="checks">${r.checks.map(c => checkLi(c[0], c[1])).join('')}</ul>
+      ${n.manual ? attForm(n.manual) : ''}
+      ${rel.length ? `<h2>Links</h2><div class="links">${rel.map(e => { const s = (RES['e:' + e.id] || {}).status || 'na'; const other = e.from === n.id ? NODE[e.to].label : NODE[e.from].label; return `<button class="st-${s}" data-k="e" data-id="${e.id}">${e.from === n.id ? 'to' : 'from'} ${esc(other)}, ${esc(LABEL[s].toLowerCase())}</button>`; }).join('')}</div>` : ''}
+      <p style="margin-top:16px"><button class="btn" id="selClear">Back to overview</button></p>`;
+  } else {
+    const e = EDGE[SEL.id], r = RES['e:' + e.id] || R('na', 'Not checked');
+    el.innerHTML = `<p class="kind">Link: ${esc(e.label.toLowerCase())}</p><h3>${esc(NODE[e.from].label)} → ${esc(NODE[e.to].label)}</h3>
+      <span class="pill st-${r.status}">${LABEL[r.status]}</span>
+      <p class="val">${esc(r.value)}</p>${r.detail ? `<p class="det">${esc(r.detail)}</p>` : ''}
+      <p class="desc">${esc(e.desc)}</p>
+      ${r.status === 'fail' || r.status === 'warn' ? `<div class="fix st-${r.status}"><strong>What to do</strong><br>${esc(e.fix)}</div>` : ''}
+      ${e.manual ? attForm(e.manual) : ''}
+      <div class="links">
+        <button class="st-${(RES['n:' + e.from] || {}).status || 'na'}" data-k="n" data-id="${e.from}">Origin: ${esc(NODE[e.from].label)}</button>
+        <button class="st-${(RES['n:' + e.to] || {}).status || 'na'}" data-k="n" data-id="${e.to}">Destination: ${esc(NODE[e.to].label)}</button>
+      </div>
+      <p style="margin-top:16px"><button class="btn" id="selClear">Back to overview</button></p>`;
+  }
+}
+function renderConn(){
+  const c = $('#conn');
+  if (BUSY){ c.innerHTML = '<span class="busy">Checking…</span>'; }
+  else if (!CTX.sb) c.innerHTML = '<span>Supabase not configured</span>';
+  else if (!CTX.session) c.innerHTML = '<button class="btn primary" id="btnLogin">Sign in</button>';
+  else c.innerHTML = `<span class="who">${esc(CTX.email)}${CTX.role ? ', ' + esc(CTX.role) : ''}</span> <button class="btn" id="btnLogout">Sign out</button>`;
+  $('#stamp').textContent = CTX.at ? 'Checked at ' + CTX.at.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}) : '';
+}
+
+/* =====================================================================
+   Check sequence
+   ===================================================================== */
+async function runAll(){
+  if (BUSY) return; BUSY = true; renderConn(); renderIssues();
+  try {
+    CTX.offline = location.protocol === 'file:';
+    if (!CTX.offline){ await fetchFiles(); await scanNav(); }
+    initSb();
+    await loadSession();
+    await loadData();
+    derive();
+    for (const f of Object.values(CTX.files)) f.text = '';
+  } catch(e){ console.error(e); }
+  evaluate();
+  CTX.at = new Date(); BUSY = false;
+  paint();
+}
+
+/* ---------- Sign-in (no second factor on the Helion-X suite) ---------- */
+function openLogin(){
+  $('#lgErr').textContent = '';
+  $('#login').showModal(); $('#lgEmail').focus();
+}
+async function submitLogin(ev){
+  ev.preventDefault(); const err = $('#lgErr'); err.textContent = '';
+  try {
+    if (!CTX.sb) throw new Error('Supabase is not configured.');
+    const r = await CTX.sb.auth.signInWithPassword({email:$('#lgEmail').value.trim(), password:$('#lgPwd').value});
+    if (r.error) throw r.error;
+    $('#lgPwd').value = '';
+    $('#login').close(); runAll();
+  } catch(e){ err.textContent = e.message || String(e); }
+}
+
+/* ---------- Diagnostic ---------- */
+function diag(){
+  const keys = {};
+  for (const [m, r] of Object.entries(CTX.mods || {})){ const d = parseMaybe(r.data); keys[m] = d && typeof d === 'object' && !Array.isArray(d) ? Object.keys(d) : typeof d; }
+  const results = {};
+  for (const [k, v] of Object.entries(RES)) results[k] = v.checks ? {status:v.status, checks:v.checks.map(([l, r]) => ({check:l, ...r}))} : v;
+  return {suite:'Helion-X', at:new Date().toISOString(), page:location.href, user:CTX.email, role:CTX.role, modules:keys,
+    counts:{risks:CTX.risks.length, risksFrom:CTX.risksSrc, occurrences:CTX.occs.length, barriers:CTX.bars.length, reports:CTX.reports ? CTX.reports.length : null, embeddedBaseline:CTX.embedded},
+    views:CTX.views ? [...CTX.views] : null, navigation:CTX.nav, results};
+}
+
+/* ---------- Events ---------- */
+document.addEventListener('click', async ev => {
+  const t = ev.target.closest('button'); if (!t) return;
+  if (t.closest('#issues, #panel .links') && t.dataset.k){
+    select({kind:t.dataset.k, id:t.dataset.id});
+    const g = document.getElementById((t.dataset.k === 'n' ? 'N-' : 'E-') + t.dataset.id);
+    if (g && t.closest('#issues')) g.scrollIntoView({behavior:'smooth', block:'center', inline:'center'});
+    return;
+  }
+  if (t.id === 'selClear') select(null);
+  if (t.id === 'btnLogin') openLogin();
+  if (t.id === 'btnLogout'){ await CTX.sb.auth.signOut(); runAll(); }
+  if (t.id === 'attSave'){
+    const box = t.closest('.att'), key = box.dataset.key;
+    const ok = saveAtt(key, {date:$('#attD').value, by:$('#attB').value.trim(), note:$('#attN').value.trim()});
+    if (!ok){ t.textContent = 'Cannot save in this browser'; return; }
+    evaluate(); paint();
+  }
+});
+$('#btnRun').addEventListener('click', runAll);
+$('#btnDiag').addEventListener('click', async ev => {
+  const b = ev.currentTarget, txt = JSON.stringify(diag(), null, 2);
+  try { await navigator.clipboard.writeText(txt); b.textContent = 'Diagnostic copied'; }
+  catch(e){ console.log(txt); b.textContent = 'Diagnostic in the console'; }
+  setTimeout(() => b.textContent = 'Copy diagnostic', 2500);
+});
+function setFilter(f){
+  FILTER = FILTER === f ? null : f;
+  const svg = $('#map'); if (FILTER) svg.setAttribute('data-filter', FILTER); else svg.removeAttribute('data-filter');
+  $('#lampFail').setAttribute('aria-pressed', FILTER === 'fail'); $('#lampWarn').setAttribute('aria-pressed', FILTER === 'warn');
+  renderIssues();
+}
+$('#lampFail').addEventListener('click', () => setFilter('fail'));
+$('#lampWarn').addEventListener('click', () => setFilter('warn'));
+$('#loginForm').addEventListener('submit', submitLogin);
+$('#lgCancel').addEventListener('click', () => $('#login').close());
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && SEL && !$('#login').open) select(null); });
+setInterval(() => { if (document.visibilityState === 'visible' && !$('#login').open) runAll(); }, 10 * 60 * 1000);
+
+draw(); evaluate(); paint();
+setRunning(!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+requestAnimationFrame(frame);
+runAll();
+</script>
+</body>
+</html>

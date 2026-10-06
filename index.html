@@ -260,6 +260,16 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
       <span class="tool-tag" style="background:rgba(201,162,39,.12);color:var(--gold-light);border:1px solid rgba(201,162,39,.25);">EN · ΕΛ</span>
     </a>
 
+    <a class="tool-card" data-module="synoptique" href="Helion-X_Synoptique_SMS.html">
+      <div class="tool-header">
+        <div class="tool-icon" style="background:rgba(95,191,143,.13);color:#5FBF8F;">🪐</div>
+        <span class="tool-name">SMS Synoptic</span>
+        <span class="arrow">→</span>
+      </div>
+      <p class="tool-desc">Live map of all SMS functions and their links, with every broken or degraded link flagged immediately.</p>
+      <span class="tool-tag" style="background:rgba(95,191,143,.1);color:#5FBF8F;border:1px solid rgba(95,191,143,.28);">LIVE CHECK</span>
+    </a>
+
 
   </div>
 
@@ -410,9 +420,9 @@ footer { padding: 1.25rem 2rem; border-top: 1px solid rgba(201,162,39,.12); text
   // Aligné sur le portail SAF International : un lecteur n'accède qu'au SMS.
   // L'autorité consulte les trois modules, sans jamais pouvoir écrire.
   var SAF_MODULE_ACCESS = {
-    admin:     ['sms','cms','omm','guide'],
-    editor:    ['sms','cms','omm','guide'],
-    authority: ['sms','cms','omm','guide'],
+    admin:     ['sms','cms','omm','guide','synoptique'],
+    editor:    ['sms','cms','omm','guide','synoptique'],
+    authority: ['sms','cms','omm','guide','synoptique'],
     reader:    ['sms','guide']
   };
   function applyModuleAccess(role){
