@@ -15301,7 +15301,7 @@ function g_emailFinding(rid){
   // Map a known function code to its email (same directory as the CAP block)
   var dir={
     'NPFO':'thierry.bergeret@helion-helicopters.com',
-    'SM':'xavier.bouvet@helion-helicopters.com',
+    'SM':'George.FILIOPOULOS@helionhelicopters.com',
     'CMM':'julien.metro@helion-helicopters.com'
   };
   var to = dir[resp] || '';
@@ -16186,7 +16186,7 @@ function ap2Show(id,btn){
 <select id="cmsx-f-email" onchange="cmsxToggleOther('email')">
 <option value="">— No notification —</option>
 <option value="thierry.bergeret@helion-helicopters.com">thierry.bergeret@helion-helicopters.com</option>
-<option value="xavier.bouvet@helion-helicopters.com">xavier.bouvet@helion-helicopters.com</option>
+<option value="George.FILIOPOULOS@helionhelicopters.com">George.FILIOPOULOS@helionhelicopters.com</option>
 <option value="julien.metro@helion-helicopters.com">julien.metro@helion-helicopters.com</option>
 <option value="sacha.carrere@helion-helicopters.com">sacha.carrere@helion-helicopters.com</option>
 <option value="__other">Other…</option>
@@ -16414,9 +16414,9 @@ function cmsxPushGridFinding(info){
     if(info.action && !rec.action) rec.action = info.action;
     if(info.np && !rec.np) rec.np = info.np;
     // map known function code to its email if no email set yet
-    if(info.np && !rec.email){ var d={'NPFO':'thierry.bergeret@helion-helicopters.com','SM':'xavier.bouvet@helion-helicopters.com','CMM':'julien.metro@helion-helicopters.com'}; if(d[info.np]) rec.email=d[info.np]; }
+    if(info.np && !rec.email){ var d={'NPFO':'thierry.bergeret@helion-helicopters.com','SM':'George.FILIOPOULOS@helionhelicopters.com','CMM':'julien.metro@helion-helicopters.com'}; if(d[info.np]) rec.email=d[info.np]; }
   } else {
-    var emailMap={'NPFO':'thierry.bergeret@helion-helicopters.com','SM':'xavier.bouvet@helion-helicopters.com','CMM':'julien.metro@helion-helicopters.com'};
+    var emailMap={'NPFO':'thierry.bergeret@helion-helicopters.com','SM':'George.FILIOPOULOS@helionhelicopters.com','CMM':'julien.metro@helion-helicopters.com'};
     findings.push({
       id: uid(),
       gridKey: info.gridKey,
@@ -16741,7 +16741,7 @@ function cmsxOpenFindingModal(id){
   if(npList.indexOf(npVal)>-1){ npSel.value=npVal; npOther.style.display='none'; npOther.value=''; }
   else { npSel.value='__other'; npOther.style.display='block'; npOther.value=npVal; }
   // Email dropdown (+ other)
-  var emList=['thierry.bergeret@helion-helicopters.com','xavier.bouvet@helion-helicopters.com','julien.metro@helion-helicopters.com','sacha.carrere@helion-helicopters.com'];
+  var emList=['thierry.bergeret@helion-helicopters.com','George.FILIOPOULOS@helionhelicopters.com','julien.metro@helion-helicopters.com','sacha.carrere@helion-helicopters.com'];
   var emSel=document.getElementById('cmsx-f-email'), emOther=document.getElementById('cmsx-f-email-other');
   var emVal=f?(f.email||''):'';
   if(emVal===''){ emSel.value=''; emOther.style.display='none'; emOther.value=''; }
