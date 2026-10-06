@@ -19612,8 +19612,26 @@ function save(list){
   try { localStorage.setItem(CMX_KEY, JSON.stringify(list||[])); } catch(e){}
   try { if(typeof window.safCloudScheduleSave==='function') window.safCloudScheduleSave(); } catch(e){}
 }
+/* Migration 06.10.2026 — anciennes valeurs SAF (autorité suisse, owner) → Helion / HCAA */
+var CMX_OLD_AUTH = /^\s*(OFAC\s*\/\s*FOCA|FOCA\s*\/\s*OFAC|OFAC|FOCA|BAZL)\s*$/i;
+var CMX_OWNER_ALIAS = { 'xavier.bouvet@saf-helico.com':'George.FILIOPOULOS@helionhelicopters.com',
+                        'xavier.bouvet@helion-helicopters.com':'George.FILIOPOULOS@helionhelicopters.com' };
+function cmxOwner(e){ var k=String(e||'').trim(); return CMX_OWNER_ALIAS[k.toLowerCase()] || k; }
+function cmxMigrate(list){
+  var changed=false;
+  (list||[]).forEach(function(m){
+    if(!m) return;
+    if(CMX_OLD_AUTH.test(String(m.authority||''))){ m.authority='HCAA'; changed=true; }
+    var o=cmxOwner(m.owner); if(o!==String(m.owner||'').trim() && m.owner){ m.owner=o; changed=true; }
+  });
+  return changed;
+}
 function load(){
-  try { var v = JSON.parse(localStorage.getItem(CMX_KEY)||'[]'); return Array.isArray(v)?v:[]; }
+  try {
+    var v = JSON.parse(localStorage.getItem(CMX_KEY)||'[]'); if(!Array.isArray(v)) return [];
+    if(cmxMigrate(v)){ try{ localStorage.setItem(CMX_KEY, JSON.stringify(v)); }catch(e){} try{ if(typeof window.safCloudScheduleSave==='function') window.safCloudScheduleSave(); }catch(e){} }
+    return v;
+  }
   catch(e){ return []; }
 }
 function find(id){ return load().find(function(m){ return m.id===id; }) || null; }
@@ -19971,7 +19989,7 @@ function cmxNew(mocRef){
   var all = load();
   var m = { id: nextId(),
     title: mocRef ? ('Compliance — ' + mocRef) : 'New compliance matrix',
-    moc_ref: mocRef||'', scope:'', authority:'HCAA', owner: who(), status:'draft',
+    moc_ref: mocRef||'', scope:'', authority:'HCAA', owner: cmxOwner(who()), status:'draft',
     created_at:new Date().toISOString(), created_by:who(),
     updated_at:new Date().toISOString(), updated_by:who(), lines:[] };
   all.push(m); save(all); V.open = m.id; cmxRender(); cmxLoadMocs(false);
