@@ -20537,8 +20537,25 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     var t = String(el.type || '').toLowerCase();
     if(t === 'password' || t === 'file' || t === 'button' || t === 'submit' || t === 'reset' || t === 'search') return true;
     if(el.id && /(^|[-_])(search|filter)([-_]|$)/i.test(el.id)) return true;
+    /* Compliance matrix : enregistre déjà chaque frappe dans sa propre base, et son
+       contexte de brouillon n'identifie pas la matrice ouverte → les valeurs d'une
+       matrice étaient réinjectées dans toutes les autres (06.10.2026). */
+    if(el.id && /^cmx-/.test(el.id)) return true;
+    if(el.closest && el.closest('#compliance_matrix,#cmx-modal')) return true;
     return false;
   }
+  /* Purge des brouillons de la compliance matrix déjà enregistrés (06.10.2026) */
+  (function purgeCmx(){
+    try{
+      var raw = localStorage.getItem(DRAFT_KEY); if(!raw) return;
+      var d = JSON.parse(raw); if(!d || !d.fields) return;
+      var n = 0;
+      Object.keys(d.fields).forEach(function(k){
+        if(/::id:cmx-/.test(k) || /^compliance_matrix(\||::)/.test(k) || /^cmx-modal(\||::)/.test(k)){ delete d.fields[k]; n++; }
+      });
+      if(n){ localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); }
+    }catch(e){}
+  })();
 
   function activeContainer(el){
     if(!el || !el.closest) return document.body;
