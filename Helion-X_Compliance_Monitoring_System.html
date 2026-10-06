@@ -19607,9 +19607,17 @@ function save(list){
   try { localStorage.setItem(CMX_KEY, JSON.stringify(list||[])); } catch(e){}
   try { if(typeof window.safCloudScheduleSave==='function') window.safCloudScheduleSave(); } catch(e){}
 }
-/* Migration 06.10.2026 — ancienne autorité suisse → HCAA */
+/* Migration 06.10.2026 — ancienne autorité suisse → HCAA ; owner hors domaine Helion → CMX_DEFAULT_OWNER */
 var CMX_OLD_AUTH = /^\s*(OFAC\s*\/\s*FOCA|FOCA\s*\/\s*OFAC|OFAC|FOCA|BAZL)\s*$/i;
-function cmxOwner(e){ return String(e||'').trim(); }
+/* Owner par défaut / migration : toute adresse hors domaine Helion → Safety Manager Helion */
+var CMX_HELION_DOMAIN = 'helionhelicopters.com';
+var CMX_DEFAULT_OWNER = 'George.FILIOPOULOS@helionhelicopters.com';
+function cmxOwner(e){
+  var k = String(e||'').trim();
+  var m = k.match(/@([^\s@]+)$/);
+  if(m && m[1].toLowerCase() !== CMX_HELION_DOMAIN) return CMX_DEFAULT_OWNER;
+  return k;
+}
 function cmxMigrate(list){
   var changed=false;
   (list||[]).forEach(function(m){
