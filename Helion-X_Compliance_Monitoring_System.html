@@ -22780,3 +22780,40 @@ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded'
 })();
 /* ══ END MODULE PDF-TO-AUDIT-GRID ══════════════════════════════════════ */
 </script>
+
+<!-- ══ FIX : en-têtes de tableau sticky dans les conteneurs à défilement (06.10.2026) ══
+     La règle globale « thead th{position:sticky;top:var(--g-sticky-top)} » (208 px, prévue
+     pour la barre d'outils des grilles d'audit) décale l'en-tête vers le bas quand le tableau
+     est dans un conteneur à overflow (l'en-tête se retrouve au milieu des lignes).
+     Ici : tout en-tête dont un ancêtre défile reçoit top:0 (collant au haut de son conteneur). -->
+<style id="hx-th-local-css">thead th.hx-th-local{top:0 !important}</style>
+<script id="hx-th-local-js">
+(function(){
+  function scrollParent(el){
+    var p=el.parentElement;
+    while(p&&p!==document.body&&p!==document.documentElement){
+      var cs=getComputedStyle(p);
+      if(/(auto|scroll|hidden)/.test(cs.overflowX+' '+cs.overflowY))return p;
+      p=p.parentElement;
+    }
+    return null;
+  }
+  var busy=false;
+  function fix(){
+    busy=false;
+    document.querySelectorAll('thead th').forEach(function(th){
+      var local=!!scrollParent(th);
+      if(local!==th.classList.contains('hx-th-local'))th.classList.toggle('hx-th-local',local);
+    });
+  }
+  function schedule(){if(!busy){busy=true;setTimeout(fix,60);}}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
+  new MutationObserver(function(ms){
+    for(var i=0;i<ms.length;i++){var m=ms[i];
+      if(m.type==='childList'&&m.addedNodes.length){schedule();return;}
+      if(m.type==='attributes'&&m.attributeName!=='class'){schedule();return;}
+    }
+  }).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
+  document.addEventListener('click',function(){setTimeout(schedule,120);},true);
+})();
+</script>
