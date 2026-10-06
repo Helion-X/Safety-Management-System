@@ -1477,6 +1477,7 @@ tbody tr.hidden{display:none;}
 #ap2 .ap-b-green{background:rgba(0,196,140,.14);color:#6ee7b7;border:1px solid rgba(0,196,140,.3)}
 #ap2 .ap-b-red{background:rgba(255,68,68,.15);color:#fca5a5;border:1px solid rgba(255,68,68,.3)}
 #ap2 .ap-b-purple{background:rgba(139,92,246,.15);color:#c4b5fd;border:1px solid rgba(139,92,246,.3)}
+#ap2 .ap-b-orange{background:rgba(249,115,22,.15);color:#fdba74;border:1px solid rgba(249,115,22,.3)}
 #ap2 .ap-b-teal{background:rgba(0,212,255,.1);color:#67e8f9;border:1px solid rgba(0,212,255,.25)}
 #ap2 .ap-tabs-bar{display:flex;gap:3px;flex-wrap:wrap;border-bottom:1px solid #1a2840;padding:0 24px;background:#0b1220}
 #ap2 .ap-tab{font-size:11px;padding:8px 13px;border-radius:6px 6px 0 0;cursor:pointer;border:1px solid transparent;border-bottom:none;color:#6a82a5;background:transparent;transition:all .15s;white-space:nowrap;font-family:'IBM Plex Sans',sans-serif}
@@ -1492,6 +1493,7 @@ tbody tr.hidden{display:none;}
 #ap2 .ap-p-green{background:rgba(0,196,140,.14);color:#6ee7b7}
 #ap2 .ap-p-blue{background:rgba(26,86,219,.2);color:#60a5fa}
 #ap2 .ap-p-purple{background:rgba(139,92,246,.15);color:#c4b5fd}
+#ap2 .ap-p-orange{background:rgba(249,115,22,.15);color:#fdba74}
 #ap2 table{width:100%;border-collapse:collapse;background:#0b1120;border:1px solid #1a2840;border-radius:10px;overflow:hidden;margin:0;font-size:11px;table-layout:fixed;}
 #ap2 table td:nth-child(1){width:30%;}
 #ap2 table td:nth-child(2){width:10%;}
@@ -1506,6 +1508,7 @@ tbody tr.hidden{display:none;}
 #ap2 .ap-ir{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:2px 6px;border-radius:3px;white-space:nowrap;border:1px solid;font-weight:600}
 #ap2 .ir-m{background:rgba(26,86,219,.12);border-color:rgba(96,165,250,.35);color:#60a5fa}
 #ap2 .ir-camo{background:rgba(139,92,246,.12);border-color:rgba(196,181,253,.3);color:#c4b5fd}
+#ap2 .ir-145{background:rgba(249,115,22,.12);border-color:rgba(253,186,116,.35);color:#fdba74}
 #ap2 .ir-oro{background:rgba(0,196,140,.1);border-color:rgba(110,231,183,.3);color:#6ee7b7}
 #ap2 .ir-cat{background:rgba(0,212,255,.1);border-color:rgba(103,232,249,.3);color:#67e8f9}
 #ap2 .ir-ncc{background:rgba(245,166,35,.12);border-color:rgba(253,230,138,.3);color:#fde68a}
@@ -15501,7 +15504,7 @@ function g_toggleText(el){
 </script>
 <!-- ══════════════════════════════════════
    PANEL : PLAN D'AUDIT EASA
-   EU 965/2012 — ORO/CAT/SPA/NCC/SPO
+   EU 965/2012 — ORO/CAT/SPA/NCC/SPO · EU 1321/2014 — Part-M/CAMO/145
    AS332 C1 Super Puma / H215
 ══════════════════════════════════════ -->
 <div class="panel" id="audit_plan">
@@ -15517,8 +15520,8 @@ function g_toggleText(el){
 </div>
 <div class="ap-stats">
 <div><div class="ap-stat-v">8</div><div class="ap-stat-l">Phases / year</div></div>
-<div><div class="ap-stat-v">7</div><div class="ap-stat-l">Reg. domains</div></div>
-<div><div class="ap-stat-v">87</div><div class="ap-stat-l">Audit points IR</div></div>
+<div><div class="ap-stat-v">8</div><div class="ap-stat-l">Reg. domains</div></div>
+<div><div class="ap-stat-v">133</div><div class="ap-stat-l">Audit points IR</div></div>
 </div>
 <button id="ap-collapse-btn" onclick="toggleAuditPlan()" style="margin-left:16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:#c9d6ef;border-radius:8px;padding:7px 14px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:background .2s" title="Collapse / Expand the plan of audit"><span id="ap-collapse-icon">▲</span><span id="ap-collapse-label">Collapse</span></button>
 </div>
@@ -15529,11 +15532,13 @@ function g_toggleText(el){
 <span class="ap-badge ap-b-red">SPO.HESLO · SPO.MCF</span>
 <span class="ap-badge ap-b-blue">Reg. 1321/2014 Annex I</span>
 <span class="ap-badge ap-b-purple">Part-CAMO — Annex Vc</span>
+<span class="ap-badge ap-b-orange">Part-145 — Annex II</span>
 <span class="ap-badge ap-b-teal">binding regulatory requirement</span>
 </div>
 <div class="ap-legend">
 <div class="ap-leg-item"><span class="ap-ir ir-m">M.A.xxx</span> Part-M</div>
 <div class="ap-leg-item"><span class="ap-ir ir-camo">CAMO.A.xxx</span> Part-CAMO</div>
+<div class="ap-leg-item"><span class="ap-ir ir-145">145.A.xxx</span> Part-145</div>
 <div class="ap-leg-item"><span class="ap-ir ir-oro">ORO.xxx</span> Part-ORO</div>
 <div class="ap-leg-item"><span class="ap-ir ir-cat">CAT.xxx</span> Part-CAT</div>
 <div class="ap-leg-item"><span class="ap-ir ir-ncc">NCC.xxx</span> Part-NCC</div>
@@ -15550,6 +15555,7 @@ function g_toggleText(el){
 <button class="ap-tab" onclick="ap2Show('spo',this)">SPO</button>
 <button class="ap-tab" onclick="ap2Show('partm',this)">Part-M</button>
 <button class="ap-tab" onclick="ap2Show('camo',this)">Part-CAMO</button>
+<button class="ap-tab" onclick="ap2Show('p145',this)">Part-145</button>
 <button class="ap-tab" onclick="ap2Show('iface',this)">Interfaces</button>
 <button class="ap-tab" onclick="ap2Show('planning',this)">Annual schedule</button>
 </div>
@@ -15769,6 +15775,68 @@ function g_toggleText(el){
 </tbody></table>
 </div>
 </div><!-- /ap2-camo -->
+<!-- ═══ PART-145 ═══ -->
+<div class="ap-panel" id="ap2-p145">
+<div class="ap-col-hdr" style="position:sticky;top:70px;z-index:99;display:grid;grid-template-columns:30% 10% 1fr;background:#070e1a;border-bottom:2px solid #1a2840;padding:0;margin:0 0 0 0;"><div style="padding:8px 10px;font-size:10px;font-weight:600;color:#4a6a8a;text-transform:uppercase;letter-spacing:.06em;font-family:'IBM Plex Mono',monospace;">Audit point</div><div style="padding:8px 10px;font-size:10px;font-weight:600;color:#4a6a8a;text-transform:uppercase;letter-spacing:.06em;font-family:'IBM Plex Mono',monospace;">Priority</div><div style="padding:8px 10px;font-size:10px;font-weight:600;color:#4a6a8a;text-transform:uppercase;letter-spacing:.06em;font-family:'IBM Plex Mono',monospace;">Applicable IR</div></div>
+<div class="ap-section">
+<div class="ap-sec-title">Approval, scope &amp; exposition <span class="ap-pill ap-p-orange">Reg. 1321/2014 Annex II</span></div>
+<table><tbody>
+<tr><td><div class="ap-point">Valid Part-145 approval and compliant scope</div><div class="ap-desc">Certificate in force, A3 helicopter rating covering AS 332 / H215, line and base maintenance scope consistent with actual work</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.10</span><span class="ap-ir ir-145">145.A.20</span></div></td></tr>
+<tr><td><div class="ap-point">Approved and current MOE</div><div class="ap-desc">Exposition reflects organisation, procedures and capability list; controlled revisions accepted by the authority</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.70</span></div></td></tr>
+<tr><td><div class="ap-point">Privileges exercised within approval</div><div class="ap-desc">Line stations and work at other locations (field bases, sites) covered by MOE procedures; no work outside the rating</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.75</span></div></td></tr>
+<tr><td><div class="ap-point">Organisational changes managed</div><div class="ap-desc">Prior-approval changes notified before implementation, other changes per MOE procedure, link to Helion MOC</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.85</span><span class="ap-ir ir-oro">ORO.GEN.130(a)</span></div></td></tr>
+<tr><td><div class="ap-point">Authority findings closed</div><div class="ap-desc">Root cause, corrective action plan within agreed deadlines, access granted to the authority</div></td><td><span class="ap-prio"><span class="ap-dot d-a"></span>High</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.95</span><span class="ap-ir ir-145">145.A.140</span></div></td></tr>
+</tbody></table>
+</div>
+<div class="ap-section">
+<div class="ap-sec-title">Facilities, equipment &amp; components</div>
+<table><tbody>
+<tr><td><div class="ap-point">Facilities adequate for planned work</div><div class="ap-desc">Hangar sized for AS 332 / H215, protection from weather, workshops, segregated storage, office space for certifying staff</div></td><td><span class="ap-prio"><span class="ap-dot d-a"></span>High</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.25</span></div></td></tr>
+<tr><td><div class="ap-point">Tools and equipment available and calibrated</div><div class="ap-desc">Special tooling per AMM available, calibration register, traceability to recognised standards</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.40</span></div></td></tr>
+<tr><td><div class="ap-point">Component acceptance and classification</div><div class="ap-desc">EASA Form 1 / equivalent checked on receipt, serviceable / unserviceable / unsalvageable segregation, quarantine</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.42</span><span class="ap-ir ir-m">M.A.501(a)</span></div></td></tr>
+</tbody></table>
+</div>
+<div class="ap-section">
+<div class="ap-sec-title">Personnel &amp; certifying staff</div>
+<table><tbody>
+<tr><td><div class="ap-point">Accountable manager and nominated persons</div><div class="ap-desc">AM corporate authority, nominated persons for maintenance, compliance monitoring manager and safety manager accepted by the authority</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.30(a)</span><span class="ap-ir ir-145">145.A.30(b)</span><span class="ap-ir ir-145">145.A.30(c)</span><span class="ap-ir ir-145">145.A.30(ca)</span></div></td></tr>
+<tr><td><div class="ap-point">Man-hour plan</div><div class="ap-desc">Sufficient staff vs planned workload, review when actual hours fall below plan, compliance monitoring resourced</div></td><td><span class="ap-prio"><span class="ap-dot d-a"></span>High</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.30(d)</span></div></td></tr>
+<tr><td><div class="ap-point">Competence and human factors training</div><div class="ap-desc">Competence assessment of all staff, initial and continuation HF training, records</div></td><td><span class="ap-prio"><span class="ap-dot d-a"></span>High</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.30(e)</span></div></td></tr>
+<tr><td><div class="ap-point">Line and base maintenance certifying staff</div><div class="ap-desc">B1/B2 type-rated staff for AS 332 / H215, Category C for base maintenance, support staff per MOE</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.30(g)</span><span class="ap-ir ir-145">145.A.30(h)</span></div></td></tr>
+<tr><td><div class="ap-point">Certification authorisations</div><div class="ap-desc">Part-66 licence + type rating, scope of authorisation, 6-month recent experience, continuation training every 2 years, records kept</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.35</span></div></td></tr>
+</tbody></table>
+</div>
+<div class="ap-section">
+<div class="ap-sec-title">Maintenance performance &amp; certification</div>
+<table><tbody>
+<tr><td><div class="ap-point">Current maintenance data used</div><div class="ap-desc">AMM, IPC, SB and AD from Airbus Helicopters current and accessible; inaccurate data reported to the author</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.45</span><span class="ap-ir ir-m">M.A.401(a)</span></div></td></tr>
+<tr><td><div class="ap-point">Production planning and fatigue</div><div class="ap-desc">Work planned against resources, human performance limitations, shift and task handover</div></td><td><span class="ap-prio"><span class="ap-dot d-a"></span>High</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.47</span></div></td></tr>
+<tr><td><div class="ap-point">Error capturing and critical tasks</div><div class="ap-desc">Independent inspection of critical maintenance tasks (flight controls, MGB, rotor), avoidance of repeated errors, post-maintenance checks</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.48</span></div></td></tr>
+<tr><td><div class="ap-point">Certificate of release to service</div><div class="ap-desc">CRS issued by authorised staff, EASA Form 1 for components, incomplete maintenance recorded and communicated</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.50</span><span class="ap-ir ir-m">M.A.801(a)</span></div></td></tr>
+<tr><td><div class="ap-point">Maintenance records</div><div class="ap-desc">Work packages, task cards and CRS retained 3 years, copy sent to the CAMO / operator, protection against loss</div></td><td><span class="ap-prio"><span class="ap-dot d-a"></span>High</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.55</span></div></td></tr>
+<tr><td><div class="ap-point">Maintenance procedures</div><div class="ap-desc">Procedures for all activities, safe working practices, procedures kept up to date and followed</div></td><td><span class="ap-prio"><span class="ap-dot d-a"></span>High</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.65</span></div></td></tr>
+</tbody></table>
+</div>
+<div class="ap-section">
+<div class="ap-sec-title">Management system &amp; safety</div>
+<table><tbody>
+<tr><td><div class="ap-point">Part-145 management system operational</div><div class="ap-desc">Accountability, safety policy, hazard identification and risk management, compliance monitoring function with feedback to the AM</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.200</span></div></td></tr>
+<tr><td><div class="ap-point">Information security management (Part-IS)</div><div class="ap-desc">ISMS established per Reg. 2023/203, interface with operator Part-IS</div></td><td><span class="ap-prio"><span class="ap-dot d-a"></span>High</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.200A</span></div></td></tr>
+<tr><td><div class="ap-point">Occurrence reporting</div><div class="ap-desc">Reportable occurrences to authority, CAMO / operator and design holder, Reg. 376/2014 deadlines</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.60</span></div></td></tr>
+<tr><td><div class="ap-point">Internal safety reporting scheme</div><div class="ap-desc">Voluntary and mandatory reporting, analysis, feedback to reporters, Just Culture</div></td><td><span class="ap-prio"><span class="ap-dot d-a"></span>High</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.202</span></div></td></tr>
+<tr><td><div class="ap-point">Immediate reaction to safety problems</div><div class="ap-desc">Implementation of authority safety measures and Airworthiness Directives without delay</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.155</span></div></td></tr>
+<tr><td><div class="ap-point">Contracting and subcontracting</div><div class="ap-desc">Subcontractors (NDT, components, engines) under the 145 management system, contracts and oversight</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-145">145.A.205</span></div></td></tr>
+</tbody></table>
+</div>
+<div class="ap-section">
+<div class="ap-sec-title">Operator ↔ Part-145 interface</div>
+<table><tbody>
+<tr><td><div class="ap-point">Maintenance contract with the Part-145</div><div class="ap-desc">Written contract defining work scope, data flow, CRS, defect handling and access for audits</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-camo">CAMO.A.315(c)</span><span class="ap-ir ir-oro">ORO.GEN.205</span><span class="ap-ir ir-145">145.A.205</span></div></td></tr>
+<tr><td><div class="ap-point">Operator oversight of the Part-145</div><div class="ap-desc">Contracted activities included in Helion compliance monitoring, audit results reported at SRB</div></td><td><span class="ap-prio"><span class="ap-dot d-a"></span>High</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-oro">ORO.GEN.205</span><span class="ap-ir ir-oro">ORO.GEN.200(a)(6)</span><span class="ap-ir ir-145">145.A.200</span></div></td></tr>
+<tr><td><div class="ap-point">Hazards and occurrences shared with the operator SMS</div><div class="ap-desc">Part-145 safety reports and occurrences feed the Helion risk register</div></td><td><span class="ap-prio"><span class="ap-dot d-r"></span>Critical</span></td><td><div class="ap-ir-tags"><span class="ap-ir ir-oro">ORO.GEN.160(a)</span><span class="ap-ir ir-oro">ORO.GEN.200(a)(2)</span><span class="ap-ir ir-145">145.A.60</span><span class="ap-ir ir-145">145.A.202</span></div></td></tr>
+</tbody></table>
+</div>
+</div><!-- /ap2-p145 -->
 <!-- ═══ INTERFACES ═══ -->
 <div class="ap-panel" id="ap2-iface">
 <div class="ap-col-hdr" style="position:sticky;top:70px;z-index:99;display:grid;grid-template-columns:30% 10% 1fr;background:#070e1a;border-bottom:2px solid #1a2840;padding:0;margin:0 0 0 0;"><div style="padding:8px 10px;font-size:10px;font-weight:600;color:#4a6a8a;text-transform:uppercase;letter-spacing:.06em;font-family:'IBM Plex Mono',monospace;">Audit point</div><div style="padding:8px 10px;font-size:10px;font-weight:600;color:#4a6a8a;text-transform:uppercase;letter-spacing:.06em;font-family:'IBM Plex Mono',monospace;">Priority</div><div style="padding:8px 10px;font-size:10px;font-weight:600;color:#4a6a8a;text-transform:uppercase;letter-spacing:.06em;font-family:'IBM Plex Mono',monospace;">Applicable IR</div></div>
@@ -15795,7 +15863,7 @@ function g_toggleText(el){
 <li class="ap-tl-item"><div class="ap-tl-label">Mars</div><div class="ap-tl-dot tl-r"></div><div class="ap-tl-body"><div class="ap-tl-title">CAT + NCC operational audit</div><div class="ap-tl-desc">Normal and emergency procedures, MEL, fuel, minima, M&amp;B, crew documentation, OM-A/B/C/D. CAT/NCC/IDE equipment.</div><div class="ap-tl-refs">CAT.GEN · CAT.OP.MPA · CAT.IDE.H · NCC.GEN · NCC.OP · NCC.IDE.H · ORO.FC</div></div></li>
 <li class="ap-tl-item"><div class="ap-tl-label">Apr–Mai</div><div class="ap-tl-dot tl-r"></div><div class="ap-tl-body"><div class="ap-tl-title">Phase 3 — SPA audit — EFB &amp; dangerous goods</div><div class="ap-tl-desc">EFB compliance (hardware, software, procedures, backup), DG programme, crew training, IATA/ICAO documentation, DG emergency procedures.</div><div class="ap-tl-refs">SPA.EFB.100 · SPA.DG.100 · SPA.DG.105</div></div></li>
 <li class="ap-tl-item"><div class="ap-tl-label">Jun</div><div class="ap-tl-dot tl-r"></div><div class="ap-tl-body"><div class="ap-tl-title">HESLO &amp; MCF audit — Specialised operations</div><div class="ap-tl-desc">SPO risk assessment, rescue plans, HESLO/MCF training, equipment, ground/air coordination. Site observation if possible.</div><div class="ap-tl-refs">SPO.GEN · SPO.OP.150 · SPO.OP.200 · SPO.OP.230 · SPO.SPEC.HESLO · SPO.SPEC.MCF · SPO.FC.120</div></div></li>
-<li class="ap-tl-item"><div class="ap-tl-label">Jul–Aug</div><div class="ap-tl-dot tl-r"></div><div class="ap-tl-body"><div class="ap-tl-title">Phase 5 — Part-M / CAMO airworthiness audit</div><div class="ap-tl-desc">AS 332 C1 maintenance programme, AD/SB tracking, LLP, CRS, TLB, CAMO/Part-145 interface, ARC in force. Physical inspection of one aircraft.</div><div class="ap-tl-refs">M.Has.201 to M.Has.903 · CAMO.Has.100 to CAMO.Has.320 · M.Has.708(c)</div></div></li>
+<li class="ap-tl-item"><div class="ap-tl-label">Jul–Aug</div><div class="ap-tl-dot tl-r"></div><div class="ap-tl-body"><div class="ap-tl-title">Phase 5 — Part-M, CAMO &amp; Part-145 airworthiness audit</div><div class="ap-tl-desc">AS 332 C1 maintenance programme, AD/SB tracking, LLP, CRS, TLB, ARC in force. Part-145 organisation: approval scope, MOE, certifying staff, tooling, critical tasks, contract and interface with the operator. Physical inspection of one aircraft.</div><div class="ap-tl-refs">M.A.201 to M.A.903 · CAMO.A.100 to CAMO.A.320 · 145.A.10 to 145.A.205 · CAMO.A.315(c)</div></div></li>
 <li class="ap-tl-item"><div class="ap-tl-label">Sep–Oct</div><div class="ap-tl-dot tl-a"></div><div class="ap-tl-body"><div class="ap-tl-title">Crew qualifications &amp; training audit</div><div class="ap-tl-desc">Licences, AS 332 type ratings, HESLO/MCF competency, recurrencies, CRM/MCC records, individual training tracking.</div><div class="ap-tl-refs">ORO.FC.005 · ORO.FC.100 to.145 · SPO.FC.120 · CAT.OP.MPA.175</div></div></li>
 <li class="ap-tl-item"><div class="ap-tl-label">Nov</div><div class="ap-tl-dot tl-a"></div><div class="ap-tl-body"><div class="ap-tl-title">Surveillance audit — Non-conformity closure</div><div class="ap-tl-desc">Verification of finding closure from phases 1 to 6. Corrective actions, effectiveness verified, continuous improvement plan.</div><div class="ap-tl-refs">ORO.GEN.200(a)(6) · CAMO.A.315 · M.A.712</div></div></li>
 <li class="ap-tl-item"><div class="ap-tl-label">Dec</div><div class="ap-tl-dot tl-g"></div><div class="ap-tl-body"><div class="ap-tl-title">Annual Safety Review Board + Management review</div><div class="ap-tl-desc">SPI/KPI summary (operations + airworthiness), occurrence analysis, safety policy review, N+1 objectives, crew communication.</div><div class="ap-tl-refs">ORO.GEN.200 · CAMO.A.200(a)(3) · ICAO Annex 19</div></div></li>
@@ -21119,14 +21187,14 @@ window.g_editSavedAudit=function(id){
 window.safWfFilter=function(k){SAVED_FILTER=k;window.g_renderSavedList();};
 
 /* ════════════════ 3. PLAN D'AUDIT → GRILLE ════════════════ */
-var AP_PANEL_LBL={sms:'SMS',ops:'ORO / CAT / NCC',spa:'SPA',spo:'SPO',partm:'Part-M',camo:'Part-CAMO',iface:'Interfaces'};
+var AP_PANEL_LBL={sms:'SMS',ops:'ORO / CAT / NCC',spa:'SPA',spo:'SPO',partm:'Part-M',camo:'Part-CAMO',p145:'Part-145',iface:'Interfaces'};
 var AP_PHASES=[
   {n:'1',panels:['sms']},{n:'2',panels:['ops']},{n:'3',panels:['spa']},{n:'4',panels:['spo']},
-  {n:'5',panels:['partm','camo']},{n:'6',rx:/^(ORO\.(FC|CC|TC|FTL)|SPO\.FC)/}
+  {n:'5',panels:['partm','camo','p145']},{n:'6',rx:/^(ORO\.(FC|CC|TC|FTL)|SPO\.FC)/}
 ];
 function baseRef(t){
   var s=String(t||'').trim().replace(/^(AMC|GM)\d*\s+/i,'');
-  var m=s.match(/^([A-Z]+(?:\.[A-Z]+)*\.\d+[A-Z]?)/); if(!m)return '';
+  var m=s.match(/^([A-Z0-9]+(?:\.[A-Z]+)*\.\d+[A-Z]?)/); if(!m)return '';
   if(DB[m[1]])return m[1];
   var m2=m[1].replace(/[A-Z]$/,''); return DB[m2]?m2:m[1];
 }
