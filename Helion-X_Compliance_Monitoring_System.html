@@ -19607,11 +19607,9 @@ function save(list){
   try { localStorage.setItem(CMX_KEY, JSON.stringify(list||[])); } catch(e){}
   try { if(typeof window.safCloudScheduleSave==='function') window.safCloudScheduleSave(); } catch(e){}
 }
-/* Migration 06.10.2026 — anciennes valeurs SAF (autorité suisse, owner) → Helion / HCAA */
+/* Migration 06.10.2026 — ancienne autorité suisse → HCAA */
 var CMX_OLD_AUTH = /^\s*(OFAC\s*\/\s*FOCA|FOCA\s*\/\s*OFAC|OFAC|FOCA|BAZL)\s*$/i;
-var CMX_OWNER_ALIAS = { 'xavier.bouvet@saf-helico.com':'George.FILIOPOULOS@helionhelicopters.com',
-                        'xavier.bouvet@helion-helicopters.com':'George.FILIOPOULOS@helionhelicopters.com' };
-function cmxOwner(e){ var k=String(e||'').trim(); return CMX_OWNER_ALIAS[k.toLowerCase()] || k; }
+function cmxOwner(e){ return String(e||'').trim(); }
 function cmxMigrate(list){
   var changed=false;
   (list||[]).forEach(function(m){
