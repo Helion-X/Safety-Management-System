@@ -2043,7 +2043,7 @@ body.hx-printing .hx-cms-srb .finding-row textarea{background:#f9f9f9!important;
 
 <div class="nav-item" onclick="showView('erp')">
 <span class="icon">🚨</span>
-<span class="nav-item-text"><span class="nav-app-code">APP10-OMM</span><span class="nav-app-title">Emergency Response Plan</span></span>
+<span class="nav-item-text"><span class="nav-app-code">APP080-OMM</span><span class="nav-app-title">Emergency Response Plan</span></span>
 </div>
 <div class="nav-item" onclick="showView('spi')">
 <span class="icon">📈</span>
@@ -2292,7 +2292,7 @@ body.hx-printing .hx-cms-srb .finding-row textarea{background:#f9f9f9!important;
       </div>
       <div>
         <label style="font-family:var(--font-mono);font-size:10px;color:var(--grey-400);letter-spacing:.06em;display:block;margin-bottom:6px;">DOC REFERENCE <span style="color:#cc4900;">*</span></label>
-        <input id="em-doc-ref" style="width:100%;background:var(--navy-deep);border:1px solid rgba(15,30,46,0.192);color:var(--white);font-family:var(--font-mono);font-size:11px;padding:8px 12px;border-radius:6px;box-sizing:border-box;" type="text" placeholder="e.g. APP10-OMM §3.2"/>
+        <input id="em-doc-ref" style="width:100%;background:var(--navy-deep);border:1px solid rgba(15,30,46,0.192);color:var(--white);font-family:var(--font-mono);font-size:11px;padding:8px 12px;border-radius:6px;box-sizing:border-box;" type="text" placeholder="e.g. APP080-OMM §3.2"/>
       </div>
       <div>
         <label style="font-family:var(--font-mono);font-size:10px;color:var(--grey-400);letter-spacing:.06em;display:block;margin-bottom:6px;">CONTROL STATUS</label>
@@ -4159,9 +4159,9 @@ function updateOaciDefinitionDropdown(sel) {
 
 <div class="view" id="view-erp">
 <div class="dash-header">
-  <div>
+  <div data-erp-base="APP080-ISS01-REV00">
     <div class="dash-title">🚨 EMERGENCY RESPONSE PLAN</div>
-    <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin:4px 0 2px;">APP10-OMM</div>
+    <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin:4px 0 2px;">APP080-OMM</div>
     <div class="dash-subtitle">Ver. 3.0 · 01.01.2026 · Helion Helicopters · H215</div>
   </div>
   <button class="btn btn-ghost" onclick="window.print()" style="font-size:11px;">🖨 Print ERP</button>
@@ -20121,8 +20121,8 @@ function isxMocReportHTML(cs){
       var bar = document.createElement('div');
       bar.id = 'erp-ed-bar';
       bar.innerHTML = '<span class="erp-ed-help">✎ ' + T(
-          'MODE ÉDITION — cliquez pour modifier un texte, sélectionnez-le pour le mettre en forme · ✎ renomme un onglet · survol d’un élément : ▲▼ déplacer, ⧉ dupliquer, ✕ supprimer, ⤒ bloc parent.',
-          'EDIT MODE — click to change text, select it to format it · ✎ renames a tab · hover an element: ▲▼ move, ⧉ duplicate, ✕ delete, ⤒ parent block.')
+          'MODE ÉDITION — cliquez pour modifier un texte, sélectionnez-le pour le mettre en forme · ✎ renomme un onglet · survol d’un élément : ＋ ajouter un bloc dessous, ▲▼ déplacer, ⧉ dupliquer, ✕ supprimer, ⤒ bloc parent.',
+          'EDIT MODE — click to change text, select it to format it · ✎ renames a tab · hover an element: ＋ add a block below, ▲▼ move, ⧉ duplicate, ✕ delete, ⤒ parent block.')
         + '</span>'
         + '<button onclick="erpEdUndo()" title="' + T('Annuler la dernière opération de structure','Undo last structural change') + '">↶ ' + T('Annuler','Undo') + '</button>'
         + '<button onclick="erpEdVersions()">🕘 ' + T('Versions','Versions') + '</button>'
@@ -20138,7 +20138,8 @@ function isxMocReportHTML(cs){
       tl.innerHTML = '<span class="erp-ed-tag" id="erp-ed-tag"></span>'
         + '<button data-op="up" title="' + T('Monter','Move up') + '">▲</button>'
         + '<button data-op="down" title="' + T('Descendre','Move down') + '">▼</button>'
-        + '<button data-op="dup" title="' + T('Dupliquer (ajouter un élément identique)','Duplicate (add a similar item)') + '">⧉</button>'
+        + '<button data-op="add" title="' + T('Ajouter un bloc vide en dessous (même mise en forme)','Add an empty block below (same layout)') + '" style="color:#7ee787;font-weight:900">＋</button>'
+        + '<button data-op="dup" title=""' + T('Dupliquer (ajouter un élément identique)','Duplicate (add a similar item)') + '">⧉</button>'
         + '<button data-op="del" title="' + T('Supprimer','Delete') + '">✕</button>'
         + '<button data-op="parent" title="' + T('Sélectionner le bloc parent','Select parent block') + '">⤒</button>';
       tl.addEventListener('mousedown', function(e){ e.preventDefault(); });
@@ -20456,6 +20457,29 @@ function isxMocReportHTML(cs){
       c.querySelectorAll('input,textarea').forEach(function(i){ if(i.type !== 'checkbox' && i.type !== 'radio') i.value = ''; else i.checked = false; });
       p.insertBefore(c, el.nextSibling);
       current = c; pinned = true;
+    } else if(op === 'add'){
+      /* Bloc vide de même structure et même style, placé juste en dessous. */
+      var nb = el.cloneNode(true);
+      if(nb.id) nb.removeAttribute('id');
+      nb.querySelectorAll('[id]').forEach(function(n){ n.removeAttribute('id'); });
+      nb.querySelectorAll('input,textarea').forEach(function(i){ if(i.type !== 'checkbox' && i.type !== 'radio') i.value = ''; else i.checked = false; });
+      var tw = document.createTreeWalker(nb, NodeFilter.SHOW_TEXT), tn, texts = [];
+      while((tn = tw.nextNode())) if(tn.nodeValue.trim()) texts.push(tn);
+      var PH = T('Nouveau texte','New text'), first = null;
+      texts.forEach(function(t){
+        var m = t.nodeValue.match(/^(\s*(?:[•✦✓▪◦·–\-o]|\d+[.)]?)\s+)/);
+        t.nodeValue = (m ? m[1] : '') + PH;
+        if(!first) first = { node: t, start: m ? m[1].length : 0 };
+      });
+      if(!texts.length){ nb.appendChild(document.createTextNode(PH)); first = { node: nb.lastChild, start: 0 }; }
+      p.insertBefore(nb, el.nextSibling);
+      current = nb; pinned = true;
+      if(first){
+        var host2 = hostOf(nb); if(host2){ try{ host2.focus({preventScroll:true}); }catch(e){} }
+        var rg = document.createRange(); rg.setStart(first.node, first.start); rg.setEnd(first.node, first.node.nodeValue.length);
+        var sl = window.getSelection(); sl.removeAllRanges(); sl.addRange(rg);
+      }
+      toast(T('Bloc ajouté — tapez pour remplacer « Nouveau texte »','Block added — type to replace “New text”'), 'success');
     } else if(op === 'del'){
       var nx = el.nextElementSibling || el.previousElementSibling;
       el.remove();
