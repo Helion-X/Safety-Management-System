@@ -4547,458 +4547,137 @@ function updateOaciDefinitionDropdown(sel) {
 <!-- ═══════════════════════════════════════════════════════════════
      SECTION: ROLES
 ════════════════════════════════════════════════════════════════ -->
-<div id="erp-sec-roles" style="display:none;">
-  <div style="display:flex;flex-direction:column;gap:12px;">
-
-    <div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
-      <div style="background:rgba(192,0,0,.2);padding:12px 18px;display:flex;align-items:center;gap:10px;">
-        <span style="font-size:18px;">👔</span>
-        <div style="font-family:var(--font-mono);font-size:12px;font-weight:700;color:#1f1f1f;">ACCOUNTABLE MANAGER (ACM)</div>
-      </div>
-      <div style="padding:16px 18px;display:flex;flex-direction:column;gap:6px;">
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Draft releases to the media — appoint a spokesperson. Do not speak to the media himself where possible.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Ensure activities of the company are maintained if not affected by the event.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Be at the disposal of the relevant official organisations.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Contact customers and sub-contracted companies affected by the accident.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Interface between organisation and press — only relevant and accurate information, without prejudicing the investigation.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Limit access to offices and headquarters. Ensure media representatives are escorted at all times.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Check all buildings and areas are secured (Hangars, Ramps, etc.)</div>
-      </div>
-    </div>
-
-    <div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
-      <div style="background:rgba(27,108,168,.25);padding:12px 18px;display:flex;align-items:center;gap:10px;">
-        <span style="font-size:18px;">🛡</span>
-        <div style="font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--steel-bright);">SAFETY MANAGER (SM)</div>
-      </div>
-      <div style="padding:16px 18px;display:flex;flex-direction:column;gap:6px;">
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Leads the crisis unit — centralises all documentation and information (casualties, equipment, location).</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Collect data from SMS database regarding previous occurrences and risk assessments.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Provide analysis on previous occurrences to ACM and Communication Manager.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Informs authorities. Point of contact for authorities. Establishes relations with the police on scene.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Supervises media if allowed access to the site.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Update SMS information after the crisis.</div>
-      </div>
-    </div>
-
-    <div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
-      <div style="background:rgba(77,184,72,.15);padding:12px 18px;display:flex;align-items:center;gap:10px;">
-        <span style="font-size:18px;">✈</span>
-        <div style="font-family:var(--font-mono);font-size:12px;font-weight:700;color:#368132;">14.3 — NPFO / NPCT — FLIGHT OPERATIONS / CREW TRAINING</div>
-      </div>
-      <div style="padding:16px 18px;display:flex;flex-direction:column;gap:6px;">
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Gather all information relative to the flight: weather reports, pre-flight planning, W&amp;B, fuel planning, passenger manifest.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Compile crew administrative documents: training files, FTD records, logbook, medical certificates, licences.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• In co-operation with Maintenance Manager, gather technical documents relating to the aircraft.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• If required, select and brief crews to fly investigators, police or authorised persons to the accident site.</div>
-      </div>
-    </div>
-
-    <div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
-      <div style="background:rgba(232,160,32,.15);padding:12px 18px;display:flex;align-items:center;gap:10px;">
-        <span style="font-size:18px;">🔧</span>
-        <div style="font-family:var(--font-mono);font-size:12px;font-weight:700;color:#946e16;">14.4 — PERSON CONTINUING AIRWORTHINESS (NPCA)</div>
-      </div>
-      <div style="padding:16px 18px;display:flex;flex-direction:column;gap:6px;">
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Gather the administrative and airworthiness documents relevant to the aircraft involved: registration certificate, airworthiness certificate, Airworthiness Review Certificate (ARC), equipment registration card, engine logbook, airframe logbook.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Make these documents available to the investigating authority (e.g. the STSB) without delay.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Provide technical expertise to the investigating authority on request.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Gather information on maintenance personnel: aptitude certificates, training history, complete list.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Provide technical support to the crisis unit. Select a competent engineer to assist the investigation.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Help organise the recovery of the wreckage once released by the investigation authority.</div>
-      </div>
-    </div>
-
-    <!-- 14.5bis NPGO -->
-    <div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
-      <div style="background:rgba(74,159,224,.15);padding:12px 18px;display:flex;align-items:center;gap:10px;">
-        <span style="font-size:18px;">🛤</span>
-        <div style="font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--steel-bright);">14.5bis — NPGO — GROUND OPERATIONS</div>
-      </div>
-      <div style="padding:16px 18px;display:flex;flex-direction:column;gap:6px;">
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Coordinate and supervise ground operations activities at the accident site and at the organisation\'s premises.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Ensure the security and access control of hangars, ramps and all operational areas during the crisis.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Liaise with ground handling service providers and external support teams as required.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Provide logistical support to crisis unit members and emergency services at the scene.</div>
-      </div>
-    </div>
-
-    <!-- 14.7 Business Unit SPO -->
-    <div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
-      <div style="background:rgba(74,159,224,.12);padding:12px 18px;display:flex;align-items:center;gap:10px;">
-        <span style="font-size:18px;">💼</span>
-        <div style="font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--steel-bright);">14.7 — BUSINESS UNIT SPO</div>
-      </div>
-      <div style="padding:16px 18px;display:flex;flex-direction:column;gap:6px;">
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Contact customers affected by the accident, in accordance with current contracts.</div>
-        <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Contact service providers affected by the accident, if necessary.</div>
-      </div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-      <div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
-        <div style="background:rgba(143,168,192,.12);padding:12px 16px;display:flex;align-items:center;gap:8px;">
-          <span style="font-size:16px;">👥</span>
-          <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#567898;">14.5 — HUMAN RESOURCES</div>
-        </div>
-        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:5px;">
-          <div style="font-size:11px;color:var(--grey-200);padding:7px 10px;background:rgba(15,30,46,0.033);border-radius:4px;">• Inform staff of situation and action to take.</div>
-          <div style="font-size:11px;color:var(--grey-200);padding:7px 10px;background:rgba(15,30,46,0.033);border-radius:4px;">• Provide HR documents relating to involved staff.</div>
-          <div style="font-size:11px;color:var(--grey-200);padding:7px 10px;background:rgba(15,30,46,0.033);border-radius:4px;">• Ensure condolences offered to next of kin.</div>
-          <div style="font-size:11px;color:var(--grey-200);padding:7px 10px;background:rgba(15,30,46,0.033);border-radius:4px;">• Ensure emotional trauma of personnel is addressed — contact psychologists if necessary.</div>
-          <div style="font-size:11px;color:var(--grey-200);padding:7px 10px;background:rgba(15,30,46,0.033);border-radius:4px;">• Manage interface with families of victims.</div>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:12px;">
-        <div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;flex:1;">
-          <div style="background:rgba(143,168,192,.12);padding:10px 16px;display:flex;align-items:center;gap:8px;">
-            <span style="font-size:16px;">⚖</span>
-            <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#567898;">14.6 — CFO</div>
-          </div>
-          <div style="padding:12px 16px;display:flex;flex-direction:column;gap:5px;">
-            <div style="font-size:11px;color:var(--grey-200);padding:7px 10px;background:rgba(15,30,46,0.033);border-radius:4px;">• Contact lawyer. Review all statements before circulation.</div>
-            <div style="font-size:11px;color:var(--grey-200);padding:7px 10px;background:rgba(15,30,46,0.033);border-radius:4px;">• Advise on legal issues. Contact insurance companies.</div>
-          </div>
-        </div>
-        <div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
-          <div style="background:rgba(143,168,192,.12);padding:10px 16px;display:flex;align-items:center;gap:8px;">
-            <span style="font-size:16px;">☢</span>
-            <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#567898;">14.8 — DANGEROUS GOODS</div>
-          </div>
-          <div style="padding:12px 16px;">
-            <div style="font-size:11px;color:var(--grey-200);padding:7px 10px;background:rgba(15,30,46,0.033);border-radius:4px;">• Provide authorities immediately with the list of any dangerous goods that may have been taken away.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
+<div id="erp-sec-roles" style="display:none;" data-erp-base="APP080-ISS01-REV00">
+<!-- Reprise exacte de APP080-OMM ISS01 REV00 DRAFT (01-May-2026), numérotation du document -->
+<div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.1em;margin-bottom:12px;text-transform:uppercase;">14. Role of Crisis Unit personnel</div>
+<div style="display:flex;flex-direction:column;gap:12px;">
+<div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
+  <div style="background:rgba(192,0,0,.2);padding:12px 18px;display:flex;align-items:center;gap:10px;"><span style="font-size:18px;">👔</span><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#1f1f1f;margin-bottom:6px;margin-bottom:0;text-transform:uppercase;">14.1. Accountable Manager - ACM</div></div>
+  <div style="padding:16px 18px;"><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:6px;">Manage internal operations by relying on the members of the CMC:</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Draft the releases to the media. Appoint a spokesperson to communicate with the media. Where possible he should not do this himself.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Ensure that the activities of the company are maintained if these activities are not affected by the event.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Be at the disposal of the relevant official organisations.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Contact the customer(s) affected by the accident in accordance with any contractual agreements in place.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Contact any sub-contracted companies affected by the accident, where appropriate.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Contact service providers affected by the accident, if necessary.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Provide the interface between the organisation and the Press, ensuring that only relevant and accurate information is provided without prejudicing the investigation in any way.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Limit access to the offices and headquarters of the organisation, including surrounding areas. This should include any premises of offices dedicated to the investigation authorities.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Check that other buildings and areas are secured (Hangars, Ramps, etc.)</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Where members of the media have been authorised to enter the establishment, ensure that they are escorted and controlled at all times.</div></div></div>
+</div>
+<div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
+  <div style="background:rgba(27,108,168,.25);padding:12px 18px;display:flex;align-items:center;gap:10px;"><span style="font-size:18px;">🛡</span><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);margin-bottom:6px;margin-bottom:0;text-transform:uppercase;">14.2. Safety Manager - SM</div></div>
+  <div style="padding:16px 18px;"><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">Collect data from the Company SMS and safety database(s) regarding previous occurrences and risk assessments, mitigation and control (various risk controls in place) concerning the safety risk(s) revealed by the event at hand.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">Provide analysis on previous occurrences and risk assessments to the Accountable Manager and Communication Manager, to enable them to answer any questions correctly to support the protection of company reputation.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">Assist the Accountable Manager and the Communication Manager in any other way. Be at the disposal of the relevant official organisations.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">Acts the Secretary of the CMC.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">Update SMS information (after the crisis).</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Leads the crisis unit,</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Centralises all documentation,</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Centralises all information concerning the accident (casualty figures, equipment involved, location, etc.),</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Informs the authorities of the situation,</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Is the point of contact for the authorities,</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Supervises the media if they are allowed access to the site,</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Establishes relations with the police present at the scene, if materially possible, ensures that a safety perimeter is set up at the site before the arrival of the judicial authorities,</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Informs the official concerned in real time,</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Acts as the focal point between the authorities and the company, providing them with the information requested (prepared in advance by the NPs and management).</div></div></div>
+</div>
+<div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
+  <div style="background:rgba(77,184,72,.15);padding:12px 18px;display:flex;align-items:center;gap:10px;"><span style="font-size:18px;">✈</span><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#368132;margin-bottom:6px;margin-bottom:0;text-transform:uppercase;">14.3. Nominated Person Flight Operations – NPFO</div></div>
+  <div style="padding:16px 18px;"><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:6px;">Gather any information relative to the flight and the nature of the activity relative the accident. Compile a list of all documents relating the flight and have them available fort the authorities including:</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Copies of weather reports</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Copies of pre-flight planning documents</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Copies of Weight and Balance planning</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Copies of fuel planning and fuel uplift receipts</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Copy of the passenger manifest</div></div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">In co-operation with the Maintenance Manager, gather the technical documents relating to the aircraft involved in the accident.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:0;">If required, select and brief crews to fly investigators, police or authorised persons of the organisation to the accident site.</div></div>
+</div>
+<div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
+  <div style="background:rgba(77,184,72,.15);padding:12px 18px;display:flex;align-items:center;gap:10px;"><span style="font-size:18px;">🎓</span><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#368132;margin-bottom:6px;margin-bottom:0;text-transform:uppercase;">14.4. Nominated Person Crew Training – NPCT</div></div>
+  <div style="padding:16px 18px;"><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:6px;">Compile a list of the administrative documents pertaining to the crewmembers involved including as a minimum:</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Individual Training Files</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Flight Time and Duty Records</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Logbook (if available)</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Copies of medical certificates</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Copies of flight crew licences</div></div></div>
+</div>
+<div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
+  <div style="background:rgba(232,160,32,.15);padding:12px 18px;display:flex;align-items:center;gap:10px;"><span style="font-size:18px;">🔧</span><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#946e16;margin-bottom:6px;margin-bottom:0;text-transform:uppercase;">14.5. Nominated Person Continuing Airworthiness and Maintenance Manager</div></div>
+  <div style="padding:16px 18px;"><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Gather the technical documents relating to the equipment involved in the accident.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Gather information concerning the maintenance personnel, and make it available to the RSC:</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ Certificate of aptitude for maintenance on the type of machine involved in the accident</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ Personnel training history</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ Complete list of personnel</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Gather administrative documents relating to the maintenance of the accident aircraft and its continuing airworthiness (CDN, airframe logbook, engine logbook, etc.), all records of work carried out on critical and optional areas such as airframe, engine(s), BTP, rotor and rotor head, RAC, etc.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Provide technical support to the members of the crisis unit.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Select a competent technician or engineer to assist the team in charge of the investigation.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Help organise the recovery of the wreckage (airframe, engine(s), other components), once it has been released by the authority in charge of the investigation.</div></div></div>
+</div>
+<div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
+  <div style="background:rgba(143,168,192,.18);padding:12px 18px;display:flex;align-items:center;gap:10px;"><span style="font-size:18px;">👥</span><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#567898;margin-bottom:6px;margin-bottom:0;text-transform:uppercase;">14.6. Human Resources</div></div>
+  <div style="padding:16px 18px;"><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Briefly inform staff of the situation and the action to be taken.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Provide HR documents relating to staff members involved in the accident</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Ensure that the company&#x27;s management offers its condolences to the next of kin of the crew members, staff involved and passengers.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Ensuring that any personnel sent to the scene of the accident receive the necessary logistical and material support.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Ensuring that any emotional trauma suffered by personnel is dealt with, contacting medical staff and/or psychologists if necessary.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Managing the interface with the families: contacting employees who have volunteered to assist the victims&#x27; families in the short and medium term.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Maintaining effective contact with the relatives of victims who are not travelling.</div></div></div>
+</div>
+<div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
+  <div style="background:rgba(143,168,192,.18);padding:12px 18px;display:flex;align-items:center;gap:10px;"><span style="font-size:18px;">💼</span><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#567898;margin-bottom:6px;margin-bottom:0;text-transform:uppercase;">14.7. Chief Financial Officer</div></div>
+  <div style="padding:16px 18px;"><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Contact the Group&#x27;s lawyer if necessary and review all statements drawn up by management before they are circulated.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Inform and advise, if necessary, on legal issues relating to the accident.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Contact insurance companies.</div></div></div>
+</div>
+<div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
+  <div style="background:rgba(143,168,192,.18);padding:12px 18px;display:flex;align-items:center;gap:10px;"><span style="font-size:18px;">🏗</span><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#567898;margin-bottom:6px;margin-bottom:0;text-transform:uppercase;">14.8. Business Unit SPO</div></div>
+  <div style="padding:16px 18px;"><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:0;font-style:italic;color:var(--grey-400);">Intentionally left blank.</div></div>
+</div>
+<div style="background:var(--navy-mid);border-radius:10px;overflow:hidden;">
+  <div style="background:rgba(143,168,192,.18);padding:12px 18px;display:flex;align-items:center;gap:10px;"><span style="font-size:18px;">☢</span><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#567898;margin-bottom:6px;margin-bottom:0;text-transform:uppercase;">14.9. Dangerous Goods Correspondent</div></div>
+  <div style="padding:16px 18px;"><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Provides the Authorities, as quickly as possible, with a list of any dangerous goods that may have been onboard or carried by the helicopter.</div></div></div>
+</div>
+</div>
 </div><!-- /erp-sec-roles -->
 
 <!-- ═══════════════════════════════════════════════════════════════
      SECTION: GENERAL
 ════════════════════════════════════════════════════════════════ -->
-<div id="erp-sec-general" style="display:none;">
-
-  <!-- §1-3 Introduction, Aim, Amendments -->
-  <div class="chart-card" style="padding:20px;margin-bottom:16px;">
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;">INTRODUCTION</div>
-    <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">This Emergency Response Plan was developed based on <strong style="color:var(--steel-bright);">ORO.GEN.200 and AMC1 ORO.GEN.200(a)(3)</strong> and <strong style="color:var(--steel-bright);">OMM Section 8</strong>. It is designed to help the organisation to respond in the case of accidents, serious incidents or any other abnormal event triggering a crisis.</div>
-    <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:16px;">The number of phases that need to be implemented must be established to prevent the potential confusion that can result when emergency situations arise. Senior management must identify the responsibilities within their organisation, respond to the needs of next of kin of the crew and passengers, and provide assistance to the emergency services and the authority in charge of any investigation.</div>
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:10px;margin-top:16px;border-top:1px solid rgba(15,30,46,0.1);padding-top:14px;">2. AIM OF THE MANUAL</div>
-    <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:8px;">The aim of this Emergency Response Planning (ERP) manual is to:</div>
-    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px;">
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Highlight the policies and procedures to be implemented in case of a crisis</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Offer advice to the members of the crisis management team in carrying out their responsibilities</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Communicate relevant information to employees of the organisation and members of the public</div>
-    </div>
-    <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:16px;">The ERP manual is designed to cover crisis situations which cannot specifically or precisely be defined. An organisational framework is presented; however, adaptability and flexibility should be demonstrated in the handling of such events.</div>
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:10px;border-top:1px solid rgba(15,30,46,0.1);padding-top:14px;">3. AMENDMENTS</div>
-    <div style="font-size:12px;color:var(--grey-200);line-height:1.7;">This manual will be subject to change. Whenever a change is implemented, the <strong style="color:var(--steel-bright);">Safety Manager</strong> shall inform all members of the Crisis Management Team and any person who may be called on to play a role in case of an emergency.</div>
-  </div>
-
-  <div class="chart-card" style="padding:20px;margin-bottom:16px;">
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;">4. EVENTS ACTIVATING THE ERP</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-      <div style="padding:9px 12px;background:rgba(192,0,0,.08);border-radius:5px;font-size:12px;color:var(--grey-200);">✦ Aviation accident / Serious incident</div>
-      <div style="padding:9px 12px;background:rgba(192,0,0,.08);border-radius:5px;font-size:12px;color:var(--grey-200);">✦ Disaster on premises: fire, explosion, pollution, flood</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">✦ Loss of working resource: workshop, offices, hangar, aircraft</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">✦ Impacts of a disaster within the vicinity of the establishment</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">✦ Climatic event: snow, storm, flood, lightning</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">✦ Natural disaster: earthquake, volcanic eruption</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">✦ Food poisoning, epidemic</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">✦ Death, suicide at the workplace</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">✦ Multiple victims — disaster, illness or contagion</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">✦ Accident to public transportation of personnel</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">✦ Social movements: strike, blocking of accesses</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">✦ Internal/external threat: attack, bomb, sabotage, terrorism</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">✦ Loss of energy / communication: electricity, internet, phones</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">✦ Major media event</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">✦ Accident during missions: business trip, abroad</div>
-    </div>
-  </div>
-
-  <div class="chart-card" style="padding:20px;margin-bottom:16px;">
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;">5. DEFINITIONS</div>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <div style="border-left:3px solid #C00000;padding:12px 16px;background:rgba(192,0,0,.06);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#C00000;margin-bottom:5px;">ACCIDENT</div>
-        <div style="font-size:12px;color:var(--grey-200);line-height:1.6;">Occurrence between the time any person boards the aircraft until all have disembarked, in which: a person is fatally or seriously injured; OR the aircraft sustains damage or structural failure affecting structural strength or flight characteristics; OR the aircraft is missing or completely inaccessible.</div>
-      </div>
-      <div style="border-left:3px solid #e3b341;padding:12px 16px;background:rgba(232,160,32,.06);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#946e16;margin-bottom:5px;">INCIDENT</div>
-        <div style="font-size:12px;color:var(--grey-200);line-height:1.6;">Occurrence other than an accident, associated with the operation of an aircraft, which affects or could affect the safety of operation.</div>
-      </div>
-      <div style="border-left:3px solid #e3b341;padding:12px 16px;background:rgba(232,160,32,.06);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#946e16;margin-bottom:5px;">SERIOUS INCIDENT</div>
-        <div style="font-size:12px;color:var(--grey-200);line-height:1.6;">An incident involving circumstances indicating that an accident nearly occurred.</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div style="border-left:3px solid #8fa8c0;padding:12px 16px;background:rgba(143,168,192,.06);border-radius:0 6px 6px 0;">
-          <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#567898;margin-bottom:5px;">FATAL INJURY</div>
-          <div style="font-size:12px;color:var(--grey-200);line-height:1.6;">Injury resulting in death within 30 days of the date of the accident.</div>
-        </div>
-        <div style="border-left:3px solid #8fa8c0;padding:12px 16px;background:rgba(143,168,192,.06);border-radius:0 6px 6px 0;">
-          <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#567898;margin-bottom:5px;">SERIOUS INJURY</div>
-          <div style="font-size:12px;color:var(--grey-200);line-height:1.6;">Hospitalisation &gt;48h, bone fracture (not fingers/toes/nose), severe lacerations, internal organ injury, burns &gt;5% of body surface, or exposure to infectious substances.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- §6 Organisation -->
-  <div class="chart-card" style="padding:20px;margin-bottom:16px;">
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;">ORGANISATION</div>
-    <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">The <strong style="color:var(--steel-bright);">Accountable Manager</strong> as a single point of contact will be responsible for disseminating the alert to the company personnel and the relevant official authorities. The nominated contact must have immediate access to:</div>
-    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px;">
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Emergency checklists to cover the nature of the event</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• An up-to-date list of managers to be contacted and their deputies (schedule of on-call executives)</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• A list of emergency services and official organisations to be contacted in the event of an emergency</div>
-    </div>
-    <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:8px;">Wherever possible, normal activity must be maintained. Personnel not involved in the management of the situation must not contact the Crisis Management Team or speak to the media. If an employee\'s presence is not required at the accident site or at the Crisis Management Centre, they should be discouraged from going to these locations so as not to hinder the emergency services and/or investigation teams.</div>
-  </div>
-
-  <!-- §8 Reaction to Emergency Call -->
-  <div class="chart-card" style="padding:20px;margin-bottom:16px;">
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;">8. REACTION TO AN EMERGENCY CALL</div>
-    <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">Whenever the Company is made aware of an accident or incident, the person or department that receives the alert must endeavour to establish the following information:</div>
-    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:16px;">
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Date and time of the call</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Name and contact details of the informant</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Establish the authenticity of the call (where possible)</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• If the call is made anonymously: try to obtain information about the other party and their position; where possible, try to record the conversation and listen to background noise</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• If the call is being made from overseas: check the location of the call with the embassy of the country in question</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Initiate the alert process both in-house and externally</div>
-    </div>
-    <div style="border-left:3px solid #e3b341;padding:12px 16px;background:rgba(232,160,32,.06);border-radius:0 6px 6px 0;">
-      <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#946e16;margin-bottom:6px;">8.1 — YOU WITNESSED THE ACCIDENT OR ARE IN CONTACT WITH A WITNESS</div>
-      <div style="font-family:var(--font-mono);font-size:12px;font-weight:700;color:#C00000;margin-bottom:10px;">REMAIN CALM — DO NOT PANIC</div>
-      <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:8px;">If you witness the event, try not to let your emotions get the better of you and follow these steps:</div>
-      <div style="display:flex;flex-direction:column;gap:5px;">
-        <div style="padding:7px 10px;background:rgba(15,30,46,0.033);border-radius:4px;font-size:12px;color:var(--grey-200);">• Get the victims to safety</div>
-        <div style="padding:7px 10px;background:rgba(15,30,46,0.033);border-radius:4px;font-size:12px;color:var(--grey-200);">• Alert emergency services (cf. § 9 — Emergency numbers)</div>
-        <div style="padding:7px 10px;background:rgba(15,30,46,0.033);border-radius:4px;font-size:12px;color:var(--grey-200);">• Provide assistance and comfort to the best of your ability</div>
-        <div style="padding:7px 10px;background:rgba(15,30,46,0.033);border-radius:4px;font-size:12px;color:var(--grey-200);">• Alert or have Helion Helicopters alerted</div>
-        <div style="padding:7px 10px;background:rgba(15,30,46,0.033);border-radius:4px;font-size:12px;color:var(--grey-200);">• Complete the checklist as fully as possible</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- §12.1 Composition of CMC -->
-  <div class="chart-card" style="padding:20px;margin-bottom:16px;">
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;">12.1 — COMPOSITION OF THE CRISIS MANAGEMENT CENTRE</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">ACM and/or deputy</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">NPCT and/or deputy</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">SM and/or deputy</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">NPGO and/or deputy</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">NPFO and/or deputy</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">NPCA</div>
-      <div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">Human Resources</div>
-    </div>
-  </div>
-
-  <!-- §12.2 Modes of Activation -->
-  <div class="chart-card" style="padding:20px;margin-bottom:16px;">
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;">12.2 — MODES OF ACTIVATING THE CRISIS MANAGEMENT CENTRE</div>
-    <div style="display:flex;flex-direction:column;gap:12px;">
-      <div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(74,159,224,.06);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);margin-bottom:8px;">ACCIDENT ON COMPANY PREMISES</div>
-        <div style="font-size:12px;color:var(--grey-200);line-height:1.6;margin-bottom:8px;">Any person who witnesses an accident on the organisation\'s premises should:</div>
-        <div style="display:flex;flex-direction:column;gap:4px;">
-          <div style="font-size:11px;color:var(--grey-200);padding:5px 10px;background:rgba(15,30,46,0.033);border-radius:4px;">• Alert Helion Helicopters designated personnel (Chapter 9)</div>
-          <div style="font-size:11px;color:var(--grey-200);padding:5px 10px;background:rgba(15,30,46,0.033);border-radius:4px;">• Alert the emergency services (where appropriate)</div>
-          <div style="font-size:11px;color:var(--grey-200);padding:5px 10px;background:rgba(15,30,46,0.033);border-radius:4px;">• Protect any victims/casualties</div>
-          <div style="font-size:11px;color:var(--grey-200);padding:5px 10px;background:rgba(15,30,46,0.033);border-radius:4px;">• Where qualified, apply basic first aid while awaiting emergency services</div>
-        </div>
-      </div>
-      <div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(74,159,224,.06);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);margin-bottom:6px;">ACCIDENT OUTSIDE COMPANY PREMISES — CASE 1</div>
-        <div style="font-size:12px;color:var(--grey-200);line-height:1.6;">The call is received on the HELION-X EMERGENCY number. The On-Call Manager informs the ACM (or any person designated in §9), who decides whether or not to activate the Crisis Management Centre.</div>
-      </div>
-      <div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(74,159,224,.06);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);margin-bottom:6px;">ACCIDENT OUTSIDE COMPANY PREMISES — CASE 2</div>
-        <div style="font-size:12px;color:var(--grey-200);line-height:1.6;">The call is received by an employee. The employee contacts the ACM (or any person designated in §9), who decides whether or not to activate the Crisis Management Centre.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- §12.3bis Maintaining Normal Situation -->
-  <div class="chart-card" style="padding:20px;margin-bottom:16px;">
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;">12.4 — MAINTAINING A NORMAL SITUATION</div>
-    <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:12px;">To maintain a normal situation as much as possible during ERP activation, several key principles should be followed:</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <div style="border-left:3px solid var(--steel-bright);padding:12px 14px;background:rgba(74,159,224,.05);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">RIGOROUS PREPARATION &amp; TRAINING</div>
-        <div style="font-size:11px;color:var(--grey-200);line-height:1.6;">Personnel Must Be Thoroughly Trained and Conduct Regular Drills. In-Depth Knowledge of Procedures and Roles Enables Calm and Orderly Reactions.</div>
-      </div>
-      <div style="border-left:3px solid var(--steel-bright);padding:12px 14px;background:rgba(74,159,224,.05);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">CLEAR &amp; STRUCTURED COMMUNICATION</div>
-        <div style="font-size:11px;color:var(--grey-200);line-height:1.6;">Use a dedicated channel, avoid information overload. Clarity and brevity in messages are crucial during emergencies.</div>
-      </div>
-      <div style="border-left:3px solid var(--steel-bright);padding:12px 14px;background:rgba(74,159,224,.05);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">DISCRETE PLAN ACTIVATION</div>
-        <div style="font-size:11px;color:var(--grey-200);line-height:1.6;">ERP activation should be carried out discreetly to avoid creating panic among passengers, uninvolved personnel and non-essential actors.</div>
-      </div>
-      <div style="border-left:3px solid var(--steel-bright);padding:12px 14px;background:rgba(74,159,224,.05);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">COORDINATION WITH AUTHORITIES</div>
-        <div style="font-size:11px;color:var(--grey-200);line-height:1.6;">Coordination with emergency services (firefighters, police, civil aviation authorities) is critical to prevent responses that might exacerbate the emergency.</div>
-      </div>
-      <div style="border-left:3px solid var(--steel-bright);padding:12px 14px;background:rgba(74,159,224,.05);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">ADHERENCE TO HIERARCHY &amp; ROLES</div>
-        <div style="font-size:11px;color:var(--grey-200);line-height:1.6;">The distribution of responsibilities should be respected so that everyone knows precisely their tasks without confusion or overlap.</div>
-      </div>
-      <div style="border-left:3px solid var(--steel-bright);padding:12px 14px;background:rgba(74,159,224,.05);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">CONTINUOUS ASSESSMENT &amp; ADAPTATION</div>
-        <div style="font-size:11px;color:var(--grey-200);line-height:1.6;">Emergencies evolve rapidly — actions must adapt according to new information while keeping to core ERP principles.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- §12.5 Standard Questions -->
-  <div class="chart-card" style="padding:20px;margin-bottom:16px;">
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;">12.5 — STANDARD QUESTIONS AFTER OUTBREAK OF THE CRISIS</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">Are we communicating? Do we communicate actively or defensively?</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">What tonality do we suggest?</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">Who are the internal and external stakeholders? How can they be prioritised?</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">What are the messages for all stakeholders? What messages go only to individual stakeholders?</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">Which channels are appropriate — active vs. reactive?</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">In what order and how often must stakeholders be informed (schedule)?</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">What reactions do we trigger with the chosen form of communication (anticipation)?</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">Which feedback channels must/can we open?</div>
-    </div>
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--grey-400);letter-spacing:.06em;margin-bottom:8px;">EXTERNAL STAKEHOLDERS</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:12px;">
-      <div style="padding:6px 10px;background:rgba(15,30,46,0.022);border-radius:4px;font-size:11px;color:var(--grey-300);">Customers &amp; Owners</div>
-      <div style="padding:6px 10px;background:rgba(15,30,46,0.022);border-radius:4px;font-size:11px;color:var(--grey-300);">Local, regional &amp; national media</div>
-      <div style="padding:6px 10px;background:rgba(15,30,46,0.022);border-radius:4px;font-size:11px;color:var(--grey-300);">Blue light organisations (police, fire, ambulance)</div>
-      <div style="padding:6px 10px;background:rgba(15,30,46,0.022);border-radius:4px;font-size:11px;color:var(--grey-300);">Local, cantonal &amp; national governments</div>
-      <div style="padding:6px 10px;background:rgba(15,30,46,0.022);border-radius:4px;font-size:11px;color:var(--grey-300);">Administrations &amp; parties</div>
-      <div style="padding:6px 10px;background:rgba(15,30,46,0.022);border-radius:4px;font-size:11px;color:var(--grey-300);">Social partners &amp; suppliers</div>
-    </div>
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--grey-400);letter-spacing:.06em;margin-bottom:8px;">COMMUNICATION CHANNELS</div>
-    <div style="display:flex;flex-wrap:wrap;gap:6px;">
-      <span style="padding:5px 10px;background:rgba(74,159,224,.1);border:1px solid rgba(74,159,224,.2);border-radius:12px;font-size:11px;color:var(--steel-bright);">Media / Social Media</span>
-      <span style="padding:5px 10px;background:rgba(74,159,224,.1);border:1px solid rgba(74,159,224,.2);border-radius:12px;font-size:11px;color:var(--steel-bright);">Internet (crisis website)</span>
-      <span style="padding:5px 10px;background:rgba(74,159,224,.1);border:1px solid rgba(74,159,224,.2);border-radius:12px;font-size:11px;color:var(--steel-bright);">Mail / Phone / Fax</span>
-      <span style="padding:5px 10px;background:rgba(74,159,224,.1);border:1px solid rgba(74,159,224,.2);border-radius:12px;font-size:11px;color:var(--steel-bright);">Hotline</span>
-    </div>
-  </div>
-
-  <!-- §13.1 Coordination with other ERPs -->
-  <div class="chart-card" style="padding:20px;margin-bottom:16px;">
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;">13.1 — COORDINATION WITH OTHER ORGANISATIONS' ERPs</div>
-    <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:12px;">When the activation of Helion Helicopters\'s ERP impacts or overlaps with the ERP of another organisation, effective coordination is essential. The following steps are recommended:</div>
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <div style="border-left:3px solid var(--steel-bright);padding:10px 14px;background:rgba(74,159,224,.05);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:4px;">IMMEDIATE COMMUNICATION &amp; COORDINATION</div>
-        <div style="font-size:11px;color:var(--grey-200);line-height:1.6;">Notify the other company\'s crisis management team immediately via a pre-established emergency contact point. Share details about the incident, deployed resources, and areas of intervention.</div>
-      </div>
-      <div style="border-left:3px solid var(--steel-bright);padding:10px 14px;background:rgba(74,159,224,.05);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:4px;">JOINT SITUATION ASSESSMENT</div>
-        <div style="font-size:11px;color:var(--grey-200);line-height:1.6;">Crisis teams from both companies should conduct a joint assessment to ensure that response actions do not overlap or create additional risks. Real-time information sharing is essential.</div>
-      </div>
-      <div style="border-left:3px solid var(--steel-bright);padding:10px 14px;background:rgba(74,159,224,.05);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:4px;">RESOURCE SHARING &amp; MUTUAL SUPPORT</div>
-        <div style="font-size:11px;color:var(--grey-200);line-height:1.6;">When feasible, consider pooling response resources (rescue teams, equipment) to avoid overloading local infrastructure.</div>
-      </div>
-      <div style="border-left:3px solid var(--steel-bright);padding:10px 14px;background:rgba(74,159,224,.05);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:4px;">COMPLIANCE WITH REGULATORY PROCEDURES</div>
-        <div style="font-size:11px;color:var(--grey-200);line-height:1.6;">Civil aviation authorities must be informed of the situation and the ongoing inter-company coordination.</div>
-      </div>
-      <div style="border-left:3px solid var(--steel-bright);padding:10px 14px;background:rgba(74,159,224,.05);border-radius:0 6px 6px 0;">
-        <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:4px;">POST-INCIDENT REVIEW &amp; ERP ENHANCEMENT</div>
-        <div style="font-size:11px;color:var(--grey-200);line-height:1.6;">Once resolved, both companies should conduct a joint post-incident review to identify improvements for their respective ERPs.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="chart-card" style="padding:20px;margin-bottom:16px;">
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;">13.2 — COMMUNICATION TO THE AUTHORITY</div>
-    <div style="font-size:12px;color:var(--grey-200);margin-bottom:10px;">Following an accident, the Safety Manager must inform the authorities as soon as possible of:</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">Helicopter: type, model, serial number, registration</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">Names of owner, operator, crew members, customers</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">Date and time of accident/incident</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">Location: GPS coordinates, position relative to geographical point</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">Number of people who died or were injured</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">Validated passenger list <span style="color:#946e16;">(within 2 hours max)</span></div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">Description of accident/incident and material damage</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">Access routes and constraints, physical characteristics of the area</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">Description of immediate actions taken and planned</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11px;color:var(--grey-200);">List of dangerous goods on board and special passenger categories</div>
-    </div>
-  </div>
-
-  <!-- 13.3 Internal Communication -->
-  <div class="chart-card" style="padding:20px;margin-bottom:16px;">
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;">13.3 — INTERNAL COMMUNICATION</div>
-    <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">In Responding to an Emergency Situation, All or Part of the Organisation’s Personnel May Be Affected by the Event. The <strong style="color:var(--steel-bright);">Accountable Manager</strong> must:</div>
-    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px;">
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Make a Concerted Effort, by Any Appropriate Means, to Inform All Personnel about the Event</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Inform Personnel in a Timely Manner of the Steps to Be Taken to Manage the Crisis</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Reinforce the policy banning disclosure of information outside the organisation, and the policy for dealing with the media</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Restrict Personnel from Attending the Accident Location or CMC unless Required within the Scope of Their Duties</div>
-    </div>
-    <div style="font-size:12px;color:var(--grey-200);line-height:1.7;">Volunteers may be sought to assist families and friends of the victims — it is desirable to have a pre-selected list of volunteers and a list of specialists (psychologists, counsellors) who may be contacted to provide professional assistance.</div>
-  </div>
-
-  <!-- 13.4 External Communication -->
-  <div class="chart-card" style="padding:20px;margin-bottom:16px;">
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;">13.4 — EXTERNAL COMMUNICATION</div>
-    <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">In the event of a major event, the organisation must implement a detailed communication plan under the guidance of the Legal Department or a lawyer appointed for that purpose.</div>
-    <div style="display:flex;flex-direction:column;gap:5px;">
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Once the CMC has been manned, an initial press release should be disseminated to prevent saturation of lines of communication</div>
-      <div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Press releases must not contain the names of persons involved in the accident/incident unless definitively established</div>
-    </div>
-  </div>
-
-  <!-- 13.5 Press Conference Checklist -->
-  <div class="chart-card" style="padding:20px;margin-bottom:16px;">
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;">13.5 — PRESS CONFERENCE CHECKLIST</div>
-    <div style="display:flex;flex-direction:column;gap:6px;">
-      <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--grey-400);letter-spacing:.06em;margin:4px 0 2px;">PREPARATION</div>
-      <label style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:rgba(15,30,46,0.033);border-radius:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#3fb950;width:16px;height:16px;flex-shrink:0;margin-top:1px;cursor:pointer;"/><span style="font-size:12px;color:var(--grey-200);">Room: number of participants, seating, technical aids, lectern, lighting</span></label>
-      <label style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:rgba(15,30,46,0.033);border-radius:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#3fb950;width:16px;height:16px;flex-shrink:0;margin-top:1px;cursor:pointer;"/><span style="font-size:12px;color:var(--grey-200);">Set date</span></label>
-      <label style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:rgba(15,30,46,0.033);border-radius:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#3fb950;width:16px;height:16px;flex-shrink:0;margin-top:1px;cursor:pointer;"/><span style="font-size:12px;color:var(--grey-200);">Work out a message: what is communicated, what are the possible sub-themes?</span></label>
-      <label style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:rgba(15,30,46,0.033);border-radius:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#3fb950;width:16px;height:16px;flex-shrink:0;margin-top:1px;cursor:pointer;"/><span style="font-size:12px;color:var(--grey-200);">Set up entrance control, set priorities — which press first?</span></label>
-      <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--grey-400);letter-spacing:.06em;margin:8px 0 2px;">INVITATION</div>
-      <label style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:rgba(15,30,46,0.033);border-radius:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#3fb950;width:16px;height:16px;flex-shrink:0;margin-top:1px;cursor:pointer;"/><span style="font-size:12px;color:var(--grey-200);">Target audience: regional, supra-regional, national media, economy, tourism</span></label>
-      <label style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:rgba(15,30,46,0.033);border-radius:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#3fb950;width:16px;height:16px;flex-shrink:0;margin-top:1px;cursor:pointer;"/><span style="font-size:12px;color:var(--grey-200);">Content description: event, topic, place, date, time, duration, program</span></label>
-      <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--grey-400);letter-spacing:.06em;margin:8px 0 2px;">ORGANISATION</div>
-      <label style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:rgba(15,30,46,0.033);border-radius:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#3fb950;width:16px;height:16px;flex-shrink:0;margin-top:1px;cursor:pointer;"/><span style="font-size:12px;color:var(--grey-200);">Who of the company is present (ACM, Communication Officer, third parties)? Who is responsible for what?</span></label>
-      <label style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:rgba(15,30,46,0.033);border-radius:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#3fb950;width:16px;height:16px;flex-shrink:0;margin-top:1px;cursor:pointer;"/><span style="font-size:12px;color:var(--grey-200);">If more than one person: define and align core messages</span></label>
-      <label style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:rgba(15,30,46,0.033);border-radius:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#3fb950;width:16px;height:16px;flex-shrink:0;margin-top:1px;cursor:pointer;"/><span style="font-size:12px;color:var(--grey-200);">Moderation: who makes introduction, who introduces participants, who answers which questions?</span></label>
-      <label style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:rgba(15,30,46,0.033);border-radius:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#3fb950;width:16px;height:16px;flex-shrink:0;margin-top:1px;cursor:pointer;"/><span style="font-size:12px;color:var(--grey-200);">Compile press kit: media release, presentations, images, general company information</span></label>
-      <label style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:rgba(15,30,46,0.033);border-radius:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#3fb950;width:16px;height:16px;flex-shrink:0;margin-top:1px;cursor:pointer;"/><span style="font-size:12px;color:var(--grey-200);">For national/international coverage: ensure translation</span></label>
-      <label style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:rgba(15,30,46,0.033);border-radius:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#3fb950;width:16px;height:16px;flex-shrink:0;margin-top:1px;cursor:pointer;"/><span style="font-size:12px;color:var(--grey-200);">Documents to be handed out at the entrance to the conference room</span></label>
-    </div>
-  </div>
-
-  <!-- 13.6 Principles -->
-  <div class="chart-card" style="padding:20px;">
-    <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;">13.6 — COMMUNICATION PRINCIPLES</div>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
-      <div style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(15,30,46,0.033);border-radius:6px;">
-        <span style="font-size:22px;">⚡</span>
-        <div><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);">SPEED</div><div style="font-size:11px;color:var(--grey-200);">Inform quickly and comprehensively</div></div>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(15,30,46,0.033);border-radius:6px;">
-        <span style="font-size:22px;">🔍</span>
-        <div><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);">OPENNESS</div><div style="font-size:11px;color:var(--grey-200);">Transparency ensures credibility</div></div>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(15,30,46,0.033);border-radius:6px;">
-        <span style="font-size:22px;">📋</span>
-        <div><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);">COMPLETENESS</div><div style="font-size:11px;color:var(--grey-200);">No information in slices</div></div>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(15,30,46,0.033);border-radius:6px;">
-        <span style="font-size:22px;">🤝</span>
-        <div><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);">PARTICIPATION</div><div style="font-size:11px;color:var(--grey-200);">Involve the media in crisis management</div></div>
-      </div>
-    </div>
-  </div>
-
+<div id="erp-sec-general" style="display:none;" data-erp-base="APP080-ISS01-REV00">
+<!-- Reprise exacte de APP080-OMM ISS01 REV00 DRAFT (01-May-2026), numérotation du document -->
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">1. Introduction</div>
+  <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:6px;">This Emergency Response Plan was developed based on:</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• ORO.GEN.200 and AMC1 ORO.GEN,200(a)(3)</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• OMM Section 8</div></div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">The ERP is designed to help the organisation to respond in the case of accidents, serious incidents or any other abnormal event triggering a crisis.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:0;">The number of phases that need to be implemented must be established in order to prevent the potential confusion that can result when emergency situations arise. Senior management must identify the responsibilities within their organisation, respond to the needs of next of kin of the crew and the passengers, and provide assistance to the emergency services and the authority in charge of any investigation.</div>
+</div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">2. Aim of the Manual</div>
+  <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:6px;">The aim of this Emergency Response Planning (ERP) manual is to:</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Highlight the policies and procedures to be implemented in case of a crisis,</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Offer advice to the members of the crisis management team in carrying out their responsibilities,</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Communicate relevant information to employees of the organisation and members of the public.</div></div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">As opposed to other manuals of the company, the ERP manual is designed to cover crisis situations which cannot specifically, or precisely be defined.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:0;">An organisational framework of the actions and policies required to be implemented is presented. However, it is unlikely that an actual emergency situation will adapt to a precise framework. Adaptability and flexibility should therefore be demonstrated in the handling of such events.</div>
+</div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">3. Amendments</div>
+  <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:0;">This manual will be subject to change. Whenever a change is implemented, the Safety Manager shall inform all members of the Crisis Management Team and any person(s) who may be called on to play a role in case of an emergency of the change.</div>
+</div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">4. Events activating the ERP</div>
+  <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">The following events may result in a crisis situation and activate the Emergency Response Plan:</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"><div style="padding:9px 12px;background:rgba(192,0,0,.08);border-radius:5px;font-size:12px;color:var(--grey-200);">• Aviation accident/Serious incident</div><div style="padding:9px 12px;background:rgba(192,0,0,.08);border-radius:5px;font-size:12px;color:var(--grey-200);">• Disaster in the premises: fire, explosion, pollution, flood</div><div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Loss of the working resource: workshop, offices, hangar, aircraft</div><div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Impacts of a disaster within the vicinity of the establishment</div><div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Climatic event: snow, storm, flood, lightning</div><div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Natural disaster: earthquake, volcanic eruption</div><div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Food poisoning, epidemic</div><div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Death, suicide at the workplace</div><div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Multiple victims connected to a disaster, illness or contagion</div><div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Accident to the public transportation of the personnel</div><div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Social movements: strike, blocking of the accesses</div><div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Internal or external threat: attack, bomb alert, sabotage, terrorism, security or cybersecurity incident</div><div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Loss of energy: electricity, gas</div><div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Loss of communication means: internet, landlines, or mobile telephones</div><div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Major media event</div><div style="padding:9px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);">• Accident during missions: business trip, abroad.</div></div>
+</div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">5. Definitions</div>
+  <div style="display:flex;flex-direction:column;gap:10px;"><div style="border-left:3px solid #C00000;padding:12px 16px;background:rgba(192,0,0,.05);border-radius:0 6px 6px 0;"><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#C00000;margin-bottom:6px;">5.1. Accident</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:6px;">An occurrence associated with the operation of an aircraft which takes place between the time any person boards the aircraft with the intention of flight until such time as all such person have disembarked, in which:</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• A person is fatally or seriously injured as a result of:</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">o Being in the aircraft</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">o Direct contact with any part of the aircraft including parts which have become detached from the aircraft; or</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">o Direct exposure to jet or propeller blast, (ROTOR),</div></div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-left:24px;">Except when these injuries are from natural causes, self-inflicted or inflicted by other persons, or when the injuries are to stowaways hiding outside the areas normally available to the task specialists and crew; or</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• The aircraft or the airframe sustains damage or structural failure which adversely affects the structural strength, performance or flight characteristics of the aircraft, and normally requires major repair or replacement of the affected aircraft component, except for engine failure or damage, when the damage is limited to a single engine, (including its cowlings or accessories), to propellers, wing tips, antennas, probes, vanes, tires, brakes, wheels, fairings, panels, landing gear doors, windscreens, the aircraft skin (such as small dents or puncture holes) or minor damages to main rotor blades, tail rotor blades, landing gear, and those resulting from hail or bird strike, (including holes in the radome); or</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• The aircraft is missing or inaccessible.</div></div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:0;font-style:italic;">NOTE: An aircraft is considered to be missing when the official search has been terminated and the wreckage has not been located.</div></div><div style="border-left:3px solid #e3b341;padding:12px 16px;background:rgba(232,160,32,.06);border-radius:0 6px 6px 0;"><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#946e16;margin-bottom:6px;">5.2. Incident</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:0;">An occurrence, other than an accident, associated with the operation of an aircraft which affects or could affect the safety of operation.</div></div><div style="border-left:3px solid #e3b341;padding:12px 16px;background:rgba(232,160,32,.06);border-radius:0 6px 6px 0;"><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#946e16;margin-bottom:6px;">5.3. Serious Incident</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:0;">An incident involving circumstances indicating that an accident nearly occurred.</div></div><div style="border-left:3px solid #567898;padding:12px 16px;background:rgba(143,168,192,.08);border-radius:0 6px 6px 0;"><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#567898;margin-bottom:6px;">5.4. Fatal injury</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:0;">An injury resulting in death within 30 days of the date of the accident.</div></div><div style="border-left:3px solid #567898;padding:12px 16px;background:rgba(143,168,192,.08);border-radius:0 6px 6px 0;"><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#567898;margin-bottom:6px;">5.5. Serious injury</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:6px;">Any injury which is sustained by a person in an accident and which:</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Requires hospitalisation for more than 48 hours, commencing within seven days from the date the injury was received; or</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Results in a fracture of any bone (except simple fractures of fingers, toes, or nose); or</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Involves lacerations which cause severe haemorrhage, nerve, muscle, or tendon damage; or</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Involves injury to any internal organ, or</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Involves second- or third-degree burns or any burns affecting more than 5% of the body surface; or</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Involves verified exposure to infectious substances or injurious radiation.</div></div></div></div>
+</div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">6. Organisation</div>
+  <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">The Accountable Manager as a single point of contact will be responsible for disseminating the alert to the company personnel and the relevant official authorities.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:6px;">In order to prevent unnecessary delay, the nominated contact must have immediate access to the following:</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Emergency checklists to cover the nature of the event.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• An up-to-date list of managers to be contacted and their deputies in the case of absence. (a schedule of &#x27;oncall&#x27; executives to be contacted should be created)</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• A list of emergency services and official organisations to be contacted in the event of an emergency.</div></div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">Wherever possible the normal activity of the organisation must be maintained. To this end, employees whose activity is not affected by the situation should continue to carry out their normal duties. Personnel should, however, contact their family and friends to reassure them in an attempt to prevent an influx of external communications.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">If the presence of an employee is not required at the accident/incident site, or at the location of the Crisis Management Team, they should be discouraged from going to these locations so as not to hinder the emergency services and/or any investigation team(s).</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:0;">It is important that personnel not involved in the management of the situation do not contact the Crisis Management Team or speak to the media.</div>
+</div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">7. Reaction to an Emergency Call</div>
+  <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:6px;">Whenever the Company is made aware of an accident or incident, the person or department that receives the alert must endeavour to establish the following information points:</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Date and time of the call.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Name and contact details of the informant.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Establish the authenticity of the call (where possible).</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• In the event that the call is made anonymously, try and obtain information concerning the other party and their position. (where possible, try to record the conversation and listen to background noise).</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• If the call is being made from overseas, check the location of the call with the embassy of the country in question.</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Initiate the alert process both in-house and externally.</div></div>
+</div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">8. You witnessed the accident or are in contact with a witness</div>
+  <div style="font-family:var(--font-mono);font-size:16px;font-weight:900;color:#C00000;letter-spacing:.1em;margin-bottom:10px;">REMAIN CALM - DO NOT PANIC</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:6px;">If you witness the event, try not to let your emotions get the better of you and follow these steps:</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Get the victims to safety,</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Alert emergency services, refer to § 9- Emergency numbers,</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Provide assistance and comfort to the best of your ability,</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Alert or have Helion Helicopters alerted:</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Complete the checklist on the following page as fully as possible</div></div>
+</div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">9. Emergency Numbers</div>
+  <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">The direct contact details for the members of the Crisis Management Team and the Emergency Services must be readily accessible and up to date.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">An example of the departments/persons to be contacted on a priority basis in case of event of an emergency is given below.</div><div style="display:grid;grid-template-columns:1fr 2fr;gap:14px;"><div><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">IN-HOUSE</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Accountable Manager (or Deputy)</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• NPGO/Operations Manager</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Safety Manager</div></div></div><div><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">EXTERNALLY</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• The Search and Rescue Co-ordination Centre (RCC) (in the event of an aircraft accident or aircraft overdue)</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• The Air Traffic Control Centre</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• The Maritime or Coast Guard Service (in the case where the aircraft has been engaged in over water operations)</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Emergency Medical Services</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Fire and Rescue Service</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Police</div></div></div></div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:6px;">The elements outlined above are summarised in the Primary Accident Information Sheet on the following page.</div><span onclick="erpShowSection('contacts')" style="cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);">→ Primary Accident Information Sheet: Contacts tab</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px;margin-bottom:16px;border:1px dashed rgba(15,30,46,0.25);border-radius:8px;background:rgba(15,30,46,0.033);"><div style="font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--grey-300);">10. Checklist to complete</div><span onclick="erpShowSection('checklist')" style="cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);white-space:nowrap;">→ Checklist tab</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px;margin-bottom:16px;border:1px dashed rgba(15,30,46,0.25);border-radius:8px;background:rgba(15,30,46,0.033);"><div style="font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--grey-300);">11. Reaction in the event of a helicopter delay</div><span onclick="erpShowSection('contacts')" style="cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);white-space:nowrap;">→ Contacts tab</span></div>
+<div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.1em;margin-bottom:12px;text-transform:uppercase;">12. Crisis Management Centre (CMC)</div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">12.1. Composition of the Crisis Management Centre (CMC)</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• ACM and/or Deputy</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• NPCT and/or Deputy</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• SM and/or Deputy</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• NPGO and/or Deputy</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• NPFO and/or Deputy</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• NPCA and/or Deputy</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Human Resources</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• MM and/or Deputy</div></div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:0;font-style:italic;">Note: Other management personnel may be invited, depending on the nature of the emergency (e.g. security or cybersecurity emergency situation).</div>
+</div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">12.2. Modes of activating the CMC</div>
+  <div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(27,108,168,.05);border-radius:0 6px 6px 0;margin-bottom:12px;"><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);margin-bottom:6px;">Accident Occurring on the Company Premises</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:6px;">Any person who witnesses an accident on the organisation&#x27;s premises shall comply with the following fundamental safety rules:</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Alert the management personnel designated in Chapter 9</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Alert the emergency services (where appropriate)</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Protect any victims/casualties</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Where qualified, apply basic First Aid while awaiting the arrival of the emergency services.</div></div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:0;">It is important that each employee of the organisation knows both the on-call and emergency numbers.</div></div><div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(27,108,168,.05);border-radius:0 6px 6px 0;"><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);margin-bottom:6px;">Accident Occurring outside of the Company Premises</div><div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(27,108,168,.05);border-radius:0 6px 6px 0;margin-bottom:10px;"><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">Case 1:</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;">The call is received on the Helion Helicopters URGENCE number [Note: TBD].</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;margin-top:6px;">The On-Call Manager informs the ACM, or any person designated in § 9, who decides whether or not to activate the Crisis Management Centre.</div></div><div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(27,108,168,.05);border-radius:0 6px 6px 0;margin-bottom:10px;"><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">Case 2:</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;">The call is received by an employee of the organisation.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;margin-top:6px;">The employee contacts the ACM, or any person designated in § 9, who will decide whether or not to activate the Crisis Management Centre.</div></div></div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px;margin-bottom:16px;border:1px dashed rgba(15,30,46,0.25);border-radius:8px;background:rgba(15,30,46,0.033);"><div style="font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--grey-300);">12.3. CMC - Activation Levels</div><span onclick="erpShowSection('crisis')" style="cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);white-space:nowrap;">→ Crisis Log tab</span></div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">12.4. Maintaining a normal situation</div>
+  <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">To maintain a normal situation as much as possible during the activation of an Emergency Response Plan, several key principles should be followed:</div><div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(27,108,168,.05);border-radius:0 6px 6px 0;margin-bottom:10px;"><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">Rigorous Preparation and Training:</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;">Personnel must be thoroughly trained and conduct regular drills to become familiar with the ERP. In-depth knowledge of procedures and roles enables calm and orderly reactions.</div></div><div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(27,108,168,.05);border-radius:0 6px 6px 0;margin-bottom:10px;"><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">Clear and Structured Communication:</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;">Effective communication is essential. Using a dedicated communication channel and avoiding information overload helps maintain an unconfused information flow. Clarity and brevity in messages (avoiding complex jargon during emergencies) are crucial.</div></div><div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(27,108,168,.05);border-radius:0 6px 6px 0;margin-bottom:10px;"><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">Discrete Plan Activation:</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;">Whenever possible, ERP activation should be carried out discreetly to avoid creating panic among passengers, uninvolved personnel, and other non-essential actors. Discretion helps maintain a sense of normalcy.</div></div><div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(27,108,168,.05);border-radius:0 6px 6px 0;margin-bottom:10px;"><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">Coordination with Relevant Authorities:</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;">Coordination with emergency services (firefighters, police, civil aviation authorities) is critical to prevent responses that might exacerbate the emergency or trigger public panic.</div></div><div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(27,108,168,.05);border-radius:0 6px 6px 0;margin-bottom:10px;"><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">Adherence to Hierarchy and Defined Roles:</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;">The distribution of responsibilities should be respected so that everyone knows precisely their tasks without confusion or overlap. This minimizes unnecessary interventions and allows responders to stay focused on their primary duties.</div></div><div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(27,108,168,.05);border-radius:0 6px 6px 0;margin-bottom:10px;"><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">Continuous Assessment and Quick Adaptation:</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;">Emergencies can evolve rapidly, so actions must adapt according to new information while keeping to core ERP principles. This helps maintain as controlled an environment as possible.</div></div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px;margin-bottom:16px;border:1px dashed rgba(15,30,46,0.25);border-radius:8px;background:rgba(15,30,46,0.033);"><div style="font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--grey-300);">12.5. Immediate measures to be taken</div><span onclick="erpShowSection('crisis')" style="cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);white-space:nowrap;">→ Crisis Log tab</span></div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">12.6. Standard questions after the outbreak of the crisis</div>
+  <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Are we communicating?</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Do we communicate actively?</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Do we communicate defensively?</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• What tonality do we suggest?</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Who are the internal and external stakeholders to be addressed?</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• How can these stakeholders be prioritized?</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ Stakeholders directly affected by the crisis</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ Stakeholders indirectly affected by the crisis</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• What are the messages that all stakeholders must receive?</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• What are the messages that go only to individual stakeholders?</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Which is/are the appropriate channel(s) to successfully deliver the respective messages? Active versus reactive channels?</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• In what chronological order and how often must stakeholders be informed (schedule)?</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• What reactions do we trigger with the chosen form of communication (anticipation)?</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Which feedback channels must / can we open?</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ External Stakeholders</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ Customers</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ Owner</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ Local, regional and national media</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ Local and national blue light organizations (police, fire brigade, ambulance, etc.)</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ Local, regional and national population</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ Local and national governments</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ Local and national administrations</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ Local and national parties and their exponents</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ Local and national associations and organizations</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ Social partners</div><div style="padding:6px 12px;margin-left:24px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:11.5px;color:var(--grey-200);line-height:1.5;">✓ Suppliers and other contractual partners</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Does the event create a new, special external stakeholder group?</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Communication channels</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Media / Social Media</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Internet (possibly crisis website)</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Mail, Phone, Fax</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Hotline</div></div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px;margin-bottom:16px;border:1px dashed rgba(15,30,46,0.25);border-radius:8px;background:rgba(15,30,46,0.033);"><div style="font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--grey-300);">12.7. Crisis Log</div><span onclick="erpShowSection('crisis')" style="cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);white-space:nowrap;">→ Crisis Log tab</span></div>
+<div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.1em;margin-bottom:12px;text-transform:uppercase;">13. Communication</div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">13.1. Coordination with the emergency response plans of other organisations, where appropriate.</div>
+  <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">In a situation where the activation of an Emergency Response Plan (ERP) by one company impacts or overlaps with the ERP of another company or entity, it’s crucial to coordinate effectively to mitigate risks, avoid duplication, and ensure a seamless response. The following steps are recommended:</div><div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(27,108,168,.05);border-radius:0 6px 6px 0;margin-bottom:10px;"><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">Immediate Communication and Coordination:</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;">Notify the other company’s crisis management team immediately, ideally via a pre-established emergency contact point.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;margin-top:6px;">This first step enables quick alerting and facilitates the sharing of details about the incident, deployed resources, and areas of intervention.</div></div><div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(27,108,168,.05);border-radius:0 6px 6px 0;margin-bottom:10px;"><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">Joint Situation Assessment:</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;">Crisis teams from both companies should conduct a joint assessment to ensure that response actions do not overlap or inadvertently create additional risks.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;margin-top:6px;">Real-time information sharing is essential to evaluate potential impacts on passengers, crew, and infrastructure.</div></div><div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(27,108,168,.05);border-radius:0 6px 6px 0;margin-bottom:10px;"><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">Resource Sharing and Mutual Support:</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;">When feasible, the companies should consider pooling response resources (e.g., rescue teams, equipment etc.) to avoid overloading local infrastructure and to enhance the effectiveness of the response.</div></div><div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(27,108,168,.05);border-radius:0 6px 6px 0;margin-bottom:10px;"><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">Compliance with Regulatory Procedures and Local Authorities:</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;">Civil aviation Authorities shall be informed about the situation and the ongoing inter-company coordination. They can provide additional guidance and coordinate the overall response, especially if the incident affects airport operations or airspace.</div></div><div style="border-left:3px solid var(--steel-bright);padding:12px 16px;background:rgba(27,108,168,.05);border-radius:0 6px 6px 0;margin-bottom:10px;"><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);margin-bottom:5px;">Post-Incident Review and ERP Enhancement:</div><div style="font-size:12px;color:var(--grey-200);line-height:1.6;">Once the situation is resolved, both companies should conduct a joint post-incident review to identify improvements for their respective ERPs. This collaborative debriefing allows for stronger procedures and better preparedness for future multi-stakeholder emergency scenarios.</div></div>
+</div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">13.2. Communication to the Authority</div>
+  <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;margin-bottom:6px;">Following the announcement of an accident, the Safety Manager must inform the Authorities with the following information as soon as possible:</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Helicopter: type, model, serial number, registration;</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Names of owner, operator, crew members and customers;</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Date and time of accident/incident;</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Location of accident/incident: position of the helicopter in relation to a geographical point, GPS coordinates;</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Number of people in the vicinity who died or were injured;</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Validated list of people on board (within a maximum of 2 hours following the announcement of an accident);</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Description of the accident/incident and the material damage caused to the helicopter and the surrounding area;</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Indication of access routes and constraints, physical characteristics of the area;</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• Description of immediate actions taken and planned;</div><div style="padding:8px 12px;background:rgba(15,30,46,0.033);border-radius:5px;font-size:12px;color:var(--grey-200);line-height:1.55;">• List of dangerous goods on board and special categories of passengers.</div></div>
+</div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">13.3. Internal communication</div>
+  <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">In responding to an emergency situation, all or part of the organisation’s personnel may be affected by the event, depending on the size of the company.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">The Accountable Manager must make a concerted effort, by whatever means appropriate, to inform all personnel regarding the event.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">The Accountable Manager must in a timely manner inform the personnel of the steps to be taken for managing the crisis.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">The organisations policies, such as a ban on disclosing any information outside of the organisation, and the policy for dealing with the media should be reinforced. Additionally, there should restrictions placed on personnel to prevent them attending the accident/location or the Crisis Management Centre, unless required to do so within the scope of their duties.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">Volunteers from within the organisation may sought to assist in dealing with families and friends of the victims. In such circumstances it is important to anticipate this type of request, and to have launched a request for volunteers during the normal activities of the organisation. It is desirable to have a pre-selected list of volunteers in order to in a position to react quickly when the need arises.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">Additionally, it is important that the organisation has in place a list of specialists such as psychologists and counsellors who may be contacted to provide professional assistance to the victim&#x27;s relatives, employees and volunteers as appropriate.</div>
+</div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">13.4. External Communication</div>
+  <div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">In the situation where a major event has occurred, it is essential that the organisation implements a detailed communication plan under the guidance by the Legal Department or, where such a department is not in place, a lawyer appointed by the organisation for that purpose.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">Once an emergency call has been received and the Crisis Management Centre has been manned, an initial press release should be disseminated in an attempt to prevent the saturation of lines of communication.</div><div style="font-size:12px;color:var(--grey-200);line-height:1.7;margin-bottom:10px;">Press releases should not contain the name(s) of the persons involved in the accident/incident unless they have been definitively established.</div>
+</div>
+<div class="chart-card" style="padding:20px;margin-bottom:16px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">13.5. Checklist Press Conference</div>
+  <div style="display:flex;justify-content:space-between;padding:6px 14px;font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--grey-400);letter-spacing:.06em;border-bottom:1px solid rgba(15,30,46,0.128);margin-bottom:6px;"><span>WHAT?</span><span>EXECUTION</span></div><div style="display:flex;flex-direction:column;gap:5px;"><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--grey-400);letter-spacing:.06em;margin:8px 0 2px;">PREPARATION</div><div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:12px;color:var(--grey-200);line-height:1.5;">Room: Number of participants, Seating, Technical aids, Lectern, Lighting</span><span style="display:flex;gap:14px;flex-shrink:0;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--grey-300);"><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-1" value="yes" style="accent-color:#3fb950;"/>YES</label><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-1" value="no" style="accent-color:#f85149;"/>NO</label></span></div><div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:12px;color:var(--grey-200);line-height:1.5;">Set date</span><span style="display:flex;gap:14px;flex-shrink:0;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--grey-300);"><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-2" value="yes" style="accent-color:#3fb950;"/>YES</label><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-2" value="no" style="accent-color:#f85149;"/>NO</label></span></div><div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:12px;color:var(--grey-200);line-height:1.5;">Work out a message: What is communicated, what are the sub-themes of the message are possible?</span><span style="display:flex;gap:14px;flex-shrink:0;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--grey-300);"><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-3" value="yes" style="accent-color:#3fb950;"/>YES</label><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-3" value="no" style="accent-color:#f85149;"/>NO</label></span></div><div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:12px;color:var(--grey-200);line-height:1.5;">Set up entrance control, set priorities, which press first?</span><span style="display:flex;gap:14px;flex-shrink:0;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--grey-300);"><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-4" value="yes" style="accent-color:#3fb950;"/>YES</label><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-4" value="no" style="accent-color:#f85149;"/>NO</label></span></div><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--grey-400);letter-spacing:.06em;margin:8px 0 2px;">INVITATION</div><div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:12px;color:var(--grey-200);line-height:1.5;">Target audience, regional, supra-regional, national media, economy, tourism</span><span style="display:flex;gap:14px;flex-shrink:0;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--grey-300);"><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-5" value="yes" style="accent-color:#3fb950;"/>YES</label><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-5" value="no" style="accent-color:#f85149;"/>NO</label></span></div><div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:12px;color:var(--grey-200);line-height:1.5;">Content Description, information about the event, topic, place, date, time, duration, program</span><span style="display:flex;gap:14px;flex-shrink:0;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--grey-300);"><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-6" value="yes" style="accent-color:#3fb950;"/>YES</label><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-6" value="no" style="accent-color:#f85149;"/>NO</label></span></div><div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--grey-400);letter-spacing:.06em;margin:8px 0 2px;">ORGANIZATION</div><div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:12px;color:var(--grey-200);line-height:1.5;">Who of the company is present (ACM, Communication Officer, third parties)? Who is responsible for what?</span><span style="display:flex;gap:14px;flex-shrink:0;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--grey-300);"><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-7" value="yes" style="accent-color:#3fb950;"/>YES</label><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-7" value="no" style="accent-color:#f85149;"/>NO</label></span></div><div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:12px;color:var(--grey-200);line-height:1.5;">If more than one person is involved, define and align core messages</span><span style="display:flex;gap:14px;flex-shrink:0;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--grey-300);"><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-8" value="yes" style="accent-color:#3fb950;"/>YES</label><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-8" value="no" style="accent-color:#f85149;"/>NO</label></span></div><div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:12px;color:var(--grey-200);line-height:1.5;">Define greeting of media representatives</span><span style="display:flex;gap:14px;flex-shrink:0;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--grey-300);"><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-9" value="yes" style="accent-color:#3fb950;"/>YES</label><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-9" value="no" style="accent-color:#f85149;"/>NO</label></span></div><div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:12px;color:var(--grey-200);line-height:1.5;">Moderation, who makes introduction, who introduces participants, who answers which questions?</span><span style="display:flex;gap:14px;flex-shrink:0;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--grey-300);"><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-10" value="yes" style="accent-color:#3fb950;"/>YES</label><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-10" value="no" style="accent-color:#f85149;"/>NO</label></span></div><div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:12px;color:var(--grey-200);line-height:1.5;">Compile press kit</span><span style="display:flex;gap:14px;flex-shrink:0;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--grey-300);"><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-11" value="yes" style="accent-color:#3fb950;"/>YES</label><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-11" value="no" style="accent-color:#f85149;"/>NO</label></span></div><div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:12px;color:var(--grey-200);line-height:1.5;">Contents Media release, presentations, images (photos, graphics), general information about the company (image brochure, fact sheet)</span><span style="display:flex;gap:14px;flex-shrink:0;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--grey-300);"><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-12" value="yes" style="accent-color:#3fb950;"/>YES</label><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-12" value="no" style="accent-color:#f85149;"/>NO</label></span></div><div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:12px;color:var(--grey-200);line-height:1.5;">For national / international avoidance ensure translation</span><span style="display:flex;gap:14px;flex-shrink:0;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--grey-300);"><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-13" value="yes" style="accent-color:#3fb950;"/>YES</label><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-13" value="no" style="accent-color:#f85149;"/>NO</label></span></div><div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:12px;color:var(--grey-200);line-height:1.5;">Documents to be handed out at the entrance to the conference room</span><span style="display:flex;gap:14px;flex-shrink:0;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--grey-300);"><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-14" value="yes" style="accent-color:#3fb950;"/>YES</label><label style="display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="erp-pc-14" value="no" style="accent-color:#f85149;"/>NO</label></span></div></div>
+</div>
+<div class="chart-card" style="padding:20px;margin-bottom:0px;">
+  <div style="font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);letter-spacing:.08em;margin-bottom:14px;border-bottom:1px solid rgba(15,30,46,0.128);padding-bottom:8px;text-transform:uppercase;">13.6. Principles</div>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;"><div style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:22px;">⚡</span><div><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);">Speed:</div><div style="font-size:12px;color:var(--grey-200);">Inform quickly and comprehensively</div></div></div><div style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:22px;">🔍</span><div><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);">Openness:</div><div style="font-size:12px;color:var(--grey-200);">Transparency ensures credibility</div></div></div><div style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:22px;">📋</span><div><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);">Completeness:</div><div style="font-size:12px;color:var(--grey-200);">No information in slices</div></div></div><div style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(15,30,46,0.033);border-radius:6px;"><span style="font-size:22px;">🤝</span><div><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);">Participation:</div><div style="font-size:12px;color:var(--grey-200);">Involve the media in crisis management</div></div></div></div>
+</div>
 </div><!-- /erp-sec-general -->
 
 <!-- ═══════════════════════════════════════════════════════════════
@@ -19964,7 +19643,8 @@ input, select, textarea { color-scheme: light; }
   function hasOwnText(el){for(var c=el.firstChild;c;c=c.nextSibling)if(c.nodeType===3&&c.nodeValue.trim())return true;return /^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(el.tagName);}
   function check(el){
     if(el.closest('svg,canvas,script,style'))return;
-    if(el.hasAttribute(MARK)){el.style.removeProperty('color');el.removeAttribute(MARK);}
+    /* 15.10.2026 — restaure la couleur d'auteur au lieu de l'effacer (sinon un titre perd sa couleur au 2e passage). */
+    if(el.hasAttribute(MARK)){var o=el.getAttribute('data-hx-orig');el.style.removeProperty('color');if(o)el.style.setProperty('color',o);el.removeAttribute(MARK);el.removeAttribute('data-hx-orig');}
     if(!hasOwnText(el))return;
     var cs=getComputedStyle(el);
     if(cs.visibility==='hidden'||cs.display==='none')return;
@@ -19974,6 +19654,7 @@ input, select, textarea { color-scheme: light; }
     var target=(size>=24||(size>=18.66&&bold))?3.1:4.6;
     if(ratio(fg,bg)>=target)return;
     var c=adjust(fg,bg,target);
+    el.setAttribute('data-hx-orig',el.style.getPropertyValue('color')||'');
     el.style.setProperty('color','rgb('+c.r+','+c.g+','+c.b+')','important');
     el.setAttribute(MARK,'1');
   }
@@ -20254,6 +19935,16 @@ function isxMocReportHTML(cs){
   #erp-ed-bar button:hover, #erp-ed-tools button:hover{ background:rgba(255,255,255,.14); }
   #erp-ed-bar .erp-ed-ok{ background:#2e7d32; border-color:#4caf50; font-weight:700; }
   #erp-ed-bar .erp-ed-ko{ background:rgba(192,0,0,.35); border-color:rgba(255,90,90,.5); }
+  #erp-ed-bar .erp-fmt{ flex:1 1 100%; display:flex; flex-wrap:wrap; align-items:center; gap:4px; padding-top:7px;
+    margin-top:2px; border-top:1px solid rgba(227,179,65,.3); }
+  #erp-ed-bar .erp-fmt button{ min-width:28px; padding:4px 7px; font-size:12px; line-height:1.2; }
+  #erp-ed-bar .erp-fmt .erp-sep{ width:1px; align-self:stretch; background:rgba(227,179,65,.3); margin:0 4px; }
+  #erp-ed-bar .erp-fmt select{ font-family:var(--font-mono); font-size:11px; padding:4px 6px; border-radius:5px;
+    background:#1b1606; color:#fff; border:1px solid rgba(255,255,255,.25); }
+  #erp-ed-bar .erp-fmt input[type=color]{ width:28px; height:24px; padding:0 2px; border:1px solid rgba(255,255,255,.25);
+    border-radius:5px; background:#1b1606; cursor:pointer; }
+  #erp-ed-bar .erp-fmt .erp-sw{ width:16px; height:16px; min-width:16px; padding:0; border-radius:3px; border:1px solid rgba(255,255,255,.5); }
+  #erp-ed-bar .erp-fmt .erp-lab{ font-size:9px; color:#e8d7a6; letter-spacing:.05em; margin-left:2px; }
   #erp-ed-hl{ position:fixed; z-index:9990; pointer-events:none; border:2px solid #e3b341; border-radius:4px;
     background:rgba(227,179,65,.06); display:none; }
   #erp-ed-tools{ position:fixed; z-index:9991; display:none; gap:3px; padding:3px; background:#2a2108;
@@ -20368,6 +20059,12 @@ function isxMocReportHTML(cs){
   function cleanHTML(el){
     var c = el.cloneNode(true);
     c.querySelectorAll('[contenteditable]').forEach(function(n){ n.removeAttribute('contenteditable'); });
+    /* Retire les corrections de contraste du thème clair Helion : on stocke la couleur d'auteur. */
+    c.querySelectorAll('[data-hx-fix]').forEach(function(n){
+      var cur = n.style.getPropertyValue('color'), o = n.getAttribute('data-hx-orig');
+      n.style.removeProperty('color'); n.style.color = o || cur;
+      n.removeAttribute('data-hx-fix'); n.removeAttribute('data-hx-orig');
+    });
     var log = c.querySelector('#erp-log-entries'); if(log) log.innerHTML = '';
     c.querySelectorAll('input[type="checkbox"],input[type="radio"]').forEach(function(i){ i.removeAttribute('checked'); });
     c.querySelectorAll('a[href^="tel:"]').forEach(function(a){
@@ -20382,6 +20079,10 @@ function isxMocReportHTML(cs){
 
   function applyObj(obj){
     hosts().forEach(function(p){
+      /* Section dont le fichier porte une révision documentaire (data-erp-base) :
+         un contenu enregistré sur une autre révision n'écrase pas la nouvelle. */
+      var base = p[1].getAttribute('data-erp-base');
+      if(base && obj && !obj.reset && ((obj.bases || {})[p[0]] || '') !== base) return;
       var html = obj && obj.reset ? ORIG[p[0]]
                : (obj && (p[0] === 'header' ? obj.header : (obj.sections || {})[p[0]]));
       if(typeof html === 'string' && html.length) p[1].innerHTML = obj.reset ? html : sanitize(html);
@@ -20420,14 +20121,16 @@ function isxMocReportHTML(cs){
       var bar = document.createElement('div');
       bar.id = 'erp-ed-bar';
       bar.innerHTML = '<span class="erp-ed-help">✎ ' + T(
-          'MODE ÉDITION — cliquez dans un texte pour le modifier (tous les onglets). Titre, référence et version de l’en-tête se modifient directement ; ✎ à côté d’un onglet pour le renommer. Survolez un élément pour le monter ▲, le descendre ▼, le dupliquer ⧉, le supprimer ✕ ou remonter au bloc parent ⤒. Les liens téléphone suivent le numéro affiché.',
-          'EDIT MODE — click any text to change it (all tabs), including the title, reference and version; ✎ next to a tab renames it. Hover an element to move it ▲▼, duplicate ⧉, delete ✕ or select its parent block ⤒. Phone links follow the displayed number.')
+          'MODE ÉDITION — cliquez pour modifier un texte, sélectionnez-le pour le mettre en forme · ✎ renomme un onglet · survol d’un élément : ▲▼ déplacer, ⧉ dupliquer, ✕ supprimer, ⤒ bloc parent.',
+          'EDIT MODE — click to change text, select it to format it · ✎ renames a tab · hover an element: ▲▼ move, ⧉ duplicate, ✕ delete, ⤒ parent block.')
         + '</span>'
         + '<button onclick="erpEdUndo()" title="' + T('Annuler la dernière opération de structure','Undo last structural change') + '">↶ ' + T('Annuler','Undo') + '</button>'
         + '<button onclick="erpEdVersions()">🕘 ' + T('Versions','Versions') + '</button>'
         + '<button class="erp-ed-ko" onclick="erpEdCancel()">✕ ' + T('Abandonner','Discard') + '</button>'
-        + '<button class="erp-ed-ok" onclick="erpEdSave()">✓ ' + T('Enregistrer','Save') + '</button>';
+        + '<button class="erp-ed-ok" onclick="erpEdSave()">✓ ' + T('Enregistrer','Save') + '</button>'
+        + fmtRowHTML();
       content.parentNode.insertBefore(bar, content);
+      bindFmtRow(bar);
     }
     if(!document.getElementById('erp-ed-tools')){
       var hl = document.createElement('div'); hl.id = 'erp-ed-hl'; document.body.appendChild(hl);
@@ -20461,6 +20164,218 @@ function isxMocReportHTML(cs){
     if(!obj){ m.textContent = ''; return; }
     m.textContent = (obj.reset ? T('Original rétabli le ','Original restored ') : T('Modifié le ','Edited ')) + fmt(obj.saved_at)
       + (obj.saved_by ? T(' par ',' by ') + obj.saved_by : '');
+  }
+
+  /* ── Mise en forme du texte (gras, taille, police, couleurs…) ────── */
+  var SIZES = [9,10,11,12,13,14,15,16,18,20,22,24,28,32,40];
+  var SWATCH = ['#C00000','#e3b341','#1c5c9f','#4a9fe0','#368132','#3fb950','#567898','#000000','#ffffff'];
+  var FONTS = [['', T('Police…','Font…')], ['var(--font-mono)', 'Mono'], ['Arial, Helvetica, sans-serif', 'Sans'],
+               ['Georgia, "Times New Roman", serif', 'Serif'], ['inherit', T('Par défaut','Default')]];
+  function fmtRowHTML(){
+    var b = function(cmd, lbl, tip, st){ return '<button data-fmt="' + cmd + '" title="' + tip + '"' + (st ? ' style="' + st + '"' : '') + '>' + lbl + '</button>'; };
+    var h = '<div class="erp-fmt">'
+      + b('bold','B',T('Gras (Ctrl+B)','Bold (Ctrl+B)'),'font-weight:900')
+      + b('italic','I',T('Italique (Ctrl+I)','Italic (Ctrl+I)'),'font-style:italic')
+      + b('underline','U',T('Souligné (Ctrl+U)','Underline (Ctrl+U)'),'text-decoration:underline')
+      + b('strikeThrough','S',T('Barré','Strikethrough'),'text-decoration:line-through')
+      + '<span class="erp-sep"></span>'
+      + b('smaller','A−',T('Réduire la taille','Smaller')) + b('bigger','A+',T('Agrandir la taille','Bigger'))
+      + '<select data-fmt-sel="size" title="' + T('Taille de police','Font size') + '"><option value="">' + T('Taille…','Size…') + '</option>'
+      + SIZES.map(function(z){ return '<option value="' + z + '">' + z + ' px</option>'; }).join('') + '</select>'
+      + '<select data-fmt-sel="font" title="' + T('Police','Font') + '">' + FONTS.map(function(f){ return '<option value="' + f[0].replace(/"/g,'&quot;') + '">' + f[1] + '</option>'; }).join('') + '</select>'
+      + '<span class="erp-sep"></span><span class="erp-lab">' + T('TEXTE','TEXT') + '</span>'
+      + '<input type="color" data-fmt-col="foreColor" value="#c00000" title="' + T('Couleur du texte','Text colour') + '"/>'
+      + SWATCH.map(function(c){ return '<button class="erp-sw" data-fmt="foreColor" data-val="' + c + '" title="' + c + '" style="background:' + c + '"></button>'; }).join('')
+      + '<span class="erp-sep"></span><span class="erp-lab">' + T('SURLIGNÉ','HIGHLIGHT') + '</span>'
+      + '<input type="color" data-fmt-col="hiliteColor" value="#fff3a0" title="' + T('Couleur de surlignage','Highlight colour') + '"/>'
+      + b('hiliteNone','⊘',T('Retirer le surlignage','Remove highlight'))
+      + '<span class="erp-sep"></span>'
+      + b('justifyLeft','⯇',T('Aligner à gauche','Align left')) + b('justifyCenter','≡',T('Centrer','Centre')) + b('justifyRight','⯈',T('Aligner à droite','Align right'))
+      + b('upper','Aa',T('MAJUSCULES / minuscules','UPPER / lower case'))
+      + '<span class="erp-sep"></span>'
+      + b('removeFormat','⌫ ' + T('Effacer la mise en forme','Clear formatting'),T('Revenir au style d’origine du texte sélectionné','Reset selected text to its base style'),'font-size:10px')
+      + '</div>';
+    return h;
+  }
+
+  var savedRange = null;
+  function nodeEl(n){ return n ? (n.nodeType === 1 ? n : n.parentElement) : null; }
+  document.addEventListener('selectionchange', function(){
+    if(!editing) return;
+    var sel = window.getSelection();
+    if(sel && sel.rangeCount && hostOf(nodeEl(sel.anchorNode))) savedRange = sel.getRangeAt(0).cloneRange();
+  });
+  function restoreSel(){
+    if(!savedRange) return false;
+    var h = hostOf(nodeEl(savedRange.startContainer)); if(!h) return false;
+    try{ h.focus({preventScroll:true}); }catch(e){ h.focus(); }
+    var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(savedRange);
+    return true;
+  }
+  function selectNodes(list){
+    if(!list.length) return;
+    var r = document.createRange(); r.setStartBefore(list[0]); r.setEndAfter(list[list.length - 1]);
+    var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); savedRange = r.cloneRange();
+  }
+  /* Enveloppe la sélection dans des <span style="prop:val"> (via un marqueur <font>). */
+  function wrapStyle(prop, val){
+    /* Chrome retire la propriété du bloc parent et la reporte sur des <span> :
+       on mémorise les valeurs en ligne pour les rétablir ensuite. */
+    var keep = [];
+    hosts().forEach(function(p){ p[1].querySelectorAll('[style]').forEach(function(el){ if(el.style[prop]) keep.push([el, el.style[prop]]); }); });
+    document.execCommand('styleWithCSS', false, false);
+    if(prop === 'fontFamily') document.execCommand('fontName', false, 'erp-tmp-font');
+    else document.execCommand('fontSize', false, '7');
+    var made = [];
+    var q = prop === 'fontFamily' ? 'font[face="erp-tmp-font"]' : 'font[size="7"]';
+    hosts().forEach(function(p){
+      p[1].querySelectorAll(q).forEach(function(f){
+        var sp = document.createElement('span'); sp.setAttribute('data-f','1');
+        f.querySelectorAll('[style]').forEach(function(x){ x.style[prop] = ''; if(!x.getAttribute('style')) x.removeAttribute('style'); });
+        if(val) sp.style[prop] = val;
+        while(f.firstChild) sp.appendChild(f.firstChild);
+        f.parentNode.replaceChild(sp, f);
+        made.push(sp);
+      });
+    });
+    keep.forEach(function(k){
+      var el = k[0];
+      if(!el.isConnected || el.style[prop]) return;
+      if(made.some(function(m){ return m.contains(el); })) return;
+      el.style[prop] = k[1];
+    });
+    selectNodes(made);
+    return made;
+  }
+  function selFontSize(){
+    var sel = window.getSelection(); if(!sel.rangeCount) return 12;
+    var r = sel.getRangeAt(0), root = r.commonAncestorContainer;
+    if(root.nodeType === 3) return parseFloat(getComputedStyle(root.parentElement).fontSize) || 12;
+    var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), n;
+    while((n = w.nextNode())){ if(n.nodeValue.trim() && r.intersectsNode(n)) return parseFloat(getComputedStyle(n.parentElement).fontSize) || 12; }
+    return parseFloat(getComputedStyle(nodeEl(r.startContainer)).fontSize) || 12;
+  }
+  /* Chrome, en coupant un texte, recopie sur des <span> le style en ligne du bloc
+     parent (ex. font-size:10px d'un titre agrandi par classe) : ces copies
+     figeraient l'ancienne taille. On retire toute propriété identique à celle
+     d'un ancêtre, puis on déballe les <span> devenus vides. */
+  var NPROPS = ['fontFamily','fontSize','fontWeight','color','letterSpacing','fontStyle','textTransform','lineHeight','backgroundColor'];
+  function normalizeSpans(){
+    hosts().forEach(function(p){
+      var host = p[1];
+      /* Taille / police imbriquées : la plus intérieure couvre tout le texte → l'extérieure est inutile. */
+      host.querySelectorAll('span[data-f="1"]').forEach(function(sp){
+        ['fontSize','fontFamily'].forEach(function(prop){
+          if(!sp.style[prop]) return;
+          var a = sp.parentElement;
+          while(a && a !== host){
+            if(a.tagName === 'SPAN' && a.getAttribute('data-f') === '1' && a.style[prop]){
+              if(a.textContent === sp.textContent) a.style[prop] = '';
+              break;
+            }
+            a = a.parentElement;
+          }
+        });
+      });
+      host.querySelectorAll('span[style]').forEach(function(sp){
+        var mine = sp.getAttribute('data-f') === '1';
+        NPROPS.forEach(function(prop){
+          var v = sp.style[prop]; if(!v) return;
+          if(prop === 'backgroundColor' && /^(transparent|rgba\(0, 0, 0, 0\))$/.test(v)){ sp.style[prop] = ''; return; }
+          if(mine && prop === 'fontSize') return;
+          var a = sp.parentElement;
+          while(a && a !== host.parentElement){ if(a.style && a.style[prop]){ if(a.style[prop] === v) sp.style[prop] = ''; return; } a = a.parentElement; }
+        });
+        if(!sp.getAttribute('style') || !sp.style.length){
+          var par = sp.parentNode; while(sp.firstChild) par.insertBefore(sp.firstChild, sp); par.removeChild(sp);
+        }
+      });
+    });
+  }
+
+  function rangeToOffsets(host, r){
+    var pre = document.createRange(); pre.selectNodeContents(host); pre.setEnd(r.startContainer, r.startOffset);
+    var st = pre.toString().length; return { s: st, e: st + r.toString().length };
+  }
+  function offsetsToRange(host, o){
+    var w = document.createTreeWalker(host, NodeFilter.SHOW_TEXT), n, pos = 0, r = document.createRange(), gotS = false;
+    while((n = w.nextNode())){
+      var len = n.nodeValue.length; if(!len) continue;
+      if(!gotS && o.s < pos + len){ r.setStart(n, o.s - pos); gotS = true; }
+      if(gotS && o.e <= pos + len){ r.setEnd(n, o.e - pos); return r; }
+      pos += len;
+    }
+    return gotS ? r : null;
+  }
+
+  window.erpFmt = function(cmd, val){
+    if(!editing) return;
+    if(!restoreSel()){ toast(T('Cliquez d’abord dans le texte à mettre en forme','Click in the text to format first'), 'error'); return; }
+    var sel = window.getSelection();
+    var needSel = !/^justify/.test(cmd);
+    if(needSel && sel.isCollapsed){ toast(T('Sélectionnez le texte à mettre en forme','Select the text to format first'), 'error'); return; }
+    pushUndo();
+    /* Instantané des styles en ligne des blocs : Chrome les déplace parfois vers
+       des <span> (ex. couleur d'un titre) ; on les rétablit après la commande. */
+    var SNAP = ['color','backgroundColor','fontSize','fontFamily','fontWeight','fontStyle','letterSpacing','textTransform'];
+    var snap = [];
+    hosts().forEach(function(p){ p[1].querySelectorAll('[style]').forEach(function(el){
+      if(el.tagName === 'SPAN' || el.tagName === 'B' || el.tagName === 'I' || el.tagName === 'FONT') return;
+      var o = {}; SNAP.forEach(function(k){ if(el.style[k]) o[k] = el.style[k]; }); snap.push([el, o]);
+    }); });
+    switch(cmd){
+      case 'bold': case 'italic': case 'underline': case 'strikeThrough':
+        document.execCommand('styleWithCSS', false, false); document.execCommand(cmd); break;
+      case 'size': wrapStyle('fontSize', val + 'px'); break;
+      case 'bigger': case 'smaller':
+        var cur = selFontSize(), nx = Math.max(8, Math.min(64, Math.round(cur + (cmd === 'bigger' ? 2 : -2))));
+        wrapStyle('fontSize', nx + 'px'); break;
+      case 'font': wrapStyle('fontFamily', val === 'inherit' ? '' : val); break;
+      case 'foreColor': case 'hiliteColor':
+        document.execCommand('styleWithCSS', false, true); document.execCommand(cmd, false, val); break;
+      case 'hiliteNone':
+        document.execCommand('styleWithCSS', false, true); document.execCommand('hiliteColor', false, 'transparent'); break;
+      case 'justifyLeft': case 'justifyCenter': case 'justifyRight':
+        document.execCommand('styleWithCSS', false, true); document.execCommand(cmd); break;
+      case 'upper':
+        var txt = sel.toString();
+        var up = txt !== txt.toUpperCase() ? txt.toUpperCase() : txt.toLowerCase();
+        document.execCommand('insertText', false, up); break;
+      case 'removeFormat':
+        document.execCommand('removeFormat');
+        document.execCommand('styleWithCSS', false, true); document.execCommand('hiliteColor', false, 'transparent');
+        break;
+    }
+    snap.forEach(function(x){
+      var el = x[0]; if(!el.isConnected) return;
+      Object.keys(x[1]).forEach(function(k){ if(!el.style[k]) el.style[k] = x[1][k]; });
+    });
+    /* Nettoyage sans perdre la sélection : mémorisée en positions de caractères. */
+    var s1 = window.getSelection(), hst = s1.rangeCount ? hostOf(nodeEl(s1.getRangeAt(0).startContainer)) : null;
+    var offs = hst ? rangeToOffsets(hst, s1.getRangeAt(0)) : null;
+    try{ normalizeSpans(); }catch(e){}
+    if(hst && offs){ var nr = offsetsToRange(hst, offs); if(nr){ s1.removeAllRanges(); s1.addRange(nr); } }
+    var s2 = window.getSelection(); if(s2.rangeCount) savedRange = s2.getRangeAt(0).cloneRange();
+    place();
+  };
+  function bindFmtRow(bar){
+    var row = bar.querySelector('.erp-fmt'); if(!row) return;
+    row.addEventListener('mousedown', function(e){
+      if(e.target.closest('button')) e.preventDefault();   // garde la sélection
+    });
+    row.addEventListener('click', function(e){
+      var b = e.target.closest('button[data-fmt]'); if(!b) return;
+      window.erpFmt(b.getAttribute('data-fmt'), b.getAttribute('data-val'));
+    });
+    row.querySelectorAll('select[data-fmt-sel]').forEach(function(sl){
+      sl.addEventListener('change', function(){
+        if(sl.value !== '') window.erpFmt(sl.getAttribute('data-fmt-sel'), sl.value);
+        sl.selectedIndex = 0;
+      });
+    });
+    row.querySelectorAll('input[data-fmt-col]').forEach(function(ip){
+      ip.addEventListener('change', function(){ window.erpFmt(ip.getAttribute('data-fmt-col'), ip.value); });
+    });
   }
 
   /* ── Sélection d'élément et barre flottante ────────────────────────── */
@@ -20657,7 +20572,9 @@ function isxMocReportHTML(cs){
     if(!canWrite()){ toast(T('Lecture seule — modification impossible.','Read-only — editing not allowed.'), 'error'); return; }
     var ti = document.getElementById('erp-tab-input'); if(ti) ti.blur();
     var obj = { v:1, saved_at:new Date().toISOString(), saved_by:who(), header:'', sections:{}, tabs:tabLabels() };
+    obj.bases = {};
     hosts().forEach(function(p){
+      var base = p[1].getAttribute('data-erp-base'); if(base) obj.bases[p[0]] = base;
       var html = cleanHTML(p[1]);
       if(p[0] === 'header') obj.header = html; else obj.sections[p[0]] = html;
     });
