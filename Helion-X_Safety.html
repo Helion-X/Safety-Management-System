@@ -20224,7 +20224,6 @@ function isxMocReportHTML(cs){
 }
 
 </script>
-
 <!-- ═══════════════════════════════════════════════════════════════════════
      ERP — ÉDITION COMPLÈTE DU CONTENU (15.10.2026)
      Rend modifiable l'intégralité de l'Emergency Response Plan : en-tête,
@@ -20245,7 +20244,7 @@ function isxMocReportHTML(cs){
   #view-erp.erp-ed-on [data-erp-host]{ outline:1px dashed rgba(227,179,65,.45); outline-offset:6px; border-radius:4px; }
   #view-erp.erp-ed-on [data-erp-host]:focus-within{ outline-color:rgba(227,179,65,.8); }
   #view-erp.erp-ed-on a{ cursor:text; }
-  #erp-ed-bar{ display:none; position:sticky; top:0; z-index:60; margin:0 28px; padding:8px 12px;
+  #erp-ed-bar{ display:none; position:sticky; top:var(--erp-tabs-h,0px); z-index:60; margin:0 28px; padding:8px 12px;
     background:rgba(60,45,10,.96); border:1px solid rgba(227,179,65,.55); border-top:none; border-radius:0 0 8px 8px;
     font-family:var(--font-mono); font-size:10px; color:#f0d58a; align-items:center; gap:8px; flex-wrap:wrap; }
   #view-erp.erp-ed-on #erp-ed-bar{ display:flex; }
@@ -20267,7 +20266,39 @@ function isxMocReportHTML(cs){
     padding:18px; width:min(560px,92vw); max-height:80vh; overflow:auto; color:var(--grey-200,#ccc); font-size:12px; }
   #erp-ed-versions .erp-ed-row{ display:flex; justify-content:space-between; align-items:center; gap:10px; padding:8px 10px;
     border-bottom:1px solid rgba(255,255,255,.07); }
-  @media print{ #erp-ed-bar,#erp-ed-tools,#erp-ed-hl,#erp-ed-btn,#erp-ed-meta{ display:none !important; } }
+  .erp-tab-ed{ display:none; align-self:center; margin:0 6px 0 -12px; padding:1px 5px; font-size:10px; cursor:pointer;
+    color:#e3b341; border:1px solid rgba(227,179,65,.5); border-radius:4px; background:rgba(227,179,65,.08); }
+  #view-erp.erp-ed-on .erp-tab-ed{ display:inline-block; }
+  #view-erp.erp-ed-on .erp-tab{ outline:1px dashed rgba(227,179,65,.35); outline-offset:-3px; }
+  #erp-tab-input{ position:fixed; z-index:9996; font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:.05em;
+    background:#1b1606; color:#fff; border:2px solid #e3b341; border-radius:5px; padding:6px 8px; resize:none; line-height:1.4; }
+
+  /* ── Titres de l'ERP agrandis et hiérarchisés (15.10.2026) ─────────────
+     Ciblage par le style en ligne d'origine : fonctionne aussi sur le
+     contenu enregistré par l'éditeur, qui conserve ces styles. */
+  /* Onglets : plus grands, état actif net, barre collante */
+  #view-erp .erp-tabbar{ position:sticky; top:0; z-index:55; padding-top:6px !important; }
+  #view-erp .erp-tabbar > div{ flex-wrap:wrap; gap:4px !important; }
+  #view-erp .erp-tab{ font-size:12.5px !important; padding:11px 18px !important; letter-spacing:.04em !important;
+    border-radius:8px 8px 0 0 !important; border-bottom:3px solid transparent !important; line-height:1.35;
+    transition:background .15s, color .15s; }
+  #view-erp .erp-tab:hover{ background:rgba(74,159,224,.14) !important; color:var(--steel-bright) !important; }
+  #view-erp .erp-tab.erp-tab-active{ border-bottom-color:#e3b341 !important; color:var(--steel-bright) !important; }
+  #view-erp .erp-tab:focus-visible{ outline:2px solid #e3b341; outline-offset:-2px; }
+  /* Classes posées par erpClassifyTitles() d'après le style en ligne
+     (robuste aux réécritures de style du thème clair Helion). */
+  #erp-content .erp-h1{ font-size:16px !important; letter-spacing:.05em !important; line-height:1.35 !important;
+    padding:4px 0 4px 12px !important; border-left:4px solid currentColor; margin:8px 0 14px !important; }
+  #erp-content .erp-h2, #erp-content .chart-title{ font-size:15px !important; letter-spacing:.04em !important; line-height:1.4 !important; }
+  #erp-content .erp-h2{ padding-bottom:10px !important; }
+  #erp-content .erp-h3{ font-size:14px !important; letter-spacing:.03em !important; line-height:1.4 !important; }
+  #erp-content .erp-h3b{ font-size:15px !important; line-height:1.35 !important; }
+  #erp-content .erp-h4{ font-size:12.5px !important; letter-spacing:.03em !important; line-height:1.4 !important; }
+  #erp-content .erp-lbl{ font-size:11.5px !important; }
+  #view-erp .dash-header .dash-title + div{ font-size:13px !important; }
+  #view-erp .dash-header .dash-subtitle{ font-size:12.5px !important; }
+  @media print{ #view-erp .erp-tabbar{ position:static; } }
+  @media print{ .erp-tab-ed, #erp-ed-bar,#erp-ed-tools,#erp-ed-hl,#erp-ed-btn,#erp-ed-meta{ display:none !important; } }
 </style>
 <script id="erp-ed-runtime">
 (function(){
@@ -20290,6 +20321,18 @@ function isxMocReportHTML(cs){
     return a;
   }
 
+  /* Intitulés des onglets (boutons de navigation : édités par une zone de saisie dédiée). */
+  function tabEls(){ return Array.prototype.slice.call(view.querySelectorAll('.erp-tab[id^="erp-tab-"]')); }
+  function tabKey(b){ return b.id.replace('erp-tab-',''); }
+  function tabLabels(){ var o = {}; tabEls().forEach(function(b){ o[tabKey(b)] = b.innerText.replace(/\r/g,'').trim(); }); return o; }
+  function setTab(b, txt){
+    txt = String(txt == null ? '' : txt).replace(/<[^>]*>/g,'').trim();
+    if(!txt) return;
+    b.textContent = txt;
+    b.style.whiteSpace = txt.indexOf('\n') > -1 ? 'pre-line' : '';
+  }
+  function applyTabs(map){ if(!map) return; tabEls().forEach(function(b){ var k = tabKey(b); if(typeof map[k] === 'string') setTab(b, map[k]); }); }
+
   function role(){ try{ return String(typeof safCurrentRole === 'function' ? safCurrentRole() : '').toLowerCase(); }catch(e){ return ''; } }
   function canWrite(){ return /^(admin|editor)$/.test(role()); }
   function who(){ try{ return typeof safCurrentUser === 'function' ? safCurrentUser() : ''; }catch(e){ return ''; } }
@@ -20301,6 +20344,7 @@ function isxMocReportHTML(cs){
   /* ── Contenu d'origine du fichier (avant tout contenu enregistré) ── */
   var ORIG = {};
   hosts().forEach(function(p){ ORIG[p[0]] = p[1].innerHTML; });
+  var ORIG_TABS = {}; tabEls().forEach(function(b){ ORIG_TABS[tabKey(b)] = b.textContent; });
 
   /* ── Assainissement du HTML enregistré ─────────────────────────────── */
   var SAFE_HANDLER = /^\s*(erp[A-Za-z]*\(|this\.parentElement[\w.]*\.remove\(\)|window\.print\(\)|event\.)/;
@@ -20342,6 +20386,8 @@ function isxMocReportHTML(cs){
                : (obj && (p[0] === 'header' ? obj.header : (obj.sections || {})[p[0]]));
       if(typeof html === 'string' && html.length) p[1].innerHTML = obj.reset ? html : sanitize(html);
     });
+    if(obj && obj.reset){ tabEls().forEach(function(b){ var k = tabKey(b); if(ORIG_TABS[k] != null){ b.textContent = ORIG_TABS[k]; b.style.whiteSpace = ''; } }); }
+    else if(obj) applyTabs(obj.tabs);
   }
 
   window.erpContentApply = function(force){
@@ -20352,6 +20398,7 @@ function isxMocReportHTML(cs){
     if(force || stamp !== appliedStamp){
       applyObj(obj);
       appliedStamp = stamp;
+      try{ erpClassifyTitles(); }catch(e){}
     }
     updateMeta(); refreshUI();
   };
@@ -20373,8 +20420,8 @@ function isxMocReportHTML(cs){
       var bar = document.createElement('div');
       bar.id = 'erp-ed-bar';
       bar.innerHTML = '<span class="erp-ed-help">✎ ' + T(
-          'MODE ÉDITION — cliquez dans un texte pour le modifier (tous les onglets). Survolez un élément pour le monter ▲, le descendre ▼, le dupliquer ⧉, le supprimer ✕ ou remonter au bloc parent ⤒. Les liens téléphone suivent le numéro affiché.',
-          'EDIT MODE — click any text to change it (all tabs). Hover an element to move it ▲▼, duplicate ⧉, delete ✕ or select its parent block ⤒. Phone links follow the displayed number.')
+          'MODE ÉDITION — cliquez dans un texte pour le modifier (tous les onglets). Titre, référence et version de l’en-tête se modifient directement ; ✎ à côté d’un onglet pour le renommer. Survolez un élément pour le monter ▲, le descendre ▼, le dupliquer ⧉, le supprimer ✕ ou remonter au bloc parent ⤒. Les liens téléphone suivent le numéro affiché.',
+          'EDIT MODE — click any text to change it (all tabs), including the title, reference and version; ✎ next to a tab renames it. Hover an element to move it ▲▼, duplicate ⧉, delete ✕ or select its parent block ⤒. Phone links follow the displayed number.')
         + '</span>'
         + '<button onclick="erpEdUndo()" title="' + T('Annuler la dernière opération de structure','Undo last structural change') + '">↶ ' + T('Annuler','Undo') + '</button>'
         + '<button onclick="erpEdVersions()">🕘 ' + T('Versions','Versions') + '</button>'
@@ -20463,8 +20510,8 @@ function isxMocReportHTML(cs){
 
   /* ── Pile d'annulation (structure) ─────────────────────────────────── */
   var undo = [];
-  function rawSnap(){ var o = {}; hosts().forEach(function(p){ o[p[0]] = p[1].innerHTML; }); return o; }
-  function rawRestore(o){ hosts().forEach(function(p){ if(typeof o[p[0]] === 'string') p[1].innerHTML = o[p[0]]; }); }
+  function rawSnap(){ var o = {}; hosts().forEach(function(p){ o[p[0]] = p[1].innerHTML; }); o.__tabs = tabLabels(); return o; }
+  function rawRestore(o){ hosts().forEach(function(p){ if(typeof o[p[0]] === 'string') p[1].innerHTML = o[p[0]]; }); if(o.__tabs) applyTabs(o.__tabs); }
   function pushUndo(){ undo.push(rawSnap()); if(undo.length > 40) undo.shift(); }
 
   window.erpEdUndo = function(){
@@ -20526,9 +20573,44 @@ function isxMocReportHTML(cs){
       if(on){ p[1].setAttribute('contenteditable','true'); p[1].setAttribute('data-erp-host', p[0]); }
       else { p[1].removeAttribute('contenteditable'); p[1].removeAttribute('data-erp-host'); }
     });
+    tabEls().forEach(function(b){
+      var nx = b.nextElementSibling;
+      var has = nx && nx.classList && nx.classList.contains('erp-tab-ed');
+      if(on && !has){
+        var pen = document.createElement('span'); pen.className = 'erp-tab-ed'; pen.textContent = '✎';
+        pen.title = T('Renommer cet onglet','Rename this tab');
+        pen.addEventListener('click', function(e){ e.stopPropagation(); editTab(b); });
+        b.parentNode.insertBefore(pen, b.nextSibling);
+      } else if(!on && has) nx.remove();
+    });
+    if(!on){ var ti = document.getElementById('erp-tab-input'); if(ti) ti.remove(); }
     view.classList.toggle('erp-ed-on', on);
     var b = document.getElementById('erp-ed-btn');
     if(b) b.style.visibility = on ? 'hidden' : '';
+  }
+
+  function editTab(b){
+    var old = document.getElementById('erp-tab-input'); if(old) old.remove();
+    var r = b.getBoundingClientRect();
+    var ta = document.createElement('textarea'); ta.id = 'erp-tab-input';
+    ta.value = b.innerText.replace(/\r/g,'').trim();
+    ta.rows = Math.max(1, ta.value.split('\n').length);
+    ta.style.top = r.top + 'px'; ta.style.left = r.left + 'px';
+    ta.style.minWidth = Math.max(160, r.width + 40) + 'px'; ta.style.minHeight = r.height + 'px';
+    ta.title = T('Entrée : valider · Maj+Entrée : nouvelle ligne · Échap : annuler','Enter: confirm · Shift+Enter: new line · Esc: cancel');
+    var done = false;
+    function commit(ok){
+      if(done) return; done = true;
+      if(ok && ta.value.trim() && ta.value.trim() !== b.innerText.trim()){ pushUndo(); setTab(b, ta.value); }
+      ta.remove(); setupTabbar();
+    }
+    ta.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); commit(true); }
+      else if(e.key === 'Escape'){ e.preventDefault(); commit(false); }
+      else setTimeout(function(){ ta.rows = Math.max(1, ta.value.split('\n').length); }, 0);
+    });
+    ta.addEventListener('blur', function(){ commit(true); });
+    document.body.appendChild(ta); ta.focus(); ta.select();
   }
 
   window.erpEdToggle = function(){
@@ -20573,7 +20655,8 @@ function isxMocReportHTML(cs){
 
   window.erpEdSave = function(){
     if(!canWrite()){ toast(T('Lecture seule — modification impossible.','Read-only — editing not allowed.'), 'error'); return; }
-    var obj = { v:1, saved_at:new Date().toISOString(), saved_by:who(), header:'', sections:{} };
+    var ti = document.getElementById('erp-tab-input'); if(ti) ti.blur();
+    var obj = { v:1, saved_at:new Date().toISOString(), saved_by:who(), header:'', sections:{}, tabs:tabLabels() };
     hosts().forEach(function(p){
       var html = cleanHTML(p[1]);
       if(p[0] === 'header') obj.header = html; else obj.sections[p[0]] = html;
@@ -20700,21 +20783,65 @@ function isxMocReportHTML(cs){
     };
   }
 
+  /* ── Hiérarchie des titres : classes d'après le style déclaré ─────── */
+  function erpClassifyTitles(){
+    var root = document.getElementById('erp-content'); if(!root) return;
+    var C = ['erp-h1','erp-h2','erp-h3','erp-h3b','erp-h4','erp-lbl'];
+    root.querySelectorAll('div,label,span').forEach(function(el){
+      var st = el.style; if(!st || !st.fontSize) return;
+      var fs = parseFloat(st.fontSize), fw = parseInt(st.fontWeight, 10) || 400;
+      var ls = (st.letterSpacing || '').replace(/^0?\./,'.'), mono = /font-mono/.test(st.fontFamily || '');
+      var tag = el.tagName, cls = null;
+      if(fs === 10 && fw >= 700 && ls === '.1em') cls = 'erp-h1';
+      else if(fs === 10 && fw >= 700 && ls === '.08em') cls = 'erp-h2';
+      else if(tag === 'DIV' && mono && (fs === 11 || fs === 12) && fw >= 700) cls = 'erp-h3';
+      else if(tag === 'DIV' && fs === 13 && fw >= 700) cls = 'erp-h3b';
+      else if(tag === 'DIV' && fs === 10 && fw >= 700 && (!ls || ls === '.06em')) cls = 'erp-h4';
+      else if(fs === 10 && fw < 700 && ls === '.08em' && mono) cls = 'erp-lbl';
+      else if(tag === 'LABEL' && mono && (fs === 9 || fs === 10)) cls = 'erp-lbl';
+      C.forEach(function(c){ if(c !== cls) el.classList.remove(c); });
+      if(cls) el.classList.add(cls);
+      if(!el.className) el.removeAttribute('class');
+    });
+  }
+  window.erpClassifyTitles = erpClassifyTitles;
+
+  /* ── Barre d'onglets : collante, fond opaque, onglet actif marqué ──── */
+  function solidBg(el){
+    while(el && el !== document.documentElement){
+      var c = getComputedStyle(el).backgroundColor;
+      if(c && c !== 'transparent' && !/rgba\([^)]*,\s*0\)$/.test(c)) return c;
+      el = el.parentElement;
+    }
+    return getComputedStyle(document.body).backgroundColor || '#0b1626';
+  }
+  function setupTabbar(){
+    var t = tabEls()[0]; if(!t) return;
+    var bar = t.parentElement && t.parentElement.parentElement; if(!bar || bar === view) return;
+    bar.classList.add('erp-tabbar');
+    bar.style.background = solidBg(view);
+    view.style.setProperty('--erp-tabs-h', bar.offsetHeight + 'px');
+    var cur = typeof _erpCurrentSection !== 'undefined' ? _erpCurrentSection : null;
+    tabEls().forEach(function(b){ b.classList.toggle('erp-tab-active', tabKey(b) === cur); });
+  }
+
   /* ── Branchements ──────────────────────────────────────────────────── */
   if(typeof window.erpShowSection === 'function' && !window.erpShowSection.__erpEd){
     var origShow = window.erpShowSection;
-    var wrapped = function(sec){ var r = origShow.apply(this, arguments); refreshUI(); place(); return r; };
+    var wrapped = function(sec){ var r = origShow.apply(this, arguments); refreshUI(); erpClassifyTitles(); setupTabbar(); place(); return r; };
     wrapped.__erpEd = true; window.erpShowSection = wrapped;
   }
   view.addEventListener('mouseover', onOver);
   view.addEventListener('paste', onPaste, true);
   view.addEventListener('click', onClick, true);
   window.addEventListener('scroll', place, true);
-  window.addEventListener('resize', place);
+  window.addEventListener('resize', function(){ setupTabbar(); place(); });
   window.addEventListener('beforeunload', function(e){ if(editing){ e.preventDefault(); e.returnValue = ''; } });
 
   ensureUI();
   window.erpContentApply(true);
+  erpClassifyTitles(); setupTabbar();
+  setTimeout(erpClassifyTitles, 3000);
   /* Le rôle n'est connu qu'après authentification : rafraîchit le bouton. */
   var tries = 0, iv = setInterval(function(){ refreshUI(); if(++tries > 40) clearInterval(iv); }, 1500);
 })();
