@@ -5526,7 +5526,7 @@ window.__SAF_E5X_RIT_PATCH='V2_2026-07-03';
     'safRiskDB','safRiskDBVersion','safEventCatalog','safEventCatalogVersion','safChangeStudies','safSPITargets','safFlightHours',
     'safOccurrences','safLessons','safSRBMeetings','safAudits',
     'safSAR','safALoS','safCAMOSignals','lastModified',
-    'ejsPublicKey','ejsServiceId','ejsTemplateId',
+    'ejsPublicKey','safERPContent','safERPContentHistory','ejsServiceId','ejsTemplateId',
     'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921','safArchivedRisks','safRegisterNumbering','safArchiveSeq',
     'saf_international_safety_management_header_v1',
     'saf-seeds-done','helion_live_draft_v1','helionSRBData'
@@ -6328,6 +6328,7 @@ window.safExportAllData_object = function(){
     safAudits:        _getLS('safAudits'),
     safSAR:           _getLS('safSAR'),
     safALoS:          _getLS('safALoS'),
+    safERPContent:    _getLS('safERPContent'),   // 15.10.2026 — contenu édité de l'ERP
     lastModified:     _getLS('lastModified'),
     ejsPublicKey:     _getLS('ejsPublicKey'),
     ejsServiceId:     _getLS('ejsServiceId'),
@@ -6443,7 +6444,7 @@ function safImportAllData(evt){
 
       var keys = ['safRiskDB','safRiskDBVersion','safEventCatalog','safEventCatalogVersion','safChangeStudies','safSPITargets','safFlightHours','safOccurrences',
                   'safLessons','safSRBMeetings','safAudits','safSAR','safALoS','safCAMOSignals','lastModified',
-                  'ejsPublicKey','ejsServiceId','ejsTemplateId',
+                  'ejsPublicKey','safERPContent','ejsServiceId','ejsTemplateId',
                   'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921','safArchivedRisks','safRegisterNumbering','safArchiveSeq',
                   'helion_live_draft_v1','helionSRBData'];
       var count = 0;
@@ -9042,7 +9043,7 @@ function importJSON(event) {
       if(data._version || data._app || data.safRiskDB || data.safOccurrences || data.safChangeStudies) {
         const allKeys = ['safRiskDB','safChangeStudies','safSPITargets','safFlightHours','safOccurrences',
                          'safLessons','safSRBMeetings','safAudits','safSAR','safALoS','safCAMOSignals','lastModified',
-                         'ejsPublicKey','ejsServiceId','ejsTemplateId',
+                         'ejsPublicKey','safERPContent','ejsServiceId','ejsTemplateId',
                          'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921','safArchivedRisks','safRegisterNumbering','safArchiveSeq',
                          'helion_live_draft_v1','helionSRBData'];
         allKeys.forEach(function(k){ if(data[k]!=null){ localStorage.setItem(k,data[k]); imported.push(k); } });
@@ -11519,50 +11520,65 @@ function occGetWhyCount(){
   while(document.getElementById('occ-fw-why-'+count))count++;
   return Math.max(count,5);
 }
+// ── 5 Whys — même forme que le CMS : « Pourquoi n » (question) puis « Réponse n », ouverture progressive ──
+// Données inchangées : five_whys.whys[i] = question, five_whys.becauses[i] = réponse.
+// Facteurs contributifs : five_whys.cf_occurred / cf_detection / cf_extent / cf_extent_note.
+var OCC_FW_L={why:'Why',ans:'Answer',lab:function(k,n){return (k==='why'?'Why ':'Answer ')+n;},phw:["e.g. Why was the checklist item not completed before departure?", "e.g. Why was the checklist not accessible to the crew?", "e.g. Why does the procedure not define its location?", "e.g. Why was the procedure never updated after the OMM revision?", "e.g. Why does no review cycle exist for procedure updates?"],pha:["e.g. Because the checklist was not accessible to the crew at that stage", "e.g. Because the document management procedure does not define its location", "e.g. Because the procedure was never updated after the latest OMM revision", "e.g. Because no review cycle exists to keep procedures aligned with OMM revisions", "e.g. Because responsibility for triggering the review was never assigned"]};
+function occFwEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function occFwPairHTML(i){
+  var pw=OCC_FW_L.phw[i]||'', pa=OCC_FW_L.pha[i]||'';
+  return '<div class="form-field occ-fw-pair" id="occ-fw-why-wrap-'+i+'" style="margin:0 0 8px;'+(i===0?'':'display:none;')+'"><label class="field-label">'+OCC_FW_L.lab('why',i+1)+'</label><textarea id="occ-fw-why-'+i+'" rows="2" oninput="occFwCascade()" placeholder="'+occFwEsc(pw)+'"></textarea></div>'
+    +'<div class="form-field occ-fw-pair" id="occ-fw-ans-wrap-'+i+'" style="margin:0 0 8px;display:none;"><label class="field-label">'+OCC_FW_L.lab('ans',i+1)+'</label><textarea id="occ-fw-because-'+i+'" rows="2" oninput="occFwCascade()" placeholder="'+occFwEsc(pa)+'"></textarea></div>';
+}
+function occFwChainHTML(n){var h='';for(var i=0;i<(n||5);i++)h+=occFwPairHTML(i);return h;}
+function occFwCascade(){
+  var v=function(id){var e=document.getElementById(id);return e?String(e.value||'').trim():'';};
+  var show=function(id,c){var e=document.getElementById(id);if(e)e.style.display=c?'':'none';};
+  var n=0;while(document.getElementById('occ-fw-why-'+n))n++;
+  for(var i=0;i<n;i++){
+    var w=v('occ-fw-why-'+i), a=v('occ-fw-because-'+i), prevA=i===0||!!v('occ-fw-because-'+(i-1));
+    var wr=document.getElementById('occ-fw-why-wrap-'+i);
+    show('occ-fw-why-wrap-'+i, i===0||(i<5&&prevA)||!!(wr&&wr.dataset.added)||!!w||!!a);
+    show('occ-fw-ans-wrap-'+i, !!w||!!a);
+  }
+  show('occ-fw-remove-last', n>5);
+  show('occ-fw-rootcause-wrap', !!v('occ-fw-because-0')||!!v('occ-fw-root-cause'));
+}
+function occFwExtentLabel(x){return x==='systemic'?'Systemic':(x==='isolated'?'Isolated':'To be determined');}
+function occFwHasCf(fw){fw=fw||{};return !!(fw.cf_occurred||fw.cf_detection||fw.cf_extent||fw.cf_extent_note);}
+// Lignes de tableau « Why n / Answer n » pour les impressions
+function occFwRowsHTML(fw){
+  fw=fw||{};var w=fw.whys||[],b=fw.becauses||[],h='';
+  for(var i=0;i<Math.max(w.length,b.length);i++){
+    if(!w[i]&&!b[i])continue;
+    h+='<tr><td style="padding:7px 12px 2px;font-weight:800;color:#C98000;white-space:nowrap;vertical-align:top;">Why '+(i+1)+'</td><td style="padding:7px 12px 2px;border-left:3px solid #C98000;">'+occFwEsc(w[i]||'—')+'</td></tr>'
+      +'<tr><td style="padding:2px 12px 8px;font-weight:700;font-size:10px;color:#8896a0;white-space:nowrap;vertical-align:top;">Answer '+(i+1)+'</td><td style="padding:2px 12px 8px;border-left:3px solid #e3b341;">'+occFwEsc(b[i]||'—')+'</td></tr>';
+  }
+  return h;
+}
+function occFwCfPrintHTML(fw){
+  fw=fw||{};if(!occFwHasCf(fw))return '';
+  return '<div style="margin:10px 0;padding:10px 14px;border-left:4px solid #4A9FE0;background:#f2f7fc;border-radius:0 5px 5px 0;">'
+    +'<div style="font-size:10px;font-weight:700;color:#2a6fb0;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Contributing factors</div>'
+    +'<div style="margin:4px 0;"><b>1 — Why did it happen?</b><br>'+occFwEsc(fw.cf_occurred||'—')+'</div>'
+    +'<div style="margin:4px 0;"><b>2 — Why was it not detected?</b><br>'+occFwEsc(fw.cf_detection||'—')+'</div>'
+    +'<div style="margin:4px 0;"><b>3 — Isolated or systemic case?</b> '+occFwExtentLabel(fw.cf_extent)+(fw.cf_extent_note?'<br>'+occFwEsc(fw.cf_extent_note):'')+'</div></div>';
+}
 function occAddWhyRow(){
-  var chain=document.getElementById('occ-fw-chain');
-  if(!chain)return;
-  // Count existing WHY rows
+  var chain=document.getElementById('occ-fw-chain'); if(!chain)return;
   var i=0;while(document.getElementById('occ-fw-why-'+i))i++;
-  var lc='#e3b341';
-  // Arrow before new row
-  var arr=document.createElement('div');arr.className='occ-fw-arrow';arr.textContent='↓';chain.appendChild(arr);
-  // WHY row
-  var whyRow=document.createElement('div');whyRow.className='occ-fw-row';whyRow.id='occ-fw-row-'+i;
-  var whyLabel=document.createElement('div');
-  whyLabel.innerHTML='<div class="occ-fw-label">WHY #'+(i+1)+'</div><div class="occ-fw-prompt">Why?</div>';
-  var whyTA=document.createElement('textarea');whyTA.id='occ-fw-why-'+i;whyTA.rows=2;whyTA.placeholder='Answer '+(i+1)+'…';
-  var delBtn=document.createElement('button');delBtn.type='button';delBtn.textContent='✕ Remove';
-  delBtn.title='Remove this WHY';
-  delBtn.style.cssText='display:block;margin-top:6px;padding:2px 8px;background:rgba(255,60,60,.15);border:1px solid rgba(255,80,80,.3);border-radius:4px;color:#e70000;font-family:var(--font-mono);font-size:10px;cursor:pointer;white-space:nowrap;';
-  delBtn.addEventListener('click',function(){
-    // Remove: the BECAUSE row, the arrow before, and this WHY row
-    var prev=whyRow.previousElementSibling;
-    var becRow=whyRow.nextElementSibling;
-    if(prev&&prev.classList.contains('occ-fw-arrow'))prev.remove();
-    if(becRow)becRow.remove();
-    whyRow.remove();
-    // Renumber all remaining WHY rows
-    var idx=0;
-    chain.querySelectorAll('.occ-fw-row').forEach(function(r){
-      var ta=r.querySelector('textarea[id^="occ-fw-why-"]');
-      if(ta){ta.id='occ-fw-why-'+idx;r.id='occ-fw-row-'+idx;var lbl=r.querySelector('.occ-fw-label');if(lbl)lbl.textContent='WHY #'+(idx+1);idx++;}
-      var bt=r.querySelector('textarea[id^="occ-fw-because-"]');
-      if(bt){bt.id='occ-fw-because-'+(idx-1);}
-    });
-  });
-  // Keep same 2-col grid as .occ-fw-row — put delete button inside the label cell
-  whyLabel.appendChild(delBtn);
-  // No style override needed — .occ-fw-row CSS applies naturally
-  whyRow.appendChild(whyLabel);whyRow.appendChild(whyTA);
-  chain.appendChild(whyRow);
-  // BECAUSE row
-  var becRow=document.createElement('div');becRow.className='occ-fw-row';becRow.style.cssText='margin-top:4px;opacity:.85;';
-  var becLabel=document.createElement('div');becLabel.innerHTML='<div class="occ-fw-label" style="font-size:9px;color:var(--grey-400);letter-spacing:.08em;">BECAUSE</div>';
-  var becTA=document.createElement('textarea');becTA.id='occ-fw-because-'+i;becTA.rows=2;becTA.placeholder='Because…';becTA.style.cssText='font-style:italic;border-left-color:rgba(15,30,46,0.3);background:rgba(15,30,46,0.022);';
-  becRow.appendChild(becLabel);becRow.appendChild(becTA);
-  chain.appendChild(becRow);
-  whyTA.focus();
+  chain.insertAdjacentHTML('beforeend',occFwPairHTML(i));
+  var w=document.getElementById('occ-fw-why-wrap-'+i); if(w)w.dataset.added='1';
+  occFwCascade();
+  if(arguments.length===0){var ta=document.getElementById('occ-fw-why-'+i); if(ta){try{ta.focus();}catch(e){}}}
+}
+function occFwRemoveLast(){
+  var n=0;while(document.getElementById('occ-fw-why-'+n))n++;
+  if(n<=5)return;
+  var i=n-1, w=document.getElementById('occ-fw-why-wrap-'+i), a=document.getElementById('occ-fw-ans-wrap-'+i);
+  var hasData=((document.getElementById('occ-fw-why-'+i)||{}).value||'').trim()||((document.getElementById('occ-fw-because-'+i)||{}).value||'').trim();
+  if(hasData&&!confirm('Remove Why '+(i+1)+' and its answer?'))return;
+  if(w)w.remove(); if(a)a.remove(); occFwCascade();
 }
 function occGetFiveWhys(){
   var n=occGetWhyCount();
@@ -11583,11 +11599,14 @@ function occGetFiveWhys(){
   var conclusion=(document.getElementById('occ-fw-conclusion')?.value||'').trim();
   var riskLink=(document.getElementById('occ-fw-risk-link')?.value||document.getElementById('fw-risk-link')?.value||'').trim();
   var dbAction=(document.getElementById('occ-fw-db-action')?.value||document.getElementById('fw-db-action')?.value||'').trim();
-  if(!whys.some(Boolean)&&!becauses.some(Boolean)&&!root&&!actions.length&&!notes&&!conclusion) return null;
-  return {whys:whys,becauses:becauses,root_cause:root,corrective_actions:actions,notes:notes,conclusion:conclusion,risk_link:riskLink,db_action:dbAction,saved_at:new Date().toISOString()};
+  var cfO=(document.getElementById('occ-fw-cf-occurred')?.value||'').trim(), cfD=(document.getElementById('occ-fw-cf-detection')?.value||'').trim(), cfE=document.getElementById('occ-fw-cf-extent')?.value||'', cfN=(document.getElementById('occ-fw-cf-extent-note')?.value||'').trim();
+  if(!whys.some(Boolean)&&!becauses.some(Boolean)&&!root&&!actions.length&&!notes&&!conclusion)
+    if(!cfO&&!cfD&&!cfE&&!cfN) return null;
+  return {whys:whys,becauses:becauses,root_cause:root,corrective_actions:actions,notes:notes,conclusion:conclusion,risk_link:riskLink,db_action:dbAction,cf_occurred:cfO,cf_detection:cfD,cf_extent:cfE,cf_extent_note:cfN,saved_at:new Date().toISOString()};
 }
 function occRestoreFiveWhys(fw){
   fw=fw||{}; var whys=fw.whys||['','','','',''];var becauses=fw.becauses||['','','','',''];
+  (function(){var keep=Math.max(5,(fw.whys||[]).length,(fw.becauses||[]).length);var k=keep;while(document.getElementById('occ-fw-why-wrap-'+k)){var w=document.getElementById('occ-fw-why-wrap-'+k),an=document.getElementById('occ-fw-ans-wrap-'+k);if(w)w.remove();if(an)an.remove();k++;}})();
   // Ensure at least 5 entries
   while(whys.length<5)whys.push('');
   while(becauses.length<5)becauses.push('');
@@ -11598,11 +11617,13 @@ function occRestoreFiveWhys(fw){
   });
   // Add extra WHY rows if data has more than 5
   for(var i=5;i<whys.length;i++){
-    if(!document.getElementById('occ-fw-why-'+i)) occAddWhyRow();
+    if(!document.getElementById('occ-fw-why-'+i)) occAddWhyRow(true);
     var el=document.getElementById('occ-fw-why-'+i); if(el)el.value=whys[i]||'';
     var bel=document.getElementById('occ-fw-because-'+i); if(bel)bel.value=becauses[i]||'';
   }
   var rc=document.getElementById('occ-fw-root-cause'); if(rc)rc.value=fw.root_cause||'';
+  [['occ-fw-cf-occurred','cf_occurred'],['occ-fw-cf-detection','cf_detection'],['occ-fw-cf-extent','cf_extent'],['occ-fw-cf-extent-note','cf_extent_note']].forEach(function(p){var e=document.getElementById(p[0]);if(e)e.value=fw[p[1]]||'';});
+  occFwCascade();
   var rcm=document.getElementById('fw-root-cause'); if(rcm)rcm.value=fw.root_cause||'';
   var nt=document.getElementById('occ-fw-notes'); if(nt)nt.value=fw.notes||'';
   var cl=document.getElementById('occ-fw-conclusion'); if(cl)cl.value=fw.conclusion||'';
@@ -12412,11 +12433,23 @@ function showOccurrenceForm(editId){
       <div class="occ-jc-head"><div><div class="occ-fw-title">5 Whys — Root Cause Analysis</div><div class="occ-fw-note">Method integrated into occurrence creation to identify root causes and associated actions.</div></div><button type="button" class="occ-panel-toggle" onclick="occTogglePanel('occ-fw-body',this)"><span class="occ-panel-chevron">▼</span> Collapse / Expand</button></div>
       <div id="occ-fw-body" class="occ-panel-body">
         <div class="occ-fw-grid">
-          <div class="occ-fw-chain" id="occ-fw-chain">
-            ${(function(){var prompts=['Why did this occurrence happen?','Why did that happen?','Why was that allowed or possible?','Why was the barrier not effective?','What is the underlying root factor?'];return prompts.map(function(prompt,i){return '<div class="occ-fw-row" id="occ-fw-row-'+i+'"><div><div class="occ-fw-label">WHY #'+(i+1)+'</div><div class="occ-fw-prompt">'+prompt+'</div></div><textarea id="occ-fw-why-'+i+'" rows="2" placeholder="Answer '+(i+1)+'…"></textarea></div><div class="occ-fw-row" style="margin-top:4px;opacity:.85;"><div><div class="occ-fw-label" style="font-size:9px;color:var(--grey-400);letter-spacing:.08em;">BECAUSE</div></div><textarea id="occ-fw-because-'+i+'" rows="2" placeholder="Because…" style="font-style:italic;border-left-color:rgba(15,30,46,0.3);background:rgba(15,30,46,0.022);"></textarea></div><div class="occ-fw-arrow">↓</div>';}).join('');})()}
-          </div>
-          <div style="margin-bottom:12px;">
-            <button type="button" onclick="occAddWhyRow()" style="display:inline-flex;align-items:center;gap:5px;padding:5px 14px;background:rgba(232,160,32,.1);border:1px dashed #e3b341;border-radius:5px;color:#946e16;font-family:var(--font-mono);font-size:11px;cursor:pointer;"><span style="font-size:15px;font-weight:700;">+</span> Add WHY</button>
+          <div class="occ-fw-left">
+            <div class="occ-fw-note" style="margin-bottom:10px;">Write "Why 1" (the question), then its answer below. Once answered, "Why 2" opens, and so on — the chain stops whenever you leave a "Why" empty.</div>
+            <div class="occ-fw-chain" id="occ-fw-chain" style="gap:0;">${occFwChainHTML(5)}</div>
+            <div style="margin:2px 0 12px;display:flex;gap:6px;align-items:center;">
+              <button type="button" onclick="occAddWhyRow()" style="display:inline-flex;align-items:center;gap:5px;padding:5px 14px;background:rgba(232,160,32,.1);border:1px dashed #946e16;border-radius:5px;color:#946e16;font-family:var(--font-mono);font-size:11px;cursor:pointer;"><span style="font-size:15px;font-weight:700;">+</span> Add WHY</button>
+              <button type="button" id="occ-fw-remove-last" onclick="occFwRemoveLast()" style="display:none;padding:5px 10px;background:rgba(255,60,60,.12);border:1px solid rgba(255,80,80,.3);border-radius:5px;color:#d05050;font-family:var(--font-mono);font-size:10px;cursor:pointer;">✕ Remove last</button>
+            </div>
+            <div id="occ-fw-cf-block" style="margin-top:14px;padding-top:12px;border-top:1px dashed rgba(232,160,32,.35);">
+              <div class="occ-fw-title" style="margin-bottom:4px;">🧩 Contributing factors</div>
+              <div class="occ-fw-note" style="margin-bottom:10px;">Three questions complementing the 5 Whys: how the event occurred, why it was not detected earlier, and how far it extends.</div>
+              <div class="form-field" style="margin:0 0 8px;"><label class="field-label">1 — Why did it happen?</label><textarea id="occ-fw-cf-occurred" rows="2" placeholder="Factors that led to the event: procedure, training, resources, workload, communication, organisation…"></textarea></div>
+              <div class="form-field" style="margin:0 0 8px;"><label class="field-label">2 — Why was it not detected?</label><textarea id="occ-fw-cf-detection" rows="2" placeholder="Check, supervision, review or barrier that should have detected or stopped the event and did not — and why"></textarea></div>
+              <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start;">
+                <div class="form-field" style="margin:0;"><label class="field-label">3 — Isolated or systemic case?</label><select id="occ-fw-cf-extent" style="width:100%;"><option value="">— To be determined —</option><option value="isolated">Isolated case</option><option value="systemic">Systemic</option></select></div>
+                <div class="form-field" style="margin:0;"><label class="field-label">Justification and extent checked</label><textarea id="occ-fw-cf-extent-note" rows="2" placeholder="What was checked to conclude: other bases, crews, aircraft, periods, records sampled…"></textarea></div>
+              </div>
+            </div>
           </div>
           <div class="occ-fw-side">
             <textarea id="occ-fw-root-cause" style="display:none;" aria-hidden="true" tabindex="-1" oninput="occRefreshEccairsDeadlinePreview()"></textarea>
@@ -12910,9 +12943,9 @@ function openFiveWhys(occId){
       const row=document.createElement('div');row.dataset.fwIdx=i;
       row.style.cssText='display:grid;grid-template-columns:140px 1fr auto;gap:12px;align-items:start;margin-bottom:6px;';
       const label=document.createElement('div');label.style.cssText='padding-top:8px;';
-      const wnum=document.createElement('div');wnum.style.cssText='font-family:var(--font-mono);font-size:14px;font-weight:800;color:'+lc+';';wnum.textContent='WHY #'+(i+1);
+      const wnum=document.createElement('div');wnum.style.cssText='font-family:var(--font-mono);font-size:14px;font-weight:800;color:'+lc+';';wnum.textContent=OCC_FW_L.lab('why',i+1);
       const wprompt=document.createElement('div');wprompt.style.cssText='font-family:var(--font-mono);font-size:9px;color:var(--grey-400);margin-top:3px;line-height:1.4;';
-      wprompt.textContent=FW_PROMPTS[i]||'Why?';
+      wprompt.textContent='';
       label.appendChild(wnum);label.appendChild(wprompt);row.appendChild(label);
       const wta=document.createElement('textarea');wta.id='fw-why-'+i;wta.rows=2;wta.placeholder='Answer '+(i+1)+'…';
       wta.style.cssText='width:100%;background:rgba(15,30,46,0.044);border:1px solid rgba(15,30,46,0.192);border-left:3px solid '+lc+';border-radius:0 6px 6px 0;color:var(--white);padding:8px 10px;font-size:11px;resize:vertical;';
@@ -12953,7 +12986,7 @@ function openFiveWhys(occId){
       const bcrow=document.createElement('div');bcrow.dataset.fwBcIdx=i;
       bcrow.style.cssText='display:grid;grid-template-columns:140px 1fr;gap:12px;align-items:start;margin-bottom:4px;';
       const bclabel=document.createElement('div');bclabel.style.cssText='padding-top:6px;';
-      const bctag=document.createElement('div');bctag.style.cssText='font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--grey-400);letter-spacing:.05em;';bctag.textContent='BECAUSE';
+      const bctag=document.createElement('div');bctag.style.cssText='font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--grey-400);letter-spacing:.05em;';bctag.textContent=OCC_FW_L.lab('ans',i+1);
       bclabel.appendChild(bctag);bcrow.appendChild(bclabel);
       const bcta=document.createElement('textarea');bcta.id='fw-because-'+i;bcta.rows=2;bcta.placeholder='Because…';
       bcta.style.cssText='width:100%;background:rgba(15,30,46,0.022);border:1px solid rgba(15,30,46,0.128);border-left:3px solid rgba(15,30,46,0.24);border-radius:0 6px 6px 0;color:var(--grey-200);padding:8px 10px;font-size:11px;resize:vertical;font-style:italic;';
@@ -12969,7 +13002,8 @@ function openFiveWhys(occId){
       const n=chain.querySelectorAll('[data-fw-idx]').length;
       fwAddArrow();fwBuildRow(n,'','');
     });
-    chain.appendChild(addBtn);
+    addBtn.style.display='none';chain.appendChild(addBtn);
+    if(occFwHasCf(saved))chain.insertAdjacentHTML('beforeend','<div style="margin-top:14px;padding:12px 14px;border:1px solid rgba(74,159,224,.35);border-radius:8px;"><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:1px;color:#4A9FE0;margin-bottom:8px;">🧩 '+occFwEsc("Contributing factors")+'</div>'+[["1 \u2014 Why did it happen?",saved.cf_occurred],["2 \u2014 Why was it not detected?",saved.cf_detection],["3 \u2014 Isolated or systemic case?",occFwExtentLabel(saved.cf_extent)+(saved.cf_extent_note?' — '+saved.cf_extent_note:'')]].map(function(q){return '<div style="margin-bottom:8px;font-size:11px;"><div style="font-family:var(--font-mono);font-size:10px;color:var(--grey-400);margin-bottom:3px;">'+occFwEsc(q[0])+'</div><div>'+occFwEsc(q[1]||'—')+'</div></div>';}).join('')+'</div>');
   }
   const rc=document.getElementById('fw-root-cause');if(rc)rc.value=saved.root_cause||'';
   const rci=document.getElementById('occ-fw-root-cause');if(rci&&saved.root_cause)rci.value=saved.root_cause;
@@ -13121,7 +13155,7 @@ function saveFiveWhys(){
   const occs=getOccurrences();
   const occ=occs.find(o=>o.id===_fwCurrentOccId);
   if(!occ)return;
-  occ.five_whys={whys,becauses,root_cause,corrective_actions,risk_link,db_action,saved_at:new Date().toISOString()};
+  occ.five_whys=Object.assign({},occ.five_whys||{},{whys,becauses,root_cause,corrective_actions,risk_link,db_action,saved_at:new Date().toISOString()});
   saveOccurrences(occs);
   if(risk_link){
     const r=DB.find(x=>x.id===risk_link);
@@ -13151,7 +13185,7 @@ function saveFiveWhys(){
     showToast('✓ 5 Whys saved for '+_fwId,'success');
   }
 }
-function printFiveWhys(){if(!_fwCurrentOccId)return;const occ=getOccurrences().find(o=>o.id===_fwCurrentOccId);if(!occ)return;const fw=occ.five_whys||{};const whys=fw.whys||[];const becauses=fw.becauses||[];const whyRows=whys.map((w,i)=>{if(!w)return '';var bc=becauses[i]?'<tr><td style="padding:2px 12px 10px 12px;font-weight:700;font-size:10px;color:#667580;font-family:monospace;vertical-align:top;white-space:nowrap;">BECAUSE</td><td style="padding:2px 12px 10px 12px;border-left:3px solid #e3b341;font-style:italic;color:#475569;">'+becauses[i]+'</td></tr>':'';return '<tr><td style="padding:8px 12px 2px 12px;font-weight:800;color:#a06600;font-size:13px;vertical-align:top;white-space:nowrap;">WHY #'+(i+1)+'</td><td style="padding:8px 12px 2px 12px;border-left:3px solid #C98000;">'+w+'</td></tr>'+bc;}).join('');const corrHTML=(fw.corrective_actions||[]).length?'<ul style="margin:6px 0 0;padding-left:18px;">'+(fw.corrective_actions.map(a=>'<li>'+occFWActionLabel(a)+'</li>').join(''))+'</ul>':'<em>None defined</em>';const w=window.open('','_blank');w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>5 Whys — '+occ.id+'</title><style>body{font-family:"Segoe UI",Arial,sans-serif;max-width:820px;margin:28px auto;color:#1a2535;font-size:12px;}h1{font-size:18px;font-weight:700;color:#a06600;margin-bottom:4px;}.meta{font-size:10px;color:#677587;font-family:monospace;margin-bottom:18px;}.problem{background:#fff3e0;border-left:4px solid #C98000;padding:12px 16px;border-radius:0 6px 6px 0;margin-bottom:20px;font-weight:600;font-size:13px;}table{width:100%;border-collapse:collapse;margin-bottom:20px;}td{padding:8px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;}.box{padding:12px 16px;border-radius:0 6px 6px 0;margin-bottom:20px;}.label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}.footer{margin-top:28px;padding-top:10px;border-top:1px solid #e0e8f0;font-size:9px;color:#667580;font-family:monospace;display:flex;justify-content:space-between;}@media print{*{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}</style></head><body><h1>&#127919; 5 WHYS — Root Cause Analysis</h1><div class="meta">'+occ.id+' · '+occ.date+' · '+(occ.severity||'').toUpperCase()+' · Helion Helicopters · H215</div><div class="problem"><strong>Problem:</strong> '+(occ.description||'—')+'</div><table>'+whyRows+'</table>'+fwPrintRootCausesHTML(fw)+(fw.risk_link?'<p><strong>Linked risk:</strong> '+fw.risk_link+'</p>':'')+'<div class="footer"><span>Helion Helicopters — SMS 5 Whys — '+occ.id+'</span><span>Generated '+new Date().toLocaleDateString('en-GB')+'</span></div><script>window.onload=function(){window.print();}<\/script></body></html>');w.document.close();}
+function printFiveWhys(){if(!_fwCurrentOccId)return;const occ=getOccurrences().find(o=>o.id===_fwCurrentOccId);if(!occ)return;const fw=occ.five_whys||{};const whys=fw.whys||[];const becauses=fw.becauses||[];const whyRows=whys.map((w,i)=>{if(!w)return '';var bc=becauses[i]?'<tr><td style="padding:2px 12px 10px 12px;font-weight:700;font-size:10px;color:#667580;font-family:monospace;vertical-align:top;white-space:nowrap;">BECAUSE</td><td style="padding:2px 12px 10px 12px;border-left:3px solid #e3b341;font-style:italic;color:#475569;">'+becauses[i]+'</td></tr>':'';return '<tr><td style="padding:8px 12px 2px 12px;font-weight:800;color:#a06600;font-size:13px;vertical-align:top;white-space:nowrap;">WHY #'+(i+1)+'</td><td style="padding:8px 12px 2px 12px;border-left:3px solid #C98000;">'+w+'</td></tr>'+bc;}).join('');const corrHTML=(fw.corrective_actions||[]).length?'<ul style="margin:6px 0 0;padding-left:18px;">'+(fw.corrective_actions.map(a=>'<li>'+occFWActionLabel(a)+'</li>').join(''))+'</ul>':'<em>None defined</em>';const w=window.open('','_blank');w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>5 Whys — '+occ.id+'</title><style>body{font-family:"Segoe UI",Arial,sans-serif;max-width:820px;margin:28px auto;color:#1a2535;font-size:12px;}h1{font-size:18px;font-weight:700;color:#a06600;margin-bottom:4px;}.meta{font-size:10px;color:#677587;font-family:monospace;margin-bottom:18px;}.problem{background:#fff3e0;border-left:4px solid #C98000;padding:12px 16px;border-radius:0 6px 6px 0;margin-bottom:20px;font-weight:600;font-size:13px;}table{width:100%;border-collapse:collapse;margin-bottom:20px;}td{padding:8px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;}.box{padding:12px 16px;border-radius:0 6px 6px 0;margin-bottom:20px;}.label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}.footer{margin-top:28px;padding-top:10px;border-top:1px solid #e0e8f0;font-size:9px;color:#667580;font-family:monospace;display:flex;justify-content:space-between;}@media print{*{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}</style></head><body><h1>&#127919; 5 WHYS — Root Cause Analysis</h1><div class="meta">'+occ.id+' · '+occ.date+' · '+(occ.severity||'').toUpperCase()+' · Helion Helicopters · H215</div><div class="problem"><strong>Problem:</strong> '+(occ.description||'—')+'</div><table>'+occFwRowsHTML(fw)+'</table>'+occFwCfPrintHTML(fw)+fwPrintRootCausesHTML(fw)+(fw.risk_link?'<p><strong>Linked risk:</strong> '+fw.risk_link+'</p>':'')+'<div class="footer"><span>Helion Helicopters — SMS 5 Whys — '+occ.id+'</span><span>Generated '+new Date().toLocaleDateString('en-GB')+'</span></div><script>window.onload=function(){window.print();}<\/script></body></html>');w.document.close();}
 
 function llClearImage(){}
 function saveLesson(){}
@@ -14822,7 +14856,8 @@ function _buildSafNotes(occ, uncoded){
   L.push('Notes: '+(jc.notes||''));
   L.push('');
   L.push('=== 5 Whys Root Cause Analysis ===');
-  whys.forEach(function(w,i){ if(w) L.push('Why '+(i+1)+': '+w); });
+  whys.forEach(function(w,i){ var b=(fw.becauses||[])[i]||''; if(w||b){ L.push('Why '+(i+1)+': '+(w||'')); L.push('Answer '+(i+1)+': '+b); } });
+  if(occFwHasCf(fw)){ L.push('Contributing factors — 1 Why did it happen: '+(fw.cf_occurred||'')); L.push('Contributing factors — 2 Why was it not detected: '+(fw.cf_detection||'')); L.push('Contributing factors — 3 Isolated or systemic: '+occFwExtentLabel(fw.cf_extent)+(fw.cf_extent_note?' — '+fw.cf_extent_note:'')); }
   var _rcs=(typeof fwRootCauses==='function')?fwRootCauses(fw):[];
   if(!_rcs.length) L.push('Root Causes: ');
   _rcs.forEach(function(rc,i){
@@ -14947,7 +14982,9 @@ function exportOccurrenceCSV(id){
     ['ICAO - Notes',(occ.icao_risk||{}).notes||''],
     ['5W - WHY 1',(fw.whys||[])[0]||''],['5W - WHY 2',(fw.whys||[])[1]||''],
     ['5W - WHY 3',(fw.whys||[])[2]||''],['5W - WHY 4',(fw.whys||[])[3]||''],
-    ['5W - WHY 5',(fw.whys||[])[4]||''],['Root Causes',fw.root_cause||''],
+    ['5W - WHY 5',(fw.whys||[])[4]||''],
+    ['5W - ANSWER 1',(fw.becauses||[])[0]||''],['5W - ANSWER 2',(fw.becauses||[])[1]||''],['5W - ANSWER 3',(fw.becauses||[])[2]||''],['5W - ANSWER 4',(fw.becauses||[])[3]||''],['5W - ANSWER 5',(fw.becauses||[])[4]||''],
+    ['CF1 - Why did it happen',fw.cf_occurred||''],['CF2 - Why not detected',fw.cf_detection||''],['CF3 - Isolated / systemic',fw.cf_extent?occFwExtentLabel(fw.cf_extent):''],['CF3 - Extent checked',fw.cf_extent_note||''],['Root Causes',fw.root_cause||''],
     ['Corrective Actions',(fw.corrective_actions||[]).map(function(a){var l=occFWActionLabel(a);return l?((a&&a.root_cause_index)?'[RC#'+a.root_cause_index+'] ':'')+l:'';}).filter(Boolean).join(' | ')],
     ['5W Notes',fw.notes||''],
     ['Created At',occ.created_at||occ.date],['Updated At',occ.updated_at||occ.created_at||occ.date]
@@ -15059,7 +15096,7 @@ function exportOccurrencePDF(id){
     +'<div class="box">'+(function(){var r=occ.icao_risk||{};var inf=r.index?occIcaoInfo(r.index):null;if(!inf){return occ.arms&&occ.arms.arc_class?'<p style="color:#667580;font-size:11px;">No ICAO assessment recorded. Legacy ARMS classification:</p>'+armsHTML:'<p style="color:#667580;font-size:11px;">No ICAO risk assessment recorded.</p>';}return '<div style="display:flex;align-items:center;gap:14px;"><div style="font-size:22px;font-weight:900;border-radius:6px;padding:6px 16px;background:'+inf.color+';color:'+occIcaoFg(inf.color)+';">'+r.index+'</div><div><div style="font-size:9px;color:#667580;text-transform:uppercase;letter-spacing:.06em;">ICAO risk index (Doc 9859 5×5 matrix)</div><div style="font-size:13px;font-weight:700;">'+inf.label+'</div><div style="font-size:11px;color:#475569;">Probability '+r.probability+' — '+OCC_ICAO_PROB[r.probability]+' · Severity '+r.severity+' — '+OCC_ICAO_SEV[r.severity]+'</div></div></div>'+(r.notes?'<div style="margin-top:8px;padding:7px 10px;background:#f8fbfd;border-radius:4px;font-size:11px;color:#475569;"><strong>Notes:</strong> '+r.notes+'</div>':'');})()+'</div>'
     +'<h2>8 · 5 Whys — Root Cause Analysis</h2>'
     +'<div class="box">'
-    +(whyRows?'<table style="margin-bottom:10px;">'+whyRows+'</table>':'<p style="color:#667580;font-size:11px;">No 5 Whys analysis recorded.</p>')
+    +(occFwRowsHTML(fw)?'<table style="margin-bottom:10px;">'+occFwRowsHTML(fw)+'</table>':'<p style="color:#667580;font-size:11px;">No 5 Whys analysis recorded.</p>')+occFwCfPrintHTML(fw)
     +((typeof fwRootCauses==='function'&&fwRootCauses(fw).length)?fwRootCauses(fw).map(function(rc,i){var al=(rc.corrective_actions||[]).map(function(a){return '<li>'+occFWActionLabel(a)+'</li>';}).join('');return '<div class="root-box" style="page-break-inside:avoid;"><div style="font-size:10px;font-weight:700;color:#a06600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Root Cause #'+(i+1)+'</div><p style="margin:0;line-height:1.5;">'+String(rc.text||'—').replace(/\n/g,'<br>')+'</p><div style="font-size:10px;font-weight:700;color:#1a7a4a;text-transform:uppercase;letter-spacing:.06em;margin:8px 0 3px;">Corrective / Preventive Actions</div>'+(al?'<ul style="margin:4px 0 0;padding-left:18px;">'+al+'</ul>':'<em style="color:#667580;">None defined</em>')+'</div>';}).join(''):'<div class="corr-box"><div style="font-size:10px;font-weight:700;color:#1a7a4a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Root Causes</div><em style="color:#667580;">Not yet identified</em></div>')
     +'</div>'
     +'<h2>9 · Investigations &amp; Comments</h2>'
@@ -16039,7 +16076,7 @@ setTimeout(function(){
   // Liste des clés gérées (identique à safExportAllData / importJSON)
   var KEYS = ['safRiskDB','safRiskDBVersion','safEventCatalog','safEventCatalogVersion','safChangeStudies','safSPITargets','safFlightHours','safOccurrences',
               'safLessons','safSRBMeetings','safAudits','safSAR','safALoS','safCAMOSignals','lastModified',
-              'ejsPublicKey','ejsServiceId','ejsTemplateId',
+              'ejsPublicKey','safERPContent','ejsServiceId','ejsTemplateId',
               'safSafetyPolicy','safEmployeeCount','safFODInspections','safFODTraining','safHazardMeetings','safIndepChecks','safMaintReports','safTechComms','safWorkOrders','safOccActionEmailMap','safRemovedRiskIds','saf_removed_mig_20260921','safArchivedRisks','safRegisterNumbering','safArchiveSeq',
               'helion_live_draft_v1','helionSRBData'];
 
@@ -16280,7 +16317,7 @@ setTimeout(function(){
 
   // Relance les rendus disponibles (silencieux si une fonction manque)
   function refreshAll(){
-    var fns = ['updateCounts','renderDashboard','renderTable','renderExportView',
+    var fns = ['updateCounts','erpContentApply','renderDashboard','renderTable','renderExportView',
                'renderOccurrenceList','renderECCAIRSTracker','renderLessonsList','renderSRBList','renderAuditTrail',
                'renderSPIView','renderSafetyIndicators','renderLeadingIndicators','renderTopRisks',
                'renderSARList','renderALoSView','renderSavedCSList','updateLastModified'];
@@ -16482,7 +16519,9 @@ setTimeout(function(){
       'saveOccurrence','saveAndExportE5X','saveLesson','saveSAR','saveALoS',
       'saveCAMOSignal','saveChangeStudy','saveSRBMeeting','saveSARRecord','saveALoSRecord',
       'saveEditModal','importJSON','saveAudit','ejsSaveConfig','csSaveNewRisk',
-      'saveSafetyPolicy','srbImportJSON','srbResetChecklist','srbClearSig','addFindingRow','addActionRow','addDecisionRow','addSRBGuestRow'
+      'saveSafetyPolicy','srbImportJSON','srbResetChecklist','srbClearSig','addFindingRow','addActionRow','addDecisionRow','addSRBGuestRow',
+      // Ajout 15.10.2026 : édition complète de l'ERP et des exercices ERP.
+      'erpEdToggle','erpEdSave','erpEdRestoreVersion','erpEdResetOriginal','erpSaveExercise','erpExEdit','erpExDelete'
     ];
     WRITE_FN_NAMES.forEach(function(name){
       var orig = window[name];
@@ -20185,5 +20224,501 @@ function isxMocReportHTML(cs){
 }
 
 </script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     ERP — ÉDITION COMPLÈTE DU CONTENU (15.10.2026)
+     Rend modifiable l'intégralité de l'Emergency Response Plan : en-tête,
+     contacts, numéros, checklists, organigramme de crise, rôles, textes,
+     retour à la normale — et, côté SAF, les exercices déjà enregistrés.
+     · Mode édition réservé à admin/editor (fonctions ajoutées à
+       guardWriteFunctions ; RLS inchangée côté serveur).
+     · Texte : édition directe dans la page (collage forcé en texte brut).
+     · Structure : barre flottante sur l'élément survolé — monter, descendre,
+       dupliquer, supprimer, remonter au bloc parent ; ↶ annule l'opération.
+     · Liens tel: recalculés depuis le numéro affiché à l'enregistrement.
+     · Stockage : clé safERPContent (synchronisée avec sms_data), 5 versions
+       précédentes conservées localement (safERPContentHistory, non synchro).
+     · Le contenu enregistré est assaini à l'application (script, iframe,
+       javascript:, gestionnaires on* hors fonctions ERP).
+═══════════════════════════════════════════════════════════════════════ -->
+<style id="erp-ed-style">
+  #view-erp.erp-ed-on [data-erp-host]{ outline:1px dashed rgba(227,179,65,.45); outline-offset:6px; border-radius:4px; }
+  #view-erp.erp-ed-on [data-erp-host]:focus-within{ outline-color:rgba(227,179,65,.8); }
+  #view-erp.erp-ed-on a{ cursor:text; }
+  #erp-ed-bar{ display:none; position:sticky; top:0; z-index:60; margin:0 28px; padding:8px 12px;
+    background:rgba(60,45,10,.96); border:1px solid rgba(227,179,65,.55); border-top:none; border-radius:0 0 8px 8px;
+    font-family:var(--font-mono); font-size:10px; color:#f0d58a; align-items:center; gap:8px; flex-wrap:wrap; }
+  #view-erp.erp-ed-on #erp-ed-bar{ display:flex; }
+  #erp-ed-bar .erp-ed-help{ flex:1 1 320px; line-height:1.5; color:#e8d7a6; }
+  #erp-ed-bar button, #erp-ed-tools button, .erp-ed-mini{ font-family:var(--font-mono); font-size:10px; cursor:pointer;
+    border-radius:5px; padding:4px 9px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.06); color:#fff; }
+  #erp-ed-bar button:hover, #erp-ed-tools button:hover{ background:rgba(255,255,255,.14); }
+  #erp-ed-bar .erp-ed-ok{ background:#2e7d32; border-color:#4caf50; font-weight:700; }
+  #erp-ed-bar .erp-ed-ko{ background:rgba(192,0,0,.35); border-color:rgba(255,90,90,.5); }
+  #erp-ed-hl{ position:fixed; z-index:9990; pointer-events:none; border:2px solid #e3b341; border-radius:4px;
+    background:rgba(227,179,65,.06); display:none; }
+  #erp-ed-tools{ position:fixed; z-index:9991; display:none; gap:3px; padding:3px; background:#2a2108;
+    border:1px solid #e3b341; border-radius:6px; box-shadow:0 4px 14px rgba(0,0,0,.45); }
+  #erp-ed-tools button{ padding:2px 7px; font-size:11px; line-height:1.4; }
+  #erp-ed-tools .erp-ed-tag{ font-family:var(--font-mono); font-size:9px; color:#e3b341; padding:3px 6px 0 4px; }
+  #erp-ed-meta{ font-family:var(--font-mono); font-size:9px; color:var(--grey-400); align-self:center; }
+  #erp-ed-versions{ position:fixed; inset:0; z-index:9995; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; }
+  #erp-ed-versions .erp-ed-box{ background:var(--navy-mid,#13233a); border:1px solid rgba(227,179,65,.5); border-radius:10px;
+    padding:18px; width:min(560px,92vw); max-height:80vh; overflow:auto; color:var(--grey-200,#ccc); font-size:12px; }
+  #erp-ed-versions .erp-ed-row{ display:flex; justify-content:space-between; align-items:center; gap:10px; padding:8px 10px;
+    border-bottom:1px solid rgba(255,255,255,.07); }
+  @media print{ #erp-ed-bar,#erp-ed-tools,#erp-ed-hl,#erp-ed-btn,#erp-ed-meta{ display:none !important; } }
+</style>
+<script id="erp-ed-runtime">
+(function(){
+  'use strict';
+  var LANG = 'en';
+  function T(fr, en){ return LANG === 'fr' ? fr : en; }
+
+  var KEY = 'safERPContent', HKEY = 'safERPContentHistory', HMAX = 5;
+  var SECS = ['contacts','checklist','crisis','roles','general','return'];
+
+  var view = document.getElementById('view-erp');
+  if(!view) return;
+
+  function headerEl(){ return view.querySelector('.dash-header > div'); }
+  function secEl(s){ return document.getElementById('erp-sec-' + s); }
+  function hosts(){
+    var a = [];
+    var h = headerEl(); if(h) a.push(['header', h]);
+    SECS.forEach(function(s){ var e = secEl(s); if(e) a.push([s, e]); });
+    return a;
+  }
+
+  function role(){ try{ return String(typeof safCurrentRole === 'function' ? safCurrentRole() : '').toLowerCase(); }catch(e){ return ''; } }
+  function canWrite(){ return /^(admin|editor)$/.test(role()); }
+  function who(){ try{ return typeof safCurrentUser === 'function' ? safCurrentUser() : ''; }catch(e){ return ''; } }
+  function toast(m, t){ try{ if(typeof showToast === 'function') showToast(m, t || ''); }catch(e){} }
+  function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function fmt(iso){ try{ var d = new Date(iso); return d.toLocaleDateString('fr-CH') + ' ' + d.toLocaleTimeString('fr-CH',{hour:'2-digit',minute:'2-digit'}); }catch(e){ return iso || ''; } }
+  function readJSON(k, dflt){ try{ var v = localStorage.getItem(k); return v ? JSON.parse(v) : dflt; }catch(e){ return dflt; } }
+
+  /* ── Contenu d'origine du fichier (avant tout contenu enregistré) ── */
+  var ORIG = {};
+  hosts().forEach(function(p){ ORIG[p[0]] = p[1].innerHTML; });
+
+  /* ── Assainissement du HTML enregistré ─────────────────────────────── */
+  var SAFE_HANDLER = /^\s*(erp[A-Za-z]*\(|this\.parentElement[\w.]*\.remove\(\)|window\.print\(\)|event\.)/;
+  function sanitize(html){
+    var t = document.createElement('template');
+    t.innerHTML = String(html || '');
+    t.content.querySelectorAll('script,iframe,object,embed,link,meta,style,base,form').forEach(function(n){ n.remove(); });
+    t.content.querySelectorAll('*').forEach(function(n){
+      Array.prototype.slice.call(n.attributes).forEach(function(a){
+        var nm = a.name.toLowerCase();
+        if(nm.indexOf('on') === 0 && !SAFE_HANDLER.test(a.value)) n.removeAttribute(a.name);
+        else if((nm === 'href' || nm === 'src' || nm === 'xlink:href') && /^\s*(javascript|vbscript|data):/i.test(a.value)) n.removeAttribute(a.name);
+        else if(nm === 'contenteditable') n.removeAttribute(a.name);
+      });
+    });
+    var d = document.createElement('div'); d.appendChild(t.content.cloneNode(true));
+    return d.innerHTML;
+  }
+
+  /* HTML propre d'un hôte, prêt à être stocké. */
+  function cleanHTML(el){
+    var c = el.cloneNode(true);
+    c.querySelectorAll('[contenteditable]').forEach(function(n){ n.removeAttribute('contenteditable'); });
+    var log = c.querySelector('#erp-log-entries'); if(log) log.innerHTML = '';
+    c.querySelectorAll('input[type="checkbox"],input[type="radio"]').forEach(function(i){ i.removeAttribute('checked'); });
+    c.querySelectorAll('a[href^="tel:"]').forEach(function(a){
+      var digits = (a.textContent || '').replace(/[^\d+]/g, '');
+      if(digits.replace(/\D/g,'').length >= 3) a.setAttribute('href', 'tel:' + digits);
+    });
+    return sanitize(c.innerHTML);
+  }
+
+  /* ── Application du contenu enregistré ─────────────────────────────── */
+  var editing = false, appliedStamp = null;
+
+  function applyObj(obj){
+    hosts().forEach(function(p){
+      var html = obj && obj.reset ? ORIG[p[0]]
+               : (obj && (p[0] === 'header' ? obj.header : (obj.sections || {})[p[0]]));
+      if(typeof html === 'string' && html.length) p[1].innerHTML = obj.reset ? html : sanitize(html);
+    });
+  }
+
+  window.erpContentApply = function(force){
+    if(editing) return;
+    var obj = readJSON(KEY, null);
+    if(!obj){ updateMeta(); refreshUI(); return; }
+    var stamp = (obj.saved_at || '') + '|' + (obj.reset ? 'R' : '');
+    if(force || stamp !== appliedStamp){
+      applyObj(obj);
+      appliedStamp = stamp;
+    }
+    updateMeta(); refreshUI();
+  };
+
+  /* ── Interface ─────────────────────────────────────────────────────── */
+  function ensureUI(){
+    var head = view.querySelector('.dash-header');
+    if(head && !document.getElementById('erp-ed-btn')){
+      var printBtn = head.querySelector('button');
+      var grp = document.createElement('div');
+      grp.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;';
+      grp.innerHTML = '<span id="erp-ed-meta"></span>'
+        + '<button id="erp-ed-btn" class="btn btn-ghost" style="font-size:11px;display:none;" onclick="erpEdToggle()">✎ ' + T('Modifier l’ERP','Edit ERP') + '</button>';
+      if(printBtn){ head.insertBefore(grp, printBtn); grp.appendChild(printBtn); }
+      else head.appendChild(grp);
+    }
+    var content = document.getElementById('erp-content');
+    if(content && !document.getElementById('erp-ed-bar')){
+      var bar = document.createElement('div');
+      bar.id = 'erp-ed-bar';
+      bar.innerHTML = '<span class="erp-ed-help">✎ ' + T(
+          'MODE ÉDITION — cliquez dans un texte pour le modifier (tous les onglets). Survolez un élément pour le monter ▲, le descendre ▼, le dupliquer ⧉, le supprimer ✕ ou remonter au bloc parent ⤒. Les liens téléphone suivent le numéro affiché.',
+          'EDIT MODE — click any text to change it (all tabs). Hover an element to move it ▲▼, duplicate ⧉, delete ✕ or select its parent block ⤒. Phone links follow the displayed number.')
+        + '</span>'
+        + '<button onclick="erpEdUndo()" title="' + T('Annuler la dernière opération de structure','Undo last structural change') + '">↶ ' + T('Annuler','Undo') + '</button>'
+        + '<button onclick="erpEdVersions()">🕘 ' + T('Versions','Versions') + '</button>'
+        + '<button class="erp-ed-ko" onclick="erpEdCancel()">✕ ' + T('Abandonner','Discard') + '</button>'
+        + '<button class="erp-ed-ok" onclick="erpEdSave()">✓ ' + T('Enregistrer','Save') + '</button>';
+      content.parentNode.insertBefore(bar, content);
+    }
+    if(!document.getElementById('erp-ed-tools')){
+      var hl = document.createElement('div'); hl.id = 'erp-ed-hl'; document.body.appendChild(hl);
+      var tl = document.createElement('div'); tl.id = 'erp-ed-tools';
+      tl.innerHTML = '<span class="erp-ed-tag" id="erp-ed-tag"></span>'
+        + '<button data-op="up" title="' + T('Monter','Move up') + '">▲</button>'
+        + '<button data-op="down" title="' + T('Descendre','Move down') + '">▼</button>'
+        + '<button data-op="dup" title="' + T('Dupliquer (ajouter un élément identique)','Duplicate (add a similar item)') + '">⧉</button>'
+        + '<button data-op="del" title="' + T('Supprimer','Delete') + '">✕</button>'
+        + '<button data-op="parent" title="' + T('Sélectionner le bloc parent','Select parent block') + '">⤒</button>';
+      tl.addEventListener('mousedown', function(e){ e.preventDefault(); });
+      tl.addEventListener('click', function(e){
+        var b = e.target.closest('button'); if(b) structOp(b.getAttribute('data-op'));
+      });
+      document.body.appendChild(tl);
+    }
+    if(!document.getElementById('erp-ed-versions')){
+      var vm = document.createElement('div'); vm.id = 'erp-ed-versions';
+      vm.addEventListener('click', function(e){ if(e.target === vm) vm.style.display = 'none'; });
+      document.body.appendChild(vm);
+    }
+  }
+
+  function refreshUI(){
+    var b = document.getElementById('erp-ed-btn');
+    if(b) b.style.display = canWrite() ? '' : 'none';
+  }
+  function updateMeta(){
+    var m = document.getElementById('erp-ed-meta'); if(!m) return;
+    var obj = readJSON(KEY, null);
+    if(!obj){ m.textContent = ''; return; }
+    m.textContent = (obj.reset ? T('Original rétabli le ','Original restored ') : T('Modifié le ','Edited ')) + fmt(obj.saved_at)
+      + (obj.saved_by ? T(' par ',' by ') + obj.saved_by : '');
+  }
+
+  /* ── Sélection d'élément et barre flottante ────────────────────────── */
+  var SKIP = {SPAN:1,STRONG:1,B:1,I:1,EM:1,U:1,A:1,INPUT:1,TEXTAREA:1,SELECT:1,OPTION:1,BR:1,TD:1,TH:1,SMALL:1,SUP:1,SUB:1,FONT:1,LABEL:0};
+  var current = null, pinned = false;
+
+  function hostOf(el){ return el && el.closest ? el.closest('[data-erp-host]') : null; }
+  function itemFrom(el){
+    var host = hostOf(el); if(!host) return null;
+    while(el && el !== host){
+      if(el.nodeType === 1 && !SKIP[el.tagName] && el.parentElement){
+        var p = el.parentElement, same = 0;
+        for(var c = p.firstElementChild; c; c = c.nextElementSibling) if(c.tagName === el.tagName) same++;
+        if(same >= 2) return el;
+      }
+      el = el.parentElement;
+    }
+    return null;
+  }
+  function label(el){
+    var t = el.tagName.toLowerCase();
+    var txt = (el.textContent || '').replace(/\s+/g,' ').trim();
+    return t + (txt ? ' · ' + (txt.length > 26 ? txt.slice(0,26) + '…' : txt) : '');
+  }
+  function place(){
+    var hl = document.getElementById('erp-ed-hl'), tl = document.getElementById('erp-ed-tools');
+    if(!hl || !tl) return;
+    if(!editing || !current || !document.body.contains(current)){ hl.style.display = 'none'; tl.style.display = 'none'; return; }
+    var r = current.getBoundingClientRect();
+    if(r.bottom < 0 || r.top > window.innerHeight){ hl.style.display = 'none'; tl.style.display = 'none'; return; }
+    hl.style.display = 'block';
+    hl.style.top = (r.top - 3) + 'px'; hl.style.left = (r.left - 3) + 'px';
+    hl.style.width = (r.width + 6) + 'px'; hl.style.height = (r.height + 6) + 'px';
+    document.getElementById('erp-ed-tag').textContent = label(current);
+    tl.style.display = 'flex';
+    var tw = tl.offsetWidth || 220;
+    tl.style.top = Math.max(4, r.top - 30) + 'px';
+    tl.style.left = Math.max(4, Math.min(window.innerWidth - tw - 4, r.right - tw)) + 'px';
+  }
+  function onOver(e){
+    if(!editing) return;
+    if(e.target.closest && e.target.closest('#erp-ed-tools')) return;
+    if(pinned && current && current.contains(e.target)) return;
+    var it = itemFrom(e.target);
+    if(it){ pinned = false; current = it; place(); }
+  }
+
+  /* ── Pile d'annulation (structure) ─────────────────────────────────── */
+  var undo = [];
+  function rawSnap(){ var o = {}; hosts().forEach(function(p){ o[p[0]] = p[1].innerHTML; }); return o; }
+  function rawRestore(o){ hosts().forEach(function(p){ if(typeof o[p[0]] === 'string') p[1].innerHTML = o[p[0]]; }); }
+  function pushUndo(){ undo.push(rawSnap()); if(undo.length > 40) undo.shift(); }
+
+  window.erpEdUndo = function(){
+    if(!undo.length){ toast(T('Rien à annuler','Nothing to undo')); return; }
+    rawRestore(undo.pop()); current = null; place();
+  };
+
+  function structOp(op){
+    if(!editing || !current) return;
+    var el = current, p = el.parentElement, host = hostOf(el);
+    if(op === 'parent'){
+      if(p && p !== host && hostOf(p)){ current = p; pinned = true; place(); }
+      else toast(T('Déjà au niveau le plus haut','Already at top level'));
+      return;
+    }
+    pushUndo();
+    if(op === 'up'){
+      var prev = el.previousElementSibling;
+      if(prev) p.insertBefore(el, prev); else { undo.pop(); return; }
+    } else if(op === 'down'){
+      var next = el.nextElementSibling;
+      if(next) p.insertBefore(next, el); else { undo.pop(); return; }
+    } else if(op === 'dup'){
+      var c = el.cloneNode(true);
+      if(c.id) c.removeAttribute('id');
+      c.querySelectorAll('[id]').forEach(function(n){ n.removeAttribute('id'); });
+      c.querySelectorAll('input,textarea').forEach(function(i){ if(i.type !== 'checkbox' && i.type !== 'radio') i.value = ''; else i.checked = false; });
+      p.insertBefore(c, el.nextSibling);
+      current = c; pinned = true;
+    } else if(op === 'del'){
+      var nx = el.nextElementSibling || el.previousElementSibling;
+      el.remove();
+      current = (nx && hostOf(nx)) ? nx : null;
+      toast(T('Élément supprimé — ↶ Annuler pour revenir','Item deleted — ↶ Undo to restore'));
+    }
+    place();
+  }
+
+  /* ── Collage en texte brut ─────────────────────────────────────────── */
+  function onPaste(e){
+    if(!editing || !hostOf(e.target)) return;
+    var tag = e.target.tagName;
+    if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+    e.preventDefault();
+    var txt = (e.clipboardData || window.clipboardData).getData('text/plain') || '';
+    document.execCommand('insertText', false, txt);
+  }
+  /* Pas de navigation sur les liens pendant l'édition. */
+  function onClick(e){
+    if(!editing) return;
+    var a = e.target.closest && e.target.closest('[data-erp-host] a');
+    if(a){ e.preventDefault(); }
+  }
+
+  /* ── Entrée / sortie du mode édition ───────────────────────────────── */
+  var snapshot = null;
+  function setEditable(on){
+    hosts().forEach(function(p){
+      if(on){ p[1].setAttribute('contenteditable','true'); p[1].setAttribute('data-erp-host', p[0]); }
+      else { p[1].removeAttribute('contenteditable'); p[1].removeAttribute('data-erp-host'); }
+    });
+    view.classList.toggle('erp-ed-on', on);
+    var b = document.getElementById('erp-ed-btn');
+    if(b) b.style.visibility = on ? 'hidden' : '';
+  }
+
+  window.erpEdToggle = function(){
+    if(!canWrite()){ toast(T('Lecture seule — modification impossible.','Read-only — editing not allowed.'), 'error'); return; }
+    if(editing){ window.erpEdSave(); return; }
+    ensureUI();
+    snapshot = rawSnap(); undo = [];
+    editing = true; setEditable(true);
+    toast(T('Mode édition ERP activé','ERP edit mode on'), 'success');
+  };
+
+  function stopEditing(){
+    editing = false; current = null; pinned = false; place();
+    setEditable(false);
+  }
+
+  window.erpEdCancel = function(){
+    if(!editing) return;
+    if(!confirm(T('Abandonner toutes les modifications non enregistrées de l’ERP ?','Discard all unsaved ERP changes?'))) return;
+    rawRestore(snapshot); stopEditing();
+    toast(T('Modifications abandonnées','Changes discarded'));
+  };
+
+  function pushHistory(prev){
+    if(!prev) return;
+    var h = readJSON(HKEY, []); if(!Array.isArray(h)) h = [];
+    h.unshift(prev); h = h.slice(0, HMAX);
+    try{ localStorage.setItem(HKEY, JSON.stringify(h)); }catch(e){}
+  }
+
+  function persist(obj){
+    pushHistory(readJSON(KEY, null));
+    try{ localStorage.setItem(KEY, JSON.stringify(obj)); }
+    catch(e){ toast(T('Enregistrement local impossible : ','Local save failed: ') + e.message, 'error'); return false; }
+    try{ if(typeof updateLastModified === 'function') updateLastModified(); }catch(e){}
+    try{
+      if(typeof window.safCloudSaveNow === 'function') window.safCloudSaveNow();
+      else if(typeof window.safCloudScheduleSave === 'function') window.safCloudScheduleSave();
+    }catch(e){}
+    return true;
+  }
+
+  window.erpEdSave = function(){
+    if(!canWrite()){ toast(T('Lecture seule — modification impossible.','Read-only — editing not allowed.'), 'error'); return; }
+    var obj = { v:1, saved_at:new Date().toISOString(), saved_by:who(), header:'', sections:{} };
+    hosts().forEach(function(p){
+      var html = cleanHTML(p[1]);
+      if(p[0] === 'header') obj.header = html; else obj.sections[p[0]] = html;
+    });
+    if(!persist(obj)) return;
+    if(editing) stopEditing();
+    appliedStamp = null; window.erpContentApply(true);
+    toast(T('✓ ERP enregistré','✓ ERP saved'), 'success');
+  };
+
+  /* ── Versions ──────────────────────────────────────────────────────── */
+  window.erpEdVersions = function(){
+    ensureUI();
+    var vm = document.getElementById('erp-ed-versions');
+    var h = readJSON(HKEY, []), cur = readJSON(KEY, null);
+    var rows = '';
+    if(cur) rows += '<div class="erp-ed-row"><span><b>' + T('Version en vigueur','Current version') + '</b> · ' + esc(fmt(cur.saved_at)) + (cur.saved_by ? ' · ' + esc(cur.saved_by) : '') + (cur.reset ? ' · ' + T('original','original') : '') + '</span></div>';
+    (Array.isArray(h) ? h : []).forEach(function(v, i){
+      rows += '<div class="erp-ed-row"><span>' + esc(fmt(v.saved_at)) + (v.saved_by ? ' · ' + esc(v.saved_by) : '') + (v.reset ? ' · ' + T('original','original') : '') + '</span>'
+           + '<button class="erp-ed-mini" onclick="erpEdRestoreVersion(' + i + ')">' + T('Charger','Load') + '</button></div>';
+    });
+    if(!h.length) rows += '<div style="padding:10px;color:var(--grey-400);font-size:11px;">' + T('Aucune version précédente sur ce poste.','No previous version on this device.') + '</div>';
+    vm.innerHTML = '<div class="erp-ed-box">'
+      + '<div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:#e3b341;margin-bottom:6px;">🕘 ' + T('VERSIONS DE L’ERP','ERP VERSIONS') + '</div>'
+      + '<div style="font-size:11px;color:var(--grey-400);margin-bottom:10px;line-height:1.5;">' + T(
+          'Les 5 versions précédentes sont conservées sur ce poste. « Charger » place la version dans la page en mode édition : rien n’est remplacé tant que vous n’avez pas cliqué sur Enregistrer.',
+          'The 5 previous versions are kept on this device. “Load” puts the version in the page in edit mode: nothing is replaced until you click Save.') + '</div>'
+      + rows
+      + '<div style="display:flex;justify-content:space-between;gap:8px;margin-top:14px;">'
+      + '<button class="erp-ed-mini" onclick="erpEdResetOriginal()">↺ ' + T('Charger la version d’origine du fichier','Load the file’s original version') + '</button>'
+      + '<button class="erp-ed-mini" onclick="document.getElementById(\'erp-ed-versions\').style.display=\'none\'">' + T('Fermer','Close') + '</button></div></div>';
+    vm.style.display = 'flex';
+  };
+
+  function loadIntoEditor(obj){
+    if(!canWrite()){ toast(T('Lecture seule — modification impossible.','Read-only — editing not allowed.'), 'error'); return; }
+    if(!editing) window.erpEdToggle();
+    pushUndo();
+    applyObj(obj);
+    hosts().forEach(function(p){ p[1].setAttribute('contenteditable','true'); });
+    document.getElementById('erp-ed-versions').style.display = 'none';
+    toast(T('Version chargée — Enregistrer pour la rendre effective','Version loaded — Save to make it effective'), 'success');
+  }
+  window.erpEdRestoreVersion = function(i){
+    var h = readJSON(HKEY, []); if(!h[i]) return;
+    loadIntoEditor(h[i]);
+  };
+  window.erpEdResetOriginal = function(){
+    if(!confirm(T('Charger la version d’origine du fichier ? (effective seulement après Enregistrer)','Load the file’s original version? (effective only after Save)'))) return;
+    loadIntoEditor({ reset:true });
+  };
+
+  /* ── Exercices ERP : modification et suppression (SAF) ─────────────── */
+  var exList = document.getElementById('erp-exercise-list');
+  if(exList && typeof window.getERPExercises === 'function'){
+    var EX_F = { date:'erp-ex-date', type:'erp-ex-type', lead:'erp-ex-lead', scenario:'erp-ex-scenario', participants:'erp-ex-participants',
+                 objectives:'erp-ex-objectives', findings:'erp-ex-findings', actions:'erp-ex-actions', owner:'erp-ex-owner',
+                 due_date:'erp-ex-due', effectiveness:'erp-ex-effect' };
+    var exEditId = null;
+    function g(id){ var e = document.getElementById(id); return e ? e.value : ''; }
+    function saveBtn(){ return document.querySelector('#erp-sec-exercises button[onclick*="erpSaveExercise"]'); }
+    function setFormMode(id){
+      exEditId = id;
+      var b = saveBtn(); if(!b) return;
+      b.textContent = id ? '✓ ' + T('Mettre à jour l’exercice','Update exercise') : '✓ Record exercise';
+      var c = document.getElementById('erp-ex-cancel');
+      if(id && !c){
+        c = document.createElement('button'); c.id = 'erp-ex-cancel'; c.className = 'btn btn-ghost';
+        c.style.cssText = 'margin-top:12px;margin-left:8px;'; c.textContent = T('Annuler la modification','Cancel edit');
+        c.onclick = function(){ clearForm(); setFormMode(null); };
+        b.parentNode.insertBefore(c, b.nextSibling);
+      } else if(!id && c) c.remove();
+    }
+    function clearForm(){
+      Object.keys(EX_F).forEach(function(k){
+        var e = document.getElementById(EX_F[k]); if(!e) return;
+        if(k === 'type') e.selectedIndex = 0; else if(k === 'effectiveness') e.value = 'pending'; else e.value = '';
+      });
+    }
+    window.erpSaveExercise = function(){
+      var date = g('erp-ex-date'), scenario = g('erp-ex-scenario').trim();
+      if(!date || !scenario){ toast('Exercise date and scenario are mandatory','error'); return; }
+      var a = getERPExercises(), rec = exEditId ? a.filter(function(x){ return x.id === exEditId; })[0] : null;
+      var fresh = !rec;
+      if(fresh) rec = { id:'ERP-EX-' + Date.now(), created_at:new Date().toISOString() };
+      Object.keys(EX_F).forEach(function(k){ var v = g(EX_F[k]); rec[k] = (typeof v === 'string' && k !== 'date' && k !== 'due_date') ? v.trim() : v; });
+      if(!rec.effectiveness) rec.effectiveness = 'pending';
+      if(fresh) a.push(rec); else { rec.updated_at = new Date().toISOString(); rec.updated_by = who(); }
+      saveERPExercises(a); clearForm(); setFormMode(null); renderERPExercises();
+      toast(fresh ? 'ERP exercise recorded' : T('Exercice ERP mis à jour','ERP exercise updated'), 'success');
+    };
+    window.erpExEdit = function(id){
+      var x = getERPExercises().filter(function(r){ return r.id === id; })[0]; if(!x) return;
+      Object.keys(EX_F).forEach(function(k){ var e = document.getElementById(EX_F[k]); if(e) e.value = x[k] == null ? '' : x[k]; });
+      setFormMode(id);
+      var f = document.getElementById('erp-ex-date'); if(f){ f.scrollIntoView({behavior:'smooth', block:'center'}); f.focus(); }
+    };
+    window.erpExDelete = function(id){
+      if(!confirm(T('Supprimer cet exercice ERP ?','Delete this ERP exercise?'))) return;
+      saveERPExercises(getERPExercises().filter(function(r){ return r.id !== id; }));
+      if(exEditId === id){ clearForm(); setFormMode(null); }
+      renderERPExercises(); toast(T('Exercice supprimé','Exercise deleted'));
+    };
+    window.renderERPExercises = function(){
+      var el = document.getElementById('erp-exercise-list'); if(!el) return;
+      var a = getERPExercises().sort(function(x,y){ return String(y.date).localeCompare(String(x.date)); });
+      if(!a.length){ el.innerHTML = '<div class="chart-card" style="padding:24px;text-align:center;color:var(--grey-400);font-family:var(--font-mono);font-size:11px;">No ERP exercise recorded yet.</div>'; return; }
+      var w = canWrite();
+      function line(lbl, v, col){ return v ? '<div style="font-size:11px;color:' + (col || 'var(--grey-200)') + ';margin-top:5px;white-space:pre-line;"><b>' + lbl + ':</b> ' + esc(v) + '</div>' : ''; }
+      el.innerHTML = a.map(function(x){
+        var col = x.effectiveness === 'effective' ? '#3fb950' : (x.effectiveness === 'ineffective' ? '#f85149' : '#e3b341');
+        var id = esc(x.id).replace(/'/g,'&#39;');
+        return '<div class="chart-card" style="padding:16px;margin-bottom:10px;border-left:3px solid ' + col + ';">'
+          + '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;"><div><strong>' + esc(x.date + ' · ' + x.type) + '</strong>'
+          + '<div style="font-size:10px;color:var(--grey-400);margin-top:3px;">Lead: ' + esc(x.lead || '—') + ' · Owner: ' + esc(x.owner || '—') + ' · Due: ' + esc(x.due_date || '—')
+          + (x.updated_at ? ' · ' + T('modifié le ','edited ') + esc(fmt(x.updated_at)) : '') + '</div></div>'
+          + '<div style="display:flex;gap:6px;align-items:center;"><span style="font-family:var(--font-mono);font-size:9px;color:' + col + ';">' + esc((x.effectiveness || 'pending').toUpperCase()) + '</span>'
+          + (w ? '<button class="erp-ed-mini" onclick="erpExEdit(\'' + id + '\')">✎</button><button class="erp-ed-mini" style="color:#ff9090" onclick="erpExDelete(\'' + id + '\')">✕</button>' : '')
+          + '</div></div>'
+          + line('Scenario', x.scenario) + line('Participants', x.participants) + line('Objectives', x.objectives)
+          + line('Findings', x.findings) + line('Actions', x.actions, 'var(--gold-light)')
+          + '</div>';
+      }).join('');
+    };
+  }
+
+  /* ── Branchements ──────────────────────────────────────────────────── */
+  if(typeof window.erpShowSection === 'function' && !window.erpShowSection.__erpEd){
+    var origShow = window.erpShowSection;
+    var wrapped = function(sec){ var r = origShow.apply(this, arguments); refreshUI(); place(); return r; };
+    wrapped.__erpEd = true; window.erpShowSection = wrapped;
+  }
+  view.addEventListener('mouseover', onOver);
+  view.addEventListener('paste', onPaste, true);
+  view.addEventListener('click', onClick, true);
+  window.addEventListener('scroll', place, true);
+  window.addEventListener('resize', place);
+  window.addEventListener('beforeunload', function(e){ if(editing){ e.preventDefault(); e.returnValue = ''; } });
+
+  ensureUI();
+  window.erpContentApply(true);
+  /* Le rôle n'est connu qu'après authentification : rafraîchit le bouton. */
+  var tries = 0, iv = setInterval(function(){ refreshUI(); if(++tries > 40) clearInterval(iv); }, 1500);
+})();
+</script>
+
 </body>
 </html>
