@@ -2399,6 +2399,7 @@ body.hx-printing .hx-cms-srb .finding-row textarea{background:#f9f9f9!important;
 <option>Hover</option><option>Approach</option>
 <option>Landing</option><option>All phases</option>
 </select>
+<span id="rr-extra-filters" style="display:contents;"></span>
 </div>
 <div class="rr-filter-chips" id="rr-filter-chips"></div>
 </div>
@@ -6737,7 +6738,7 @@ function renderLeadingIndicators() {
 var _legacyCategoryFilter='';
 function filterByCategory(cat){if(!DB||DB.length===0){DB=safApplyTaxonomyToDB(__safRefBase());filteredDB=[...DB];}showView('database');_legacyCategoryFilter=cat||'';var oc=document.getElementById('filter-occ-cat');if(oc)oc.value=(SAF_OCCURRENCE_CATEGORIES.some(function(x){return x.id===cat;})?cat:'');applyFilters();}
 function populateRiskTaxonomyFilters(){var oc=document.getElementById('filter-occ-cat'),fam=document.getElementById('filter-family');if(oc&&oc.options.length<=1)oc.innerHTML=safOccurrenceCategoryOptions('',true);if(fam&&fam.options.length<=1)fam.innerHTML=safFamilyOptions('',true);}
-function applyFilters(){populateRiskTaxonomyFilters();safApplyTaxonomyToDB(DB);const search=(document.getElementById('search-input')?.value||'').toLowerCase(),occCat=document.getElementById('filter-occ-cat')?.value||'',family=document.getElementById('filter-family')?.value||'',risk=document.getElementById('filter-risk')?.value||'',phase=document.getElementById('filter-phase')?.value||'';filteredDB=DB.filter(r=>{if(search&&![r.id,r.event,r.undesirable_event,r.dangers,r.consequences,r.doc_ref,r.category,r.occurrence_category,r.family_id,safFamilyLabel(r.family_id),r.record_kind,r.risk_owner,r.safety_indicator,r.indicator_target].join(' ').toLowerCase().includes(search))return false;if(occCat&&r.occurrence_category!==occCat)return false;if(family&&r.family_id!==family)return false;if(_legacyCategoryFilter&&r.category!==_legacyCategoryFilter&&r.occurrence_category!==_legacyCategoryFilter)return false;if(risk&&riskColor(r.residual_risk)!==risk)return false;if(phase&&!(r.phase||'').includes(phase))return false;return true;});currentPage=1;renderTable();var scopeEl=document.getElementById('rr-export-scope');if(scopeEl)scopeEl.textContent=_rrScopeLabel();try{rrRenderFilterChips();}catch(e){}}
+function applyFilters(){try{if(typeof rrExtraPopulate==='function')rrExtraPopulate();}catch(e){}populateRiskTaxonomyFilters();safApplyTaxonomyToDB(DB);const search=(document.getElementById('search-input')?.value||'').toLowerCase(),occCat=document.getElementById('filter-occ-cat')?.value||'',family=document.getElementById('filter-family')?.value||'',risk=document.getElementById('filter-risk')?.value||'',phase=document.getElementById('filter-phase')?.value||'';filteredDB=DB.filter(r=>{if(typeof rrExtraPass==='function'&&!rrExtraPass(r))return false;if(search&&![r.id,r.event,r.undesirable_event,r.dangers,r.consequences,r.doc_ref,r.category,r.occurrence_category,r.family_id,safFamilyLabel(r.family_id),r.record_kind,r.risk_owner,r.safety_indicator,r.indicator_target].join(' ').toLowerCase().includes(search))return false;if(occCat&&r.occurrence_category!==occCat)return false;if(family&&r.family_id!==family)return false;if(_legacyCategoryFilter&&r.category!==_legacyCategoryFilter&&r.occurrence_category!==_legacyCategoryFilter)return false;if(risk&&riskColor(r.residual_risk)!==risk)return false;if(phase&&!(r.phase||'').includes(phase))return false;return true;});currentPage=1;renderTable();var scopeEl=document.getElementById('rr-export-scope');if(scopeEl)scopeEl.textContent=_rrScopeLabel();try{rrRenderFilterChips();}catch(e){}}
 function clearFilters(){['search-input','filter-occ-cat','filter-family','filter-risk','filter-phase'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});_legacyCategoryFilter='';applyFilters();}
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -7059,6 +7060,7 @@ function renderTable() {
           </div>
 
           <!-- Barriers -->
+          ${(typeof helBarrierOriginsOnceHTML==='function' ? helBarrierOriginsOnceHTML(r) : '')}
           <div class="detail-block">
             <span class="detail-label">🛡 Prevention Measures</span>
             <div class="detail-val">${fmtBarriers(r,'prevention')}</div>
@@ -17026,9 +17028,9 @@ function fmtBarriers(risk,kind){
   if(!bs.length)return typeof fmtList==='function'?fmtList(risk?risk[kind]:''):'—';
   return '<div style="display:flex;flex-direction:column;gap:6px;">'+bs.map(function(b){
     return '<div style="display:flex;align-items:flex-start;gap:8px;">'
-      +'<span style="flex-shrink:0;font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);'
+      +'<span title="'+helBrkEsc(b.bid+' — origin: '+helBrkOriginLabel(b.origin||{}))+'" onclick="event.stopPropagation();helBarrierOriginPopup(decodeURIComponent(\''+encodeURIComponent(b.bid)+'\'))" style="cursor:pointer;flex-shrink:0;font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--steel-bright);'
       +'background:rgba(74,159,224,.15);border-radius:3px;padding:1px 5px;min-width:20px;text-align:center;">'+b.seq+'</span>'
-      +'<span style="font-size:11px;color:var(--white);line-height:1.5;">'+helBrkEsc(b.text)+' '+helBrkChip(b)+'</span>'
+      +'<span style="font-size:11px;color:var(--white);line-height:1.5;">'+helBrkEsc(b.text)+'</span>'
       +'</div>';
   }).join('')+'</div>';
 }
@@ -17070,6 +17072,21 @@ window.helBarriersSync=helBarriersSync;
 window.helBarriersBackfillAll=helBarriersBackfillAll;
 window.helBarrierOriginPopup=helBarrierOriginPopup;
 window.fmtBarriers=fmtBarriers;
+
+/* 20.10.2026 — L'origine (ex. CFIT-1, LOC-1, MOC-…) n'est plus repetee apres chaque mesure :
+   elle est affichee une seule fois pour le risque. Le numero de chaque mesure garde
+   l'origine en infobulle et ouvre la fiche de provenance au clic. */
+function helBarrierOriginsOnceHTML(risk){
+  var bs=(risk&&Array.isArray(risk.barriers))?risk.barriers.filter(function(b){return b&&b.status!=='superseded';}):[];
+  if(!bs.length) return '';
+  var seen={},chips=[];
+  bs.forEach(function(b){var k=helBrkOriginLabel(b.origin||{});if(!seen[k]){seen[k]=1;chips.push(helBrkChip(b));}});
+  return '<div class="detail-block full-width" style="grid-column:1/-1;">'
+    +'<span class="detail-label">🧬 Origin of the measures</span>'
+    +'<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">'+chips.join('')
+    +'<span style="font-size:10px;color:var(--grey-400);margin-left:4px;">'+(chips.length>1?'Hover a measure number to see its origin':'Common origin of all the measures of this risk')+'</span></div></div>';
+}
+window.helBarrierOriginsOnceHTML=helBarrierOriginsOnceHTML;
 
 
 // ── HELION-X Barrier Register: visible provenance and traceability ──────────
@@ -17449,6 +17466,168 @@ window.helRenderBarrierRegister=helRenderBarrierRegister;window.helTracExportCSV
      reste lisible, et l'ecart entre deux versions du registre s'explique.
      S'appuie sur la liste safRemovedRiskIds, seule trace qui survit a la
      fusion d'ouverture ; l'archive est sauvegardee dans Supabase (safArchivedRisks). -->
+<script id="rr-extra-filters-v1">
+/* 20.10.2026 — FILTRES COMPLEMENTAIRES DU REGISTRE (actif + archive)
+   Risk owner · Doc reference · Control status · Formal acceptance · Effectiveness.
+   Une seule definition sert au registre actif (#rr-filter-adv) et a la fenetre
+   d'archive : memes cles, memes valeurs, meme logique de correspondance. */
+(function(){
+  'use strict';
+  var T = {"owner": "Risk owner", "allOwner": "All risk owners", "doc": "Doc reference", "docPh": "Doc reference contains…", "ctl": "Control status", "allCtl": "All control statuses", "acc": "Formal acceptance", "allAcc": "Formal acceptance (all)", "eff": "Effectiveness", "allEff": "Effectiveness (all)", "ctlNone": "Not set", "accV": {"accepted": "Accepted", "pending": "Pending", "not_required": "Not required"}, "effV": {"effective": "Effective", "partial": "Partially effective", "ineffective": "Ineffective", "not_assessed": "Not assessed"}};
+  function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function strip(h){ return String(h == null ? '' : h).replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(); }
+
+  /* ── Valeurs normalisees d'un enregistrement ─────────────────────────── */
+  function ownerTokens(r){
+    return String((r && r.risk_owner) || '').split(/[\/,;+]|\s&\s/).map(function(x){
+      return x.replace(/\([^)]*\)/g, '').replace(/\s+/g, ' ').trim();
+    }).filter(Boolean);
+  }
+  function docTokens(r){
+    var out = [];
+    String((r && r.doc_ref) || '').replace(/\\n/g, '\n').split(/[;\n]+/).forEach(function(p){
+      var s = p.replace(/\[[^\]]*\]/g, ' ')                    // tags [LOC-1]
+               .replace(/^\s*\d+\s*[-–.)]\s*/, '')             // numerotation 1-
+               .split(/\s§|§/)[0]                              // coupe au paragraphe
+               .replace(/\s+\(.*$/, '')                         // coupe a la parenthese
+               .replace(/[\s.,:;–-]+$/, '').replace(/\s+/g, ' ').trim();
+      if(s.length >= 3 && s.length <= 70) out.push(s);
+    });
+    return out;
+  }
+  function controlKey(r){ return String((r && r.control_status) || '').trim() || '__none__'; }
+  function acceptKey(r){
+    if(!r) return 'pending';
+    if(r.risk_acceptance === 'accepted') return 'accepted';
+    if(r.acceptance_required === false) return 'not_required';
+    return 'pending';
+  }
+  function effKey(r){ return String((r && r.control_effectiveness) || '').trim() || 'not_assessed'; }
+  function controlLabel(k){
+    if(k === '__none__') return T.ctlNone;
+    var l = '';
+    try{ l = typeof controlStatusLabel === 'function' ? strip(controlStatusLabel(k)) : ''; }catch(e){}
+    return (l && l !== '—' && l !== '-') ? l : k.replace(/_/g, ' ');
+  }
+
+  var DEFS = [
+    { key:'owner',  id:'filter-owner',         label:T.owner,  all:T.allOwner },
+    { key:'doc',    id:'filter-docref',        label:T.doc,    all:T.docPh, input:true },
+    { key:'ctl',    id:'filter-control',       label:T.ctl,    all:T.allCtl },
+    { key:'acc',    id:'filter-acceptance',    label:T.acc,    all:T.allAcc },
+    { key:'eff',    id:'filter-effectiveness', label:T.eff,    all:T.allEff }
+  ];
+  window.RR_EXTRA_FILTER_DEFS = DEFS;
+
+  /* ── Options proposees, calculees sur l'ensemble fourni ──────────────── */
+  function options(records, key){
+    var seen = {}, out = [];
+    (records || []).forEach(function(r){
+      var ks = key === 'owner' ? ownerTokens(r) : key === 'doc' ? docTokens(r)
+             : key === 'ctl' ? [controlKey(r)] : key === 'acc' ? [acceptKey(r)] : key === 'eff' ? [effKey(r)] : [];
+      ks.forEach(function(k){ if(!seen[k]){ seen[k] = 0; out.push(k); } seen[k]++; });
+    });
+    if(key === 'acc') out = ['accepted','pending','not_required'].filter(function(k){ return seen[k]; });
+    else if(key === 'eff') out = ['effective','partial','ineffective','not_assessed'].filter(function(k){ return seen[k]; })
+                                   .concat(out.filter(function(k){ return ['effective','partial','ineffective','not_assessed'].indexOf(k) === -1; }));
+    else out.sort(function(a, b){ return a.localeCompare(b, undefined, {numeric:true, sensitivity:'base'}); });
+    return out.map(function(k){ return { v:k, n:seen[k], t: label(key, k) }; });
+  }
+  function label(key, k){
+    if(key === 'ctl') return controlLabel(k);
+    if(key === 'acc') return T.accV[k] || k;
+    if(key === 'eff') return T.effV[k] || k.replace(/_/g, ' ');
+    return k;
+  }
+
+  /* ── Correspondance ─────────────────────────────────────────────────── */
+  function pass(r, v){
+    v = v || {};
+    if(v.owner){ var o = v.owner.toLowerCase(); if(!ownerTokens(r).some(function(x){ return x.toLowerCase() === o; })) return false; }
+    if(v.doc){ if(String((r && r.doc_ref) || '').toLowerCase().indexOf(String(v.doc).toLowerCase().trim()) === -1) return false; }
+    if(v.ctl && controlKey(r) !== v.ctl) return false;
+    if(v.acc && acceptKey(r) !== v.acc) return false;
+    if(v.eff && effKey(r) !== v.eff) return false;
+    return true;
+  }
+  function mainValues(){
+    var v = {};
+    DEFS.forEach(function(d){ var el = document.getElementById(d.id); if(el && el.value) v[d.key] = el.value; });
+    return v;
+  }
+  window.rrExtraPass = function(r, vals){ return pass(r, vals || mainValues()); };
+  window.rrExtraLabel = label;
+
+  /* ── Controles : registre actif ──────────────────────────────────────── */
+  function selectHTML(d, recs, cur, attrs, optStyle){
+    if(d.input){
+      var dl = attrs.listId;
+      return '<input type="text" ' + attrs.id + ' list="' + dl + '" placeholder="' + esc(d.all) + '" value="' + esc(cur || '') + '" title="' + esc(d.label) + '" ' + attrs.style + ' autocomplete="off"/>'
+           + '<datalist id="' + dl + '">' + options(recs, d.key).map(function(o){ return '<option value="' + esc(o.v) + '"></option>'; }).join('') + '</datalist>';
+    }
+    var opts = options(recs, d.key);
+    if(cur && !opts.some(function(o){ return o.v === cur; })) opts.unshift({ v:cur, n:0, t:label(d.key, cur) });
+    return '<select ' + attrs.id + ' title="' + esc(d.label) + '" ' + attrs.style + '><option value=""' + optStyle + '>' + esc(d.all) + '</option>'
+         + opts.map(function(o){ return '<option value="' + esc(o.v) + '"' + (o.v === cur ? ' selected' : '') + optStyle + '>' + esc(o.t) + (o.n ? ' (' + o.n + ')' : '') + '</option>'; }).join('')
+         + '</select>';
+  }
+  window.rrExtraPopulate = function(){
+    var host = document.getElementById('rr-extra-filters'); if(!host) return;
+    var recs = (typeof DB !== 'undefined' && Array.isArray(DB)) ? DB : [];
+    var cur = mainValues();
+    var active = document.activeElement && host.contains(document.activeElement) ? document.activeElement.id : '';
+    if(active === 'filter-docref') return;           // ne pas reconstruire pendant la saisie
+    host.innerHTML = DEFS.map(function(d){
+      return selectHTML(d, recs, cur[d.key], { id:'id="' + d.id + '"', listId:'filter-docref-list', style:'' }, " style=\"background:#eff4f9;color:#22272c;\"");
+    }).join('');
+    DEFS.forEach(function(d){
+      var el = document.getElementById(d.id); if(!el) return;
+      if(d.input){ var t = null; el.addEventListener('input', function(){ clearTimeout(t); t = setTimeout(function(){ if(typeof applyFilters === 'function') applyFilters(); }, 250); });
+                   el.addEventListener('change', function(){ if(typeof applyFilters === 'function') applyFilters(); }); }
+      else el.addEventListener('change', function(){ if(typeof applyFilters === 'function') applyFilters(); });
+    });
+  };
+
+  /* ── Controles : fenetre d'archive (memes filtres) ───────────────────── */
+  window.rrExtraControlsHTML = function(recs, vals, prefix, style, optStyle){
+    vals = vals || {};
+    return DEFS.map(function(d){
+      return selectHTML(d, recs, vals[d.key], { id:'id="' + prefix + '-' + d.key + '" data-rrx="' + d.key + '"', listId:prefix + '-doc-list', style:'style="' + style + '"' }, optStyle || '');
+    }).join('');
+  };
+  window.rrExtraBind = function(root, prefix, vals, rerender){
+    DEFS.forEach(function(d){
+      var el = document.getElementById(prefix + '-' + d.key); if(!el) return;
+      if(d.input){
+        var t = null;
+        el.addEventListener('input', function(){
+          clearTimeout(t);
+          t = setTimeout(function(){
+            vals[d.key] = el.value; var p = el.selectionStart; rerender();
+            var n = document.getElementById(prefix + '-' + d.key); if(n){ n.focus(); try{ n.setSelectionRange(p, p); }catch(e){} }
+          }, 250);
+        });
+      } else el.addEventListener('change', function(){ vals[d.key] = el.value; rerender(); });
+    });
+  };
+
+  /* ── Puces, compteur et « Clear » du registre actif ──────────────────── */
+  try{
+    if(typeof RR_FILTER_DEFS !== 'undefined' && Array.isArray(RR_FILTER_DEFS)){
+      DEFS.forEach(function(d){ if(!RR_FILTER_DEFS.some(function(x){ return x.id === d.id; })) RR_FILTER_DEFS.push({ id:d.id, label:d.label, adv:true }); });
+    }
+  }catch(e){}
+  var _clear = window.clearFilters;
+  if(typeof _clear === 'function'){
+    window.clearFilters = function(){
+      DEFS.forEach(function(d){ var el = document.getElementById(d.id); if(el) el.value = ''; });
+      return _clear.apply(this, arguments);
+    };
+  }
+  setTimeout(function(){ try{ window.rrExtraPopulate(); }catch(e){} }, 0);
+})();
+</script>
+
 <script id="saf-risk-archive-v1">
 (function(){
   'use strict';
@@ -18442,8 +18621,10 @@ function srbImportJSON(){
    détaillées (traçabilité comprise), gouvernance, acceptation, efficacité,
    indicateur, occurrences liées, historique, puis tout champ renseigné qui
    n'apparaîtrait dans aucune rubrique, pour que rien ne soit perdu. */
-function rrExportRiskPDF(id){
-  var r = (typeof DB !== 'undefined' ? DB : []).find(function(x){ return x.id === id; });
+function rrExportRiskPDF(id, recIn, meta){
+  /* 20.10.2026 — recIn/meta : fiche d'un risque archive (meme contenu qu'un risque actif) */
+  meta = meta || null;
+  var r = recIn || (typeof DB !== 'undefined' ? DB : []).find(function(x){ return x.id === id; });
   if(!r){ showToast('Risk not found: ' + id, 'error'); return; }
   try{ if(typeof helBarriersSync === 'function') helBarriersSync(r, {}); }catch(e){}
 
@@ -18467,13 +18648,19 @@ function rrExportRiskPDF(id){
   var fam = (typeof SAF_FAMILY_BY_ID !== 'undefined' && SAF_FAMILY_BY_ID[r.family_id]) || null;
   var ec = (typeof ECCAIRS_ID_MAP !== 'undefined' && ECCAIRS_ID_MAP[r.id]) || r.eccairs_cat || '';
   var ecDesc = ec && typeof ECCAIRS_DESC !== 'undefined' ? (ECCAIRS_DESC[ec] || '') : '';
-  ['id','event','category','occurrence_category','family_id','record_kind','workflow_status','eccairs_cat','initial_risk','residual_risk'].forEach(function(k){ used[k] = 1; });
+  ['former_id','register_series','user_edited_at','user_edited_by','id','event','category','occurrence_category','family_id','record_kind','workflow_status','eccairs_cat','initial_risk','residual_risk'].forEach(function(k){ used[k] = 1; });
 
   var html = '';
   html += '<div class="head"><div><div class="hid">' + esc(r.id) + '</div><h1>' + esc(r.event || '—') + '</h1>'
        +  '<div class="sub">Risk scenario sheet · Helion Helicopters · H215</div></div>'
        +  '<div class="risks"><div><div class="l">Initial</div>' + badge(r.initial_risk) + '</div><div class="arrow">→</div><div><div class="l">Residual</div>' + badge(r.residual_risk) + '</div></div></div>';
 
+  if(meta && meta.archived){
+    html += '<div class="arch"><b>ARCHIVED RISK</b> · Archive no. <span class="mono">' + esc(meta.id) + '</span>'
+         +  (meta.former_id ? ' · former number <span class="mono">' + esc(meta.former_id) + '</span>' : '')
+         +  ' · archived ' + date(meta.archived_at) + ' by ' + esc(meta.archived_by || '—')
+         +  '<div style="margin-top:3px;"><b>Reason:</b> ' + esc(meta.reason || '—') + '</div></div>';
+  }
   html += '<h2>Taxonomy structure</h2><div class="tax">'
        +  '<span class="p p1">Category · ' + esc(r.occurrence_category || r.category || 'OTHR') + '</span><span class="ar">→</span>'
        +  '<span class="p p2">Family · ' + esc(r.family_id || '—') + (fam ? ' — ' + esc(fam.name) : '') + '</span><span class="ar">→</span>'
@@ -18505,17 +18692,18 @@ function rrExportRiskPDF(id){
   var B = Array.isArray(r.barriers) ? r.barriers : [];
   var KINDS = [['prevention','Prevention measures','#1D5FA3'],['mitigation','Mitigation measures','#8A6400'],['recovery','Recovery measures','#1A7A32']];
   html += '<h2>Barriers</h2>';
+  var _org = {}; B.forEach(function(b){ if(b && b.status === 'superseded') return; var o = b.origin || {}; var k = (o.ref || '') + (o.also_from && o.also_from.length ? ' + ' + o.also_from.join(' + ') : ''); if(k) _org[k] = 1; });
+  if(Object.keys(_org).length) html += '<div class="plain"><b>Origin of the measures:</b> <span class="mono">' + esc(Object.keys(_org).join(' · ')) + '</span></div>';
   KINDS.forEach(function(k){
     var items = B.filter(function(b){ return b.kind === k[0]; }).sort(function(a,b){ return (a.seq||0)-(b.seq||0); });
     html += '<h3 style="border-color:' + k[2] + ';color:' + k[2] + ';">' + k[1] + ' (' + (items.length || '—') + ')</h3>';
     if(items.length){
-      html += '<table class="bt"><thead><tr><th>BID</th><th>Measure</th><th>Status</th><th>Owner</th><th>Origin</th><th>Document</th><th>Verification</th></tr></thead><tbody>'
+      html += '<table class="bt"><thead><tr><th>BID</th><th>Measure</th><th>Status</th><th>Owner</th><th>Document</th><th>Verification</th></tr></thead><tbody>'
            +  items.map(function(b){
                 var o = b.origin || {}, t = b.trac || {}, d = t.doc || {}, v = t.verif || {};
                 var ev = Array.isArray(b.evidence) && b.evidence.length ? '<div class="small">Evidence: ' + esc(b.evidence.map(function(e){ return typeof e === 'string' ? e : (e.ref || e.text || JSON.stringify(e)); }).join('; ')) + '</div>' : '';
                 var sup = b.superseded_by ? '<div class="small">Superseded by ' + esc(b.superseded_by) + '</div>' : '';
                 return '<tr><td class="mono">' + esc(b.bid || '') + '</td><td>' + esc(b.text || '') + ev + sup + '</td><td>' + human(b.status) + '</td><td>' + (b.owner ? esc(b.owner) : '<span class="nil">—</span>') + '</td>'
-                     + '<td>' + (o.ref ? esc(o.ref) : '<span class="nil">—</span>') + (o.status ? '<div class="small">' + human(o.status) + '</div>' : '') + '</td>'
                      + '<td>' + (d.ref ? esc(d.ref) : '<span class="nil">—</span>') + '</td>'
                      + '<td>' + (v.last ? 'Last ' + date(v.last) : '<span class="nil">Not verified</span>') + (v.next ? '<div class="small">Next ' + date(v.next) + '</div>' : '') + (v.by ? '<div class="small">' + esc(v.by) + '</div>' : '') + '</td></tr>';
               }).join('')
@@ -18630,13 +18818,14 @@ function rrExportRiskPDF(id){
     '.plain{font-size:10px;margin-bottom:4px}',
     '.origin{margin-top:8px;font-size:9.5px;border:1px solid #E4EAF1;border-radius:4px;padding:8px}',
     '.origin *{color:#13202E !important;background:transparent !important}',
+    '.arch{margin:10px 0 4px;padding:8px 10px;border:1px solid #E2C878;border-left:4px solid #B07A00;background:#FBF4E0;border-radius:4px;font-size:10px}',
     '.foot{margin-top:18px;padding-top:6px;border-top:1px solid #C8D0D8;font-family:"IBM Plex Mono",monospace;font-size:8px;color:#4A5A6B;display:flex;justify-content:space-between}',
     '@media print{body{padding:0}@page{size:A4 portrait;margin:12mm}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}'
   ].join('');
 
   var win = window.open('', '_blank');
   if(!win){ showToast('Please allow popups to generate the PDF', 'error'); return; }
-  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + esc(r.id) + ' — Risk scenario sheet</title><style>' + css + '</style></head><body>'
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + esc(r.id) + ' — Risk scenario sheet' + (meta && meta.archived ? ' (archived)' : '') + '</title><style>' + css + '</style></head><body>'
     + html
     + '<div class="foot"><span>Helion Helicopters · SMS Risk Register · ' + esc(r.id) + '</span><span>Generated ' + new Date().toLocaleString('en-GB') + '</span></div>'
     + '<script>window.onload=function(){setTimeout(function(){window.print();},300);};<\/script></body></html>');
@@ -19325,23 +19514,107 @@ function _occDgDetailsHtml(occ){
   window.safStartNewNumbering = function(){ if(!canWrite()){ toast('Read-only — not possible', 'error'); return false; } return startNumbering(false); };
 
   /* ── Restaurer ────────────────────────────────────────────────────────── */
-  function targetId(entry){
-    if(!detached() && /^SMS-\d{2,}$/.test(entry.former_id || '') && !(DB || []).some(function(r){ return r.id === entry.former_id; })) return entry.former_id;
-    return nextSms();
+  /* ── 20.10.2026 — Numero a la restauration ─────────────────────────────
+     Par defaut : le numero qui suit le dernier risque du registre actif.
+     L'utilisateur peut en choisir un autre (SMS-xx) dans la fenetre de restauration.
+     Garde-fous : jamais un numero deja porte par un risque actif ; hors nouvelle
+     numerotation, jamais le numero d'un scenario du referentiel embarque autre que
+     l'ancien numero du risque restaure (le referentiel lui reinjecterait ses barrieres). */
+  var RT = {"badFmt": "expected format SMS-xx (e.g. SMS-07)", "inUse": "already used by an active risk", "refId": "number of another scenario of the embedded reference register — choose another number", "dup": "number entered twice", "ro": "Read-only — restoration not possible", "former": "former", "useFormer": "Use", "title1": "Restore {id}", "titleN": "Restore {n} archived risks", "intro": "By default a restored risk takes the number following the last risk of the register (next: {next}). You can enter another number (SMS-xx) for each risk.", "colArch": "Archive no.", "colRisk": "Risk", "colNew": "New ID", "noRec": "Archived record not found", "noPdf": "PDF function unavailable"};
+  function pad(n){ return 'SMS-' + String(n).padStart(2, '0'); }
+  function inDB(id){ return (DB || []).some(function(r){ return r && r.id === id; }); }
+  function refIds(){
+    var s = {};
+    if(!detached()){ try{ (INITIAL_DATA || []).forEach(function(r){ if(r && r.id) s[r.id] = 1; }); }catch(e){} }
+    return s;
   }
-  window.safRestoreArchivedRisks = function(ids){
+  function planDefaults(n, extraTaken){
+    var taken = {}, ref = refIds(), max = 0, out = [];
+    (DB || []).forEach(function(r){ if(r && r.id){ taken[r.id] = 1; max = Math.max(max, smsNum(r.id)); } });
+    (extraTaken || []).forEach(function(id){ taken[id] = 1; });
+    for(var i = 0; i < n; i++){
+      do { max++; } while(taken[pad(max)] || ref[pad(max)]);
+      taken[pad(max)] = 1; out.push(pad(max));
+    }
+    return out;
+  }
+  function nextAfterLast(){ return planDefaults(1)[0]; }
+  window.safNextRestoreId = nextAfterLast;
+  function targetId(){ return nextAfterLast(); }
+  function checkChosen(id, entry){
+    if(!/^SMS-\d{2,}$/.test(id)) return RT.badFmt;
+    if(inDB(id)) return RT.inUse;
+    if(refIds()[id] && id !== (entry && entry.former_id)) return RT.refId;
+    return '';
+  }
+  function restoreDialog(ids){
+    if(!canWrite()){ toast(RT.ro, 'error'); return; }
+    var all = load();
+    var entries = (Array.isArray(ids) ? ids : [ids]).map(function(aid){ return all.find(function(a){ return a && a.id === aid; }); }).filter(function(e){ return e && e.record; });
+    if(!entries.length) return;
+    var defs = planDefaults(entries.length);
+    var rows = entries.map(function(e, i){
+      return '<tr><td style="padding:5px 8px 5px 0;font-family:\'IBM Plex Mono\',monospace;font-weight:700;color:#8A5A00;white-space:nowrap;vertical-align:top;">' + esc(e.id) + '</td>'
+        + '<td style="padding:5px 8px;vertical-align:top;">' + esc(e.event || '') + (e.former_id ? '<div style="font-size:11px;color:#5A6B7C;">' + RT.former + ' ' + esc(e.former_id) + '</div>' : '') + '</td>'
+        + '<td style="padding:5px 0;vertical-align:top;white-space:nowrap;"><input class="ar2-rid" data-aid="' + esc(e.id) + '" value="' + esc(defs[i]) + '" style="width:110px;padding:6px 8px;border:1px solid #B7C3D0;border-radius:6px;font-family:\'IBM Plex Mono\',monospace;font-size:13px;"/>'
+        + (e.former_id && /^SMS-\d{2,}$/.test(e.former_id) && e.former_id !== defs[i] && !checkChosen(e.former_id, e)
+            ? ' <button type="button" class="ar2-use-former" data-aid="' + esc(e.id) + '" data-v="' + esc(e.former_id) + '" style="padding:5px 8px;border:1px solid #B7C3D0;background:#fff;border-radius:6px;cursor:pointer;font-size:11px;">' + RT.useFormer + ' ' + esc(e.former_id) + '</button>' : '')
+        + '</td></tr>';
+    }).join('');
+    var ov = dialog('<div style="font-size:16px;font-weight:700;margin-bottom:6px;">' + (entries.length > 1 ? RT.titleN.replace('{n}', entries.length) : RT.title1.replace('{id}', esc(entries[0].id))) + '</div>'
+      + '<p style="margin:0 0 10px;">' + RT.intro.replace('{next}', '<strong>' + esc(defs[0]) + '</strong>') + '</p>'
+      + '<div style="max-height:46vh;overflow:auto;border:1px solid #E1E7EE;border-radius:6px;padding:4px 10px;"><table style="width:100%;border-collapse:collapse;font-size:12.5px;">'
+      + '<thead><tr><th style="text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#5A6B7C;padding:5px 8px 5px 0;">' + RT.colArch + '</th><th style="text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#5A6B7C;padding:5px 8px;">' + RT.colRisk + '</th><th style="text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#5A6B7C;padding:5px 0;">' + RT.colNew + '</th></tr></thead>'
+      + '<tbody>' + rows + '</tbody></table></div>',
+      function(ov){
+        var map = {}, seen = {}, err = '';
+        Array.prototype.forEach.call(ov.querySelectorAll('.ar2-rid'), function(inp){
+          if(err) return;
+          var id = inp.value.trim().toUpperCase().replace(/^SMS-?(\d)$/, 'SMS-0$1').replace(/^SMS-?(\d+)$/, 'SMS-$1');
+          if(/^\d+$/.test(id)) id = pad(parseInt(id, 10));
+          inp.value = id;
+          var e = entries.find(function(x){ return x.id === inp.getAttribute('data-aid'); });
+          var m = checkChosen(id, e);
+          if(!m && seen[id]) m = RT.dup;
+          if(m){ err = esc(e.id) + ' → ' + esc(id) + ' : ' + m; inp.style.borderColor = '#C62828'; inp.focus(); return; }
+          inp.style.borderColor = '#B7C3D0';
+          seen[id] = 1; map[e.id] = id;
+        });
+        if(err) return err;
+        window.safRestoreArchivedRisks(entries.map(function(e){ return e.id; }), map);
+        return null;
+      });
+    if(ov){
+      Array.prototype.forEach.call(ov.querySelectorAll('.ar2-use-former'), function(b){
+        b.onclick = function(){ var i = ov.querySelector('.ar2-rid[data-aid="' + b.getAttribute('data-aid') + '"]'); if(i){ i.value = b.getAttribute('data-v'); i.focus(); } };
+      });
+      var first = ov.querySelector('.ar2-rid'); if(first){ first.focus(); first.select(); }
+    }
+  }
+  window.safRestoreDialog = restoreDialog;
+
+  /* Fiche PDF complete d'un risque archive — meme fiche qu'un risque actif */
+  window.safArchivePDF = function(aid){
+    var e = load().find(function(a){ return a && a.id === aid; });
+    if(!e || !e.record){ toast(RT.noRec, 'error'); return; }
+    if(typeof window.rrExportRiskPDF !== 'function'){ toast(RT.noPdf, 'error'); return; }
+    window.rrExportRiskPDF(aid, clone(e.record), { archived:true, id:e.id, former_id:e.former_id || '', archived_at:e.archived_at || '', archived_by:e.archived_by || '', reason:e.reason || '' });
+  };
+  window.safRestoreArchivedRisks = function(ids, chosen){
     if(!canWrite()){ toast('Read-only — restoration not possible', 'error'); return; }
     ids = (Array.isArray(ids) ? ids : [ids]).map(String);
     var now = new Date().toISOString(), by = who(), done = [];
     ids.forEach(function(aid){
       var list = load(); var entry = list.find(function(a){ return a && a.id === aid; });
       if(!entry || !entry.record) return;
-      var tid = targetId(entry);
-      if(tid === entry.former_id){ try{ safUnmarkRiskRemoved(tid); }catch(e){} }
+      var tid = (chosen && chosen[aid]) ? String(chosen[aid]) : targetId();
+      if(checkChosen(tid, entry)){ toast(aid + ' → ' + tid + ' : ' + checkChosen(tid, entry), 'error'); return; }
+      try{ if(typeof safRemovedRiskIds === 'function' && safRemovedRiskIds().indexOf(tid) !== -1) safUnmarkRiskRemoved(tid); }catch(e){}
       var map = {}; map[aid] = tid;
       var fn = swapper(map);
       var rec = deepMap(clone(entry.record), fn, KEEP);
       rec.id = tid;
+      rec.user_edited_at = now; rec.user_edited_by = by; rec.updated_at = now;   // fiche adoptee telle quelle au rechargement
       if(entry.former_id && entry.former_id !== tid) rec.former_id = entry.former_id; else delete rec.former_id;
       var st = nstate(); if(st && detached()) rec.register_series = st.series;
       if(!Array.isArray(rec.history)) rec.history = [];
@@ -19355,12 +19628,7 @@ function _occDgDetailsHtml(occ){
     refresh(); render();
     if(done.length) toast('✓ Restored: ' + done.join(', '));
   };
-  window.safRestoreArchivedRisk = function(aid){
-    var e = load().find(function(a){ return a && a.id === aid; }); if(!e) return;
-    var t = targetId(e);
-    if(!confirm('Restore ' + aid + (e.former_id ? ' (former ' + e.former_id + ')' : '') + ' — ' + (e.event || '') + '?\n\nIt will become ' + t + ' in the active register.')) return;
-    window.safRestoreArchivedRisks([aid]);
-  };
+  window.safRestoreArchivedRisk = function(aid){ restoreDialog([aid]); };
 
   /* ── Protections a la creation ───────────────────────────────────────── */
   var _submit = window.submitEntry;
@@ -19412,7 +19680,7 @@ function _occDgDetailsHtml(occ){
   }
 
   /* ── Fenetre d'archive ────────────────────────────────────────────────── */
-  var FILTER = { fam:'', q:'' };
+  var FILTER = { fam:'', q:'', x:{} };
   function famName(f){ try{ var x = SAF_FAMILY_BY_ID[f]; return x ? f + ' — ' + x.name : f; }catch(e){ return f; } }
   function render(){
     var body = document.getElementById('saf-rr-archive-body'); if(!body) return;
@@ -19426,17 +19694,19 @@ function _occDgDetailsHtml(occ){
     var q = FILTER.q.toLowerCase();
     var list = all.filter(function(a){
       return (!FILTER.fam || (a.family_id || '—') === FILTER.fam) &&
-             (!q || (a.id + ' ' + (a.former_id || '') + ' ' + a.event + ' ' + (a.family_id || '')).toLowerCase().indexOf(q) !== -1);
+             (!q || (a.id + ' ' + (a.former_id || '') + ' ' + a.event + ' ' + (a.family_id || '')).toLowerCase().indexOf(q) !== -1) &&
+             (typeof rrExtraPass !== 'function' || rrExtraPass(a.record || a, FILTER.x));
     });
-    var st = nstate();
-    var banner = detached()
-      ? '<div style="margin-bottom:12px;padding:9px 12px;border-left:4px solid #1A7A32;background:rgba(26,122,50,.07);border-radius:0 6px 6px 0;font-size:12px;line-height:1.5;"><strong>New numbering active</strong> since ' + esc(String(st.since || '').slice(0, 10)) + '. A restored risk takes the next SMS number — next: <strong>' + esc(nextSms()) + '</strong>. Several ticked risks are numbered in list order.</div>'
-      : '<div style="margin-bottom:12px;padding:9px 12px;border-left:4px solid #1D5FA3;background:rgba(29,95,163,.07);border-radius:0 6px 6px 0;font-size:12px;line-height:1.5;">A restored risk takes back its former SMS number when it is free.'
-        + ((w && (!Array.isArray(DB) || !DB.length)) ? ' <button type="button" class="btn btn-ghost" id="ar2-start-num" style="margin-left:8px;">Restart numbering at SMS-01</button>' : '') + '</div>';
+    var st = nstate(), nx = nextAfterLast();
+    var banner = '<div style="margin-bottom:12px;padding:9px 12px;border-left:4px solid #1D5FA3;background:rgba(29,95,163,.07);border-radius:0 6px 6px 0;font-size:12px;line-height:1.5;">'
+      + (detached() ? '<strong>New numbering active</strong> since ' + esc(String((st && st.since) || '').slice(0, 10)) + '. ' : '')
+      + 'A restored risk takes the number following the last risk of the register — next: <strong>' + esc(nx) + '</strong>. Another SMS-xx number can be chosen in the restore window.'
+      + ((!detached() && w && (!Array.isArray(DB) || !DB.length)) ? ' <button type="button" class="btn btn-ghost" id="ar2-start-num" style="margin-left:8px;">Restart numbering at SMS-01</button>' : '') + '</div>';
     var tools = '<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px;">'
       + '<input id="ar2-q" type="text" placeholder="Search ARCH no., former no. or title…" value="' + esc(FILTER.q) + '" style="flex:1;min-width:200px;padding:7px 10px;border:1px solid rgba(15,30,46,.25);border-radius:6px;font-size:12px;">'
       + '<select id="ar2-fam" style="padding:7px 10px;border:1px solid rgba(15,30,46,.25);border-radius:6px;font-size:12px;max-width:320px;"><option value="">All families (' + all.length + ')</option>'
       + Object.keys(fams).sort().map(function(f){ return '<option value="' + esc(f) + '"' + (FILTER.fam === f ? ' selected' : '') + '>' + esc(famName(f)) + ' (' + fams[f] + ')</option>'; }).join('') + '</select>'
+      + (typeof rrExtraControlsHTML === 'function' ? rrExtraControlsHTML(all.map(function(a){ return a.record || a; }), FILTER.x, 'ar2x', "padding:7px 10px;border:1px solid rgba(15,30,46,.25);border-radius:6px;font-size:12px;max-width:240px;", " style=\"background:#eff4f9;color:#22272c;\"") : '')
       + (w ? '<button class="btn btn-ghost" id="ar2-selall" type="button">☑ Select shown</button>'
            + '<button class="btn btn-ghost" id="ar2-restore-sel" type="button" style="border-color:#1A7A32;color:#1A7A32;">↺ Restore selected (<span id="ar2-n">0</span>)</button>'
            + (FILTER.fam ? '<button class="btn btn-ghost" id="ar2-restore-fam" type="button" style="border-color:#1D5FA3;color:#1D5FA3;">↺ Restore this family (' + list.length + ')</button>' : '') : '')
@@ -19450,6 +19720,7 @@ function _occDgDetailsHtml(occ){
         + (a.former_id ? ' <span style="font-family:var(--font-mono);font-size:10px;font-weight:400;color:var(--grey-400);">(former ' + esc(a.former_id) + ')</span>' : '') + '</div>'
         + '<div style="font-family:var(--font-mono);font-size:10px;color:var(--grey-400);">' + esc(famName(a.family_id || '—')) + ' · residual ' + esc(a.residual_risk || '—') + ' · archived ' + esc(d) + ' by ' + esc(a.archived_by || '—') + '</div>'
         + '<div style="font-size:11.5px;color:var(--grey-200);margin-top:4px;"><strong style="color:var(--gold-light);">Reason:</strong> ' + esc(a.reason) + '</div></div>'
+        + '<button class="btn btn-ghost" type="button" style="flex-shrink:0;" title="Complete PDF sheet of this archived risk" onclick="event.preventDefault();event.stopPropagation();safArchivePDF(\'' + esc(a.id) + '\')">⎙ PDF</button>'
         + (w ? '<button class="btn btn-ghost" type="button" style="flex-shrink:0;" onclick="event.preventDefault();safRestoreArchivedRisk(\'' + esc(a.id) + '\')">↺ Restore</button>' : '')
         + '</label>';
     }).join('') : '<div style="padding:20px;text-align:center;color:var(--grey-400);">No archived risk matches this filter.</div>') + '</div>';
@@ -19457,15 +19728,16 @@ function _occDgDetailsHtml(occ){
     body.querySelectorAll('.ar2-cb').forEach(function(c){ c.addEventListener('change', count); });
     var qi = document.getElementById('ar2-q'); if(qi) qi.addEventListener('input', function(){ FILTER.q = qi.value; var p = qi.selectionStart; render(); var n = document.getElementById('ar2-q'); if(n){ n.focus(); n.setSelectionRange(p, p); } });
     var fs = document.getElementById('ar2-fam'); if(fs) fs.addEventListener('change', function(){ FILTER.fam = fs.value; render(); });
+    if(typeof rrExtraBind === 'function') rrExtraBind(body, 'ar2x', FILTER.x, render);
     var sa = document.getElementById('ar2-selall'); if(sa) sa.onclick = function(){ var cbs = body.querySelectorAll('.ar2-cb'); var all1 = Array.prototype.every.call(cbs, function(c){ return c.checked; }); cbs.forEach(function(c){ c.checked = !all1; }); count(); };
     var rs = document.getElementById('ar2-restore-sel'); if(rs) rs.onclick = function(){
       var ids = Array.prototype.map.call(body.querySelectorAll('.ar2-cb:checked'), function(c){ return c.value; });
       if(!ids.length){ toast('Tick the risks to restore first', 'error'); return; }
-      if(confirm('Restore ' + ids.length + ' risk' + (ids.length > 1 ? 's' : '') + '?\n\n' + ids.join(', '))) window.safRestoreArchivedRisks(ids);
+      restoreDialog(ids);
     };
     var rf = document.getElementById('ar2-restore-fam'); if(rf) rf.onclick = function(){
       var ids = list.map(function(a){ return a.id; });
-      if(confirm('Restore the ' + ids.length + ' archived risks of ' + famName(FILTER.fam) + '?')) window.safRestoreArchivedRisks(ids);
+      restoreDialog(ids);
     };
     var sn = document.getElementById('ar2-start-num'); if(sn) sn.onclick = function(){
       if(confirm('Restart numbering at SMS-01?\n\nRestored risks will take SMS-01, SMS-02… in the order you restore them. The embedded reference register will no longer be rebuilt at start-up.')) window.safStartNewNumbering();
