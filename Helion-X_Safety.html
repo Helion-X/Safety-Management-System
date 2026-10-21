@@ -4179,6 +4179,7 @@ function updateOaciDefinitionDropdown(sel) {
     <button onclick="erpShowSection('contacts')" class="erp-tab" id="erp-tab-contacts" style="flex:0 0 auto;padding:9px 12px;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.05em;cursor:pointer;background:none;border:none;color:var(--grey-400);border-bottom:2px solid transparent;margin-bottom:-2px;">📒 DIRECTORY</button>
     <button onclick="erpShowSection('roles')" class="erp-tab" id="erp-tab-roles" style="flex:0 0 auto;padding:9px 12px;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.05em;cursor:pointer;background:none;border:none;color:var(--grey-400);border-bottom:2px solid transparent;margin-bottom:-2px;">👤 ROLES</button>
     <button onclick="erpShowSection('general')" class="erp-tab" id="erp-tab-general" style="flex:0 0 auto;padding:9px 12px;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.05em;cursor:pointer;background:none;border:none;color:var(--grey-400);border-bottom:2px solid transparent;margin-bottom:-2px;">📖 MANUAL</button>
+    <button type="button" class="erp-tab" id="erp-arch-tabbtn" onclick="erpArchOpen()" title="Completed ERPs withdrawn from the register — view, export, restore" style="flex:0 0 auto;padding:9px 12px;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.05em;cursor:pointer;background:none;border:none;color:var(--grey-400);border-bottom:2px solid transparent;margin-bottom:-2px;">🗄 ARCHIVE</button>
   </div>
 </div>
 
@@ -21607,7 +21608,7 @@ window.ERP_V5 = {"base": "v5-20261021", "events": {"acc": {"g": "avi", "prof": "
   function archRender(){
     var body = document.getElementById('erp-arch-body'); if(!body) return;
     var list = load().filter(function(r){ return r && r.archived; }).sort(function(a, b){ return String(b.archived_at || '').localeCompare(String(a.archived_at || '')); });
-    if(!list.length){ body.innerHTML = '<div style="padding:20px;text-align:center;color:var(--grey-400);font-family:var(--font-mono);font-size:11px;border:1px dashed rgba(15,30,46,0.19);border-radius:8px;">No archived ERP. A closed ERP is archived from the register (🗄 Archive) or from its banner.</div>'; return; }
+    if(!list.length){ body.innerHTML = '<div style="padding:20px;text-align:center;color:var(--grey-400);font-family:var(--font-mono);font-size:11px;border:1px dashed rgba(15,30,46,0.19);border-radius:8px;">No archived ERP. A closed ERP is archived from its row in the register (🗄 Archive) or from its banner.</div>'; return; }
     var q = norm(archQ);
     var shown = list.filter(function(r){ if(!q) return true; var s = summary(r); return norm([r.id, r.title, s.evt, s.where, s.aircraft, r.archive_reason, r.archived_by].join(' ')).indexOf(q) > -1; });
     body.innerHTML = '<div style="font-family:var(--font-mono);font-size:10px;color:var(--grey-400);margin-bottom:8px;">' + shown.length + ' / ' + list.length + ' archived ERP</div>'
@@ -21926,6 +21927,7 @@ window.ERP_V5 = {"base": "v5-20261021", "events": {"acc": {"g": "avi", "prof": "
   function renderList(){
     var box = document.getElementById('erp-act-list'); if(!box) return;
     var nArch = load().filter(function(r){ return r && r.archived; }).length;
+    var atb = document.getElementById('erp-arch-tabbtn'); if(atb) atb.textContent = '🗄 ARCHIVE' + (nArch ? ' (' + nArch + ')' : '');
     var list = load().filter(function(r){ return r && !r.archived; }).sort(function(a, b){ return String(b.created_at || '').localeCompare(String(a.created_at || '')); });
     var y = new Date().getFullYear();
     var nOpen = list.filter(function(r){ return r.status !== 'closed'; }).length;
@@ -21936,12 +21938,12 @@ window.ERP_V5 = {"base": "v5-20261021", "events": {"acc": {"g": "avi", "prof": "
     var h = '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:' + (listOpen ? '12px' : '0') + ';">'
       + '<div style="display:flex;align-items:center;gap:14px;"><button onclick="erpActToggleList()" style="background:none;border:none;cursor:pointer;padding:0;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--steel-bright);letter-spacing:.05em;">' + (listOpen ? '▾' : '▸') + ' ERP REGISTER (' + list.length + ')</button>'
       + (nOpen ? '<span style="font-family:var(--font-mono);font-size:10px;color:#946e16;">' + nOpen + ' open' + '</span>' : '')
-      + '<button class="xbtn" onclick="erpArchOpen()" title="Completed ERPs withdrawn from the register — export and restore">🗄 Archive' + (nArch ? ' (' + nArch + ')' : '') + '</button></div>'
+      + '</div>'
       + (list.length ? '<span style="font-family:var(--font-mono);font-size:10px;color:var(--grey-400);">⬇ Register: <button class="xbtn" onclick="erpActExportRegister(\'pdf\')">PDF</button> <button class="xbtn" onclick="erpActExportRegister(\'csv\')">CSV</button> <button class="xbtn" onclick="erpActExportRegister(\'json\')">JSON</button></span>' : '')
       + '</div>';
     if(listOpen){
       if(!list.length){
-        h += '<div style="color:var(--grey-400);font-family:var(--font-mono);font-size:11px;padding:16px;text-align:center;border:1px dashed rgba(15,30,46,0.14);border-radius:8px;">' + (nArch ? 'No ERP in the register — ' + nArch + ' archived (🗄 Archive). ' : 'No ERP recorded yet. ') + '“＋ New ERP” opens a blank record; any input in tabs 1 to 4 creates one automatically.</div>';
+        h += '<div style="color:var(--grey-400);font-family:var(--font-mono);font-size:11px;padding:16px;text-align:center;border:1px dashed rgba(15,30,46,0.14);border-radius:8px;">' + (nArch ? 'No ERP in the register — ' + nArch + ' archived (🗄 ARCHIVE, right of the tabs). ' : 'No ERP recorded yet. ') + '“＋ New ERP” opens a blank record; any input in tabs 1 to 4 creates one automatically.</div>';
       } else {
         h += '<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px;">'
           + tile(list.length, 'Total ERP', 'var(--steel-bright)') + tile(nOpen, 'Open', '#946e16') + tile(nYear, 'This year (' + y + ')', 'var(--grey-200)') + tile(nCrisis, 'Level 2 — Crisis', '#C00000') + '</div>'
